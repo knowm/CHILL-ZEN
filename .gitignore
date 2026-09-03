@@ -1,0 +1,54 @@
+__pycache__/
+*.pyc
+.venv/
+.venv-dtm/
+
+# Fetched, never committed: the canonical idx files and the vendored
+# evaluation code, both checksum-verified by fetch_vendor.sh.
+/data/
+/experiments/head_to_head/vendor/
+
+# Outputs.
+/logs/
+/main.pdf
+/main.blg
+
+# Figures are outputs of experiments/14-16 and 29, but the eight the paper
+# includes are committed so `make paper` works from a fresh clone.
+/figures/*
+!/figures/fig-backbone.png
+!/figures/fig-binarization.png
+!/figures/fig-codec.png
+!/figures/fig-energy.png
+!/figures/fig-noise.png
+!/figures/fig-samples.png
+!/figures/fig-comparator-sweep.png
+/experiments/head_to_head/gen/
+/experiments/head_to_head/cache/
+/experiments/head_to_head/*.log
+/experiments/head_to_head/*.png
+/experiments/head_to_head/gate-results.npz
+/experiments/head_to_head/score-results.json
+/experiments/head_to_head/binary-score-results.json
+/experiments/head_to_head/comparator-score-results.json
+
+# Artifacts: rebuilt by `make artifacts`.
+# Only the frozen judge is committed, because it is a fixed reference
+# rather than a result.
+/artifacts/*.pt
+!/artifacts/critic.pt
+
+# Scoring and drafting scratch state. The drafting tools write beside the
+# file they score as well as into .writing/, so the root spellings are
+# ignored too -- none of it belongs in the published repository.
+.writing/
+*.writelikeapro.json
+*.slop.json
+/reviews/
+
+# macOS
+.DS_Store
+
+.pytest_cache/
+/experiments/head_to_head/audit-score-results.json
+/experiments/head_to_head/audit-memorization.json

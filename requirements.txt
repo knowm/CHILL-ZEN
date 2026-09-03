@@ -1,0 +1,12 @@
+# The emulator environment. torch 2.2.2 is the last build with Intel-macOS
+# wheels, and it is built against numpy 1, so numpy is pinned below 2 there.
+# The reported runs used torch 2.2.2 / numpy 1.26.4 / Python 3.11.
+torch>=2.0,<2.3
+numpy<2; sys_platform == 'darwin' and platform_machine == 'x86_64'
+numpy>=1.22
+scikit-learn>=1.0
+matplotlib>=3.5
+requests
+
+# The lane emulator is not on PyPI; install it from its repository:
+#   pip install "ktram-neural-core @ git+https://github.com/knowm/ktram-neural-core@main#subdirectory=python"
