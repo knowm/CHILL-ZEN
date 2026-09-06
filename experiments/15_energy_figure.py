@@ -1,6 +1,6 @@
 """fig-energy: the frontier on the performance-versus-energy plane.
 
-Paper Fig. 9 (`fig:energy`, Sec. V C). Every FID here is produced by
+Paper Fig. 8 (`fig:energy`, Sec. V C). Every FID here is produced by
 the evaluation code,
 reference statistics, binarization threshold and sample count of the
 DTM paper; the energies are this work's model (chill_zen/energy_geom.py,

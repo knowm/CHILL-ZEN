@@ -1,6 +1,6 @@
 """fig-binarization: the two binarization conventions, side by side.
 
-Paper Fig. 8 (`fig:binarization`, Sec. V C). Which threshold turns a grayscale render into a binary
+Paper Fig. 7 (`fig:binarization`, Sec. V C). Which threshold turns a grayscale render into a binary
 image is a property of the data, not a model choice, and the DTM paper
 does not state theirs. It is 0.1, recovered from their released code
 and confirmed against their own shipped reference statistics by the

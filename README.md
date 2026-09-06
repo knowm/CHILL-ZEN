@@ -118,8 +118,8 @@ Costs are wall-clock on eight CPU threads.
 | `12_energy_model.py` | joules per image, three accountings | 1 min |
 | `13_energy_frontier.py` | the same per code size | 2 min |
 | `14_figures.py` | Figs. 1, 3, 5, 6 | 1 min |
-| `15_energy_figure.py` | Fig. 9 (needs the head-to-head) | seconds |
-| `16_binarization_figure.py` | Fig. 8 (needs the head-to-head) | seconds |
+| `15_energy_figure.py` | Fig. 8 (needs the head-to-head) | seconds |
+| `16_binarization_figure.py` | Fig. 7 (needs the head-to-head) | seconds |
 | `17_fit_binary_codec.py` | the binary codec at threshold 0.1 | hours / seconds cached |
 | `18_teach_binary_banks.py` | the binary banks, same recipe | hours / seconds cached |
 | `19_binary_verdict.py` | binary screen, window draw, renders for scoring | minutes + 1 h render |
@@ -143,7 +143,7 @@ head-to-head's own environment. `head_to_head/25_comparator_headtohead.py`
 renders the grayscale arms at the critic's operating point and
 `head_to_head/34_grayscale_grid.py` renders them at every level of the
 register grid (about an hour); `07_comparator_score.py` scores both and
-prints each arm's best level, which Table VII, Fig. 8 and Fig. 9 use.
+prints each arm's best level, which Table VII, Fig. 7 and Fig. 8 use.
 
 The comparator sweep is three steps in two environments, in this order:
 

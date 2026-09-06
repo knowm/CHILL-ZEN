@@ -549,7 +549,7 @@ Sec. V C.
 ## Figures
 
 Numbers are the compiled order (labels in parentheses are the stable
-reference); Fig. 2 (`fig:arch`) and Fig. 7 (`fig:contrast`) are drawn
+reference); Fig. 2 (`fig:arch`) is drawn
 in TeX and have no script. `14_figures.py` also writes `fig-teach.png`,
 which the paper no longer includes.
 
@@ -560,5 +560,5 @@ which the paper no longer includes.
 | Fig. 4 `fig-comparator-sweep.png` (`fig:comparatorsweep`) | `29_comparator_figure.py` | 23, 24 (+ `--extend`) |
 | Fig. 5 `fig-backbone.png` (`fig:backbone`) | `14_figures.py` | 06 `--all` |
 | Fig. 6 `fig-codec.png` (`fig:codec`) | `14_figures.py` | 01 `--all`, 02 |
-| Fig. 8 `fig-binarization.png` (`fig:binarization`) | `16_binarization_figure.py` | the grayscale grid renders and their scores (34, 07_comparator_score) |
-| Fig. 9 `fig-energy.png` (`fig:energy`) | `15_energy_figure.py` | 13, 22, and the physical-point scores (34, 27, 07_comparator_score) |
+| Fig. 7 `fig-binarization.png` (`fig:binarization`) | `16_binarization_figure.py` | the grayscale grid renders and their scores (34, 07_comparator_score) |
+| Fig. 8 `fig-energy.png` (`fig:energy`) | `15_energy_figure.py` | 13, 22, and the physical-point scores (34, 27, 07_comparator_score) |

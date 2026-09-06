@@ -220,14 +220,9 @@ instruction-time setting, a trim register the read carries like its
 voltage and its pulse width, so each read instruction carries its draw
 temperature. The comparator's
 input offset is a separate quantity, a static per-lane bias set by
-transistor matching \cite{pelgrom1989matching}. Because it is static
-it belongs to a one-time per-lane trim, as in a successive-approximation
-converter, and not to learning. Learning can absorb what is left after
-the trim only within the range of the read: a lane's output is a
-magnitude-weighted average of weights bounded by $\pm 1$, so a residual
-offset has to be small against the read voltage, a tenth of it or less,
-and it has to be trimmed at each bias the comparator runs at, since a
-latch's offset moves with its bias.
+transistor matching \cite{pelgrom1989matching}; being static, it
+belongs to a one-time per-lane trim rather than to learning, and
+Sec.~\ref{sec:comparator} states the budget.
 
 The comparator term matters because of pooling, which
 Sec.~\ref{sec:comparator} measures. A lane read pools the magnitudes
@@ -645,10 +640,8 @@ after a first pass, and a 7.5\,mV point swept before the level was a
 register lies above the register's ceiling and is not reported. The
 figure also marks a control, the same draw with the
 emulator's device noise gain raised by hand. That gain is a device
-calibration, not an operating knob: an earlier version of this work
-drove the draw with it, no circuit produces that noise, and when that
-was recognized the work stopped until a physical source for the
-draw's randomness was found. The control is a reference only.
+calibration, not an operating knob, and no circuit produces that
+noise; the control is a reference only.
 
 The swept level is not a free parameter. The emulator carries it as an
 8-bit trim register, $v_n = 100\,\mu\mathrm{V} + \mathrm{code} \times
@@ -865,8 +858,8 @@ global code alone beats a per-patch code at rate parity.}
 
 \subsection{The design points}\label{sec:designpoint}
 
-The two systems differ as design points (Table~\ref{tab:designpoint},
-Fig.~\ref{fig:contrast}); our reading of the DTM/DTCA follows
+The two systems differ as design points (Table~\ref{tab:designpoint});
+our reading of the DTM/DTCA follows
 Ref.~\cite{jelincic2025dtm} and its released software
 \cite{extropic2025thrml}.
 
@@ -913,75 +906,17 @@ the label$\to$code draw \\
 \end{ruledtabular}
 \end{table*}
 
-\begin{figure}
-\centering
-\begin{tikzpicture}[
-  font=\scriptsize,
-  blk/.style={draw, rounded corners=1pt, align=center,
-              inner sep=3pt, minimum width=1.9cm, minimum height=22pt},
-  net/.style={-{Stealth}, semithick}]
-% ---- DTCA side ----
-\node[font=\scriptsize\bfseries] at (0, 3.0) {DTM / DTCA};
-\node[blk] (e1) at (-2.7, 1.7) {EBM$_T$};
-\node[blk] (e2) at (0, 1.7) {EBM$_t$};
-\node[blk] (e3) at (2.7, 1.7) {EBM$_1$};
-\draw[net] (e1) -- (e2) node[midway, above, font=\tiny] {$\cdots$};
-\draw[net] (e2) -- (e3) node[midway, above, font=\tiny] {$\cdots$};
-\foreach \x in {-2.7, 0, 2.7} {
-  \draw[net, red!70!black]
-    (\x - 0.2, 2.12) arc (200:-20:0.22);
-  \node[font=\tiny, red!70!black] at (\x + 0.62, 2.5) {$\times K$};
-}
-\node[align=center, font=\tiny] at (0, 0.95)
-  {noise $\to$ data: $T$ chained samplers, $K \approx 250$--$1000$
-   Gibbs\\iterations each, randomness from RNG nodes
-   ($\tau_0$ fixed)};
-% ---- CHILL ZEN side ----
-\node[font=\scriptsize\bfseries] at (0, 0.2) {CHILL ZEN};
-\node[blk] (g) at (-2.7, -0.75) {G banks\\one AR pass};
-\node[blk] (r) at (0, -0.75) {R banks\\one cold sweep};
-\node[blk] (d) at (2.7, -0.75) {decode};
-\draw[net, red!70!black] (g) -- (r)
-  node[midway, above=10pt, font=\tiny] {$v_n = 2$mV};
-\draw[net, blue!70!black] (r) -- (d)
-  node[midway, above=10pt, font=\tiny] {$v_n \to 0$};
-\node[align=center, font=\tiny] at (0, -1.55)
-  {address $\to$ code: one hot pass plus one cold sweep,\\
-   randomness from one settable comparator per lane};
-\end{tikzpicture}
-\caption{\textbf{Two thermodynamic design points.} The DTCA chains
-easy-to-mix samplers and draws its randomness from an RNG at every
-node; CHILL ZEN draws an address code through one noisy comparator per
-lane, set per instruction, and reconciles it with one cold sweep. Both
-obtain randomness from a circuit at the node; they differ in how many
-draws an image needs, about 3600 here against $10^{7}$ there.}
-\label{fig:contrast}
-\end{figure}
 
-\emph{Mixing versus one pass
-and one sweep:} the DTM chain exists to keep every step easy to mix,
-and the residual difficulty moves into how many steps and iterations
-the chain needs. CHILL ZEN's procedure contains no mixing phase, so we
-report no mixing time, and its open problem is the draw. \emph{The
-randomness source:} both systems obtain their randomness from a
-dedicated circuit at each node. The DTCA's is a free-running RNG whose
-correlation time is fixed at design; CHILL ZEN's is the comparator
-that resolves each lane read, with its noise set per instruction over
-a range that includes zero. At the operating point the comparator
-supplies over nine tenths of the draw's variance and the pooled
-weights the rest (Sec.~\ref{sec:comparator}), so the draw is, to that accuracy, a
-flat noise on a stored mean; the state-dependent device term is what
-pooling leaves over, and the draw does not rely on it. What separates
-the two systems is how many random draws an image needs: about 3600
-hot lane reads here, against $T K L^2 \approx 8 \times 250 \times
-4900 \approx 10^{7}$ conditional updates for their eight-step chain at
-their stated $K_{\mathrm{mix}} = 250$, each a Bernoulli draw.
-\emph{Rendering:} the DTCA emits spins, and reaches grayscale through
-a multi-spin embedding and color through a separately trained neural
-decoder; a CHILL ZEN sample decodes through the fixed linear map of
-Eq.~(\ref{eq:decode}). Sequential steps alone do not compare the two
-systems, since the work per step differs and neither is fabricated at
-target scale, which is why the accounting continues in joules.
+The DTM chain exists to keep every step easy to mix, and the residual
+difficulty moves into how many steps and iterations the chain needs;
+CHILL ZEN's procedure has no mixing phase, so we report no mixing time,
+and its open problem is the draw. Both systems obtain their randomness
+from a circuit at each node, and what separates them is how many draws
+an image needs, about 3600 hot lane reads against about $10^{7}$
+conditional updates at their stated $K_{\mathrm{mix}} = 250$. Sequential
+steps alone do not compare the two, since the work per step differs
+and neither is fabricated at target scale, which is why the accounting
+continues in joules.
 
 \subsection{Energy}\label{sec:energy}
 
@@ -1018,54 +953,42 @@ the comparison in joules is not won per random bit. It is won on
 count: the accounting below charges about 3600 noisy reads per image,
 where the chain charges $T K L^2 \approx 10^{7}$ conditional updates.
 
-The per-image energy is a physical estimate from a stated geometry
-(Appendix~\ref{app:energy}). The geometry is the neural lane of
-Ref.~\cite{knowm2026blog}: each synapse is a pair of unit crossbars,
-small memristor arrays with a row and a column multiplexer and no
-selector at the memristor, in series between the rails. A lane is one
-pair per address space, sharing one output line, and the address of a
-read is broadcast on select lines that run across every lane of a
-bank. The unselected lines of a unit crossbar float; the model prices
-that geometry as drawn, and Limitation~\ref{lim:sneak} states what it
-costs the read and prices the alternatives. The array is an integrated crossbar with a 20\,nm via on a
-50\,nm pitch, and each 16-symbol space is one $4 \times 4$ unit
-crossbar. Per image the model charges four terms: delivery of each
-asserted address to the arrays at the select supply,
-$E_{\mathrm{sel}}$; the divider reads, which at settling-limited timing
-cost $5\,C_{\mathrm{node}} V^2$ each and do not depend on the
-device's conductance, $E_{\mathrm{read}}$. The other two are one
-comparator and one lane buffer per lane read, $E_{\mathrm{readout}}$,
-priced as a continuous-time comparator with the alternatives in
-Table~\ref{tab:readout}, and the rails, bounded below $10^{-11}$\,J. It is applied to the exact operation
-count of the deployed system (2048 hot autoregressive reads, 1568 hot
-patch reads, 5664 cold sweep reads, and 784 cold reads for the decode:
-10\,064 lane reads and $1.78\times10^{6}$ address assertions over five
-banks totalling about $2.9\times10^{7}$ synapse pairs, or
-$5.7\times10^{7}$ memristors) with constants that are each a stated
-dimension or a textbook value (Table~\ref{tab:app-constants}). The
-decode is in the count. It is the fixed linear map of
-Eq.~(\ref{eq:decode}), and a lane read computes a linear map: with the
-codebook atoms stored as differential pairs, one output lane per
-pixel, and every code address present at the end of a generation, the
-pooled read of Eq.~(\ref{eq:pool}) returns the sum of the selected
-atoms at a fixed scale. It is about 8\% of the reads. This paper's
-emulation runs that map in host floating point, as it does the render
-and the judging; the model charges it as the 784 cold lane reads it is
-designed to be. Running it on lanes, with the atoms quantized to a
-pair's resolution and read at 50\,mV, has not been emulated and its
-precision is not measured. The DTM has no decode
-for binarized Fashion-MNIST because its spins are the pixels. That is
-a property of a binary-pixel model rather than a saving that carries:
-the DTM reaches grayscale through a multi-spin embedding and color
-through a separately trained neural decoder (Table~\ref{tab:designpoint}),
-neither priced in its energy figure, and the system of
-Sec.~\ref{sec:results} was built grayscale and binarized for the
-head-to-head.
-The model mirrors the decomposition of Ref.~\cite{jelincic2025dtm}:
-its address-delivery term is the charging of long wires that they call
-$E_{\mathrm{comm}}$ and report as about half of their budget, and it
-excludes what they exclude, the one-time programming of the weights
-and the die area.
+The per-image energy is a physical estimate from the stated geometry
+of Appendix~\ref{app:energy}: the neural lane of
+Ref.~\cite{knowm2026blog}, one $4 \times 4$ unit-crossbar pair per
+address space on a 50\,nm pitch, the address of a read broadcast on
+select lines across every lane of a bank, and the unselected lines
+floating (Limitation~\ref{lim:sneak}). It charges three terms per
+image: the delivery of each asserted address at the select supply,
+$E_{\mathrm{sel}}$; the divider reads at $5\,C_{\mathrm{node}} V^2$
+each, independent of the device's conductance, $E_{\mathrm{read}}$;
+and one comparator and one lane buffer per lane read,
+$E_{\mathrm{readout}}$, priced as a continuous-time comparator with
+the alternatives in Table~\ref{tab:readout}; the rails are bounded
+below $10^{-11}$\,J. It is applied to the exact operation count of the
+deployed system, 10\,064 lane reads and $1.78\times10^{6}$ address
+assertions over five banks totalling about $2.9\times10^{7}$ synapse
+pairs, with constants that are each a stated dimension or a textbook
+value (Table~\ref{tab:app-constants}). The decode is in the count. It
+is the fixed linear map of Eq.~(\ref{eq:decode}), and a lane read
+computes a linear map: with the codebook atoms stored as differential
+pairs, one output lane per pixel, and every code address present at
+the end of a generation, the pooled read of Eq.~(\ref{eq:pool})
+returns the sum of the selected atoms at a fixed scale. It is about
+8\% of the reads. This paper's emulation runs that map in host
+floating point, as it does the render and the judging; the model
+charges it as the 784 cold lane reads it is designed to be. Running it
+on lanes, with the atoms quantized to a pair's resolution and read at
+50\,mV, has not been emulated and its precision is not measured. The
+DTM has no decode for binarized Fashion-MNIST because its spins are
+the pixels. That is a property of a binary-pixel model rather than a
+saving that carries: the DTM reaches grayscale through a multi-spin
+embedding and color through a separately trained neural decoder
+(Table~\ref{tab:designpoint}), neither priced in its energy figure,
+and the system of Sec.~\ref{sec:results} was built grayscale and
+binarized for the head-to-head. The model's address-delivery term is
+what Ref.~\cite{jelincic2025dtm} calls $E_{\mathrm{comm}}$ and
+reports as about half of its budget.
 
 Address delivery is 91\% of the total at the nominal point, readout
 8\%, and the divider reads 1\%. We therefore state the model at its
@@ -1401,51 +1324,22 @@ estimates from the model of Appendix~\ref{app:energy}.}
 
 \section{Conclusion}\label{sec:conclusion}
 
-CHILL ZEN generates by reading stored weights hot and reconciling
-them cold. Each weight is a differential memristor pair, each read
-returns the weight plus a noise, and the sampling temperature is an
-argument of the read instruction with zero in its range. On grayscale
-Fashion-MNIST the two-level system's reconstruction arm matches the
-real bar within seed spread, which localizes the residual error to a
-single component, the label$\to$code draw, and the end-to-end draw
-scores above the bar, inside its own spread. Binarized and scored with
-the released evaluation code and reference statistics of the denoising
-thermodynamic model, the same system reaches FID 18.1 at its FID-best
-comparator level, and 9.7 when the banks are trained on the binarized
-data, against 24.9 for the deepest DTM chain. The modeled energy is about eight times below
-theirs per image at the model's nominal point, and between two and
-eighteen times below across its stated sensitivities.
-
-At the 10\,mV read the pooled devices deliver under two-fifths of
-what a generative draw needs on the first read and under a tenth
-thereafter, because a pooled read's thermal noise is the kT/C noise
-of its output node, and no read voltage a comparator can resolve
-recovers the rest. The comparator that resolves
-the read supplies it. In that respect this architecture and the DTCA
-are alike, each drawing its randomness from a circuit at the node, and
-the energy difference between them is that an image needs about 3600
-such draws here and of order $10^{7}$ there. The comparator's
-input-referred noise, referred to the read
-voltage, is the draw's temperature: it sets the operating point, it does
-not change with the read voltage at a fixed ratio, and because it is
-flat in chain position it feeds the start of the chain, which is where
-the draw starves. A comparator for this architecture therefore has a
-requirement a comparator for a memory does not: noise that can be set,
-from near zero for a verdict to a few tenths of the read voltage for a
-draw, on top of an offset trimmed per lane to below a tenth of the
-read voltage.
-
-Training uses the same read at a level set separately, and the
-repair banks learn from generator fills. Raising the fill
-level raised the end-to-end critic, and the gain only flattened near
-the register's ceiling.
-
-The residual error is in one bank,
-the label$\to$code draw, and its signature is distributional. The
-comparator level each arm is reported at was chosen on a six-level grid
-by the metric it reports, and the level that maximizes the critic is
-not the level that minimizes the FID for the same stack. The lane-scale hardware, and the comparator
-it needs, have not been fabricated.
+CHILL ZEN generates by reading stored weights hot and reconciling them
+cold, with the sampling temperature an argument of the read
+instruction and zero in its range. The pooled devices cannot supply a
+generative draw's temperature, because a pooled read's thermal noise
+is the kT/C noise of its output node, so the comparator that resolves
+the read supplies it, and its input-referred noise referred to the
+read voltage is the draw's temperature. A comparator for this
+architecture therefore has a requirement a comparator for a memory
+does not: noise that can be set, from near zero for a verdict to a few
+tenths of the read voltage for a draw, on top of an offset trimmed per
+lane to below a tenth of the read voltage. The residual error is in
+one bank, the label$\to$code draw, and its signature is
+distributional. The level that maximizes the critic is not the level
+that minimizes the FID for the same stack, and each arm is reported at
+the level its own metric selected. The lane-scale hardware, and the
+comparator it needs, have not been fabricated.
 
 \appendix
 

@@ -22,7 +22,7 @@
 #   make dose-chain    the joint sweep chained to eight doses (experiment 37)
 #   make ablations   the draw ablations of experiment 20
 #   make reporting   Table II's seed spread and the flip rate
-#   make head-to-head-figures    Figs. 8 and 9 (after the head-to-head)
+#   make head-to-head-figures    Figs. 7 and 8 (after the head-to-head)
 #
 # "after X" is a note, not a prerequisite: these targets do not trigger
 # the hours of work they depend on, so run them in the order shown.
