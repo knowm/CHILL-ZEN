@@ -39,6 +39,21 @@ PER_CLASS = 512
 PICK = 3
 
 
+def best_render(arm):
+    """The grayscale arm's best-scoring render on the register grid
+    (`comparator-gray-{arm}-{P}`, scored by 07_comparator_score.py), else
+    the single-point render `comparator-{arm}` of 25."""
+    import json
+    spath = GEN.parent / "comparator-score-results.json"
+    if spath.exists():
+        scores = json.loads(spath.read_text())
+        pre = f"comparator-gray-{arm[len('comparator-'):]}-"
+        grid = {k: v["fid"] for k, v in scores.items() if k.startswith(pre)}
+        if grid:
+            return min(grid, key=grid.get)
+    return arm
+
+
 def real_train():
     """The first 512 train images of each class, the head-to-head's own
     real-image control, rebuilt from the data rather than a cached file."""
@@ -54,7 +69,7 @@ def main():
                              figsize=(7.0, 0.62 * len(ROWS) + 0.25),
                              gridspec_kw=dict(hspace=0.25))
     for ax, (arm, nice) in zip(np.atleast_1d(axes), ROWS):
-        im = real_train() if arm == "real" else np.load(GEN / f"{arm}.npy")
+        im = real_train() if arm == "real" else np.load(GEN / f"{best_render(arm)}.npy")
         pick = [c * PER_CLASS + PICK for c in range(10)]
         lo = np.concatenate([(im[i] > THEIRS) for i in pick], 1)
         hi = np.concatenate([(im[i] > OURS) for i in pick], 1)
@@ -75,7 +90,7 @@ def main():
     plt.close(fig)
     print("fig-binarization.png")
     for arm, _ in ROWS:
-        im = real_train() if arm == "real" else np.load(GEN / f"{arm}.npy")
+        im = real_train() if arm == "real" else np.load(GEN / f"{best_render(arm)}.npy")
         print(f"  {arm}: on-fraction {float((im > THEIRS).mean()):.4f} at "
               f"0.1, {float((im > OURS).mean()):.4f} at 0.5")
 

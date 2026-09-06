@@ -4,7 +4,7 @@ No gradients are computed anywhere in this file. Teaching is the
 emulator's own adapt instruction: present a tuple, name the target
 addresses, let the substrate move its own weights.
 
-Three recipes, one shape:
+Three recipes, one pattern:
 
 * **soft G banks** teach on Bernoulli-masked codes -- a random subset
   of target addresses is opened per sample, keep-p itself drawn
@@ -29,11 +29,21 @@ import torch
 
 from .data import SEED
 from .lanes import snapshot
+from .physical import read_all_backbone_physical, read_all_patch_physical
 
 BATCH = 256
 MAX_EPOCHS, PATIENCE = 15, 3
 BANDS = [(0.0, 0.25), (0.25, 0.5), (0.5, 0.75), (0.75, 1.0)]
-T_HOT = 0.3          # the temperature the G fills are sampled at
+# The G fills the repair banks teach against are drawn at the read the
+# system deploys: read_noise at the device (0.02), the read voltage at
+# the sense floor, and the draw temperature supplied by the comparator's
+# trim register. Teaching used to raise `read_noise` to 0.3 instead --
+# fifteen times the device's calibration, and not a knob any hardware
+# has. V_CMP is the fill level a sweep of the teaching read settled on
+# (register code 245, 5 mV at the 10 mV floor; see levels.FILL_V_CMP).
+# The binary stack teaches at the same level, carried over rather than
+# swept on that stack; teach_* take v_cmp so a caller can move it.
+from .levels import FILL_V_READ as V_READ, FILL_V_CMP as V_CMP  # noqa: E402
 Q_MAX = 0.5          # corruption rate ceiling in the R pools
 Q_GAP = 0.25         # conditioning corruption of the patch gap probe
 
@@ -42,9 +52,9 @@ Q_GAP = 0.25         # conditioning corruption of the patch gap probe
 # The backbone level: G1 (fill) then R1 (repair).
 # ---------------------------------------------------------------------------
 
-def teach_backbone(level, y_tr, y_ev, log,
+def teach_backbone(level, y_tr, y_ev, log, v_cmp=V_CMP,
                    batch=BATCH, max_epochs=MAX_EPOCHS, patience=PATIENCE):
-    """-> (g_state, r_state, results) for one backbone code shape."""
+    """-> (g_state, r_state, results) for one backbone code (books x symbols @ keep-p)."""
     n_train = len(level.u_tr)
     res = {}
     gen_ev = torch.Generator().manual_seed(SEED + 9)
@@ -102,7 +112,8 @@ def teach_backbone(level, y_tr, y_ev, log,
         hit = (torch.rand(units.shape, generator=gen) < q[:, None]) & mask
         hit[:, 0] = False                                 # label stays clean
         state = torch.where(hit, level.marginal_draw(y, gen), state)
-        fills = level.read_all(gbank, state, T_HOT, gen)
+        fills = read_all_backbone_physical(level, gbank, state,
+                                          V_READ, v_cmp, gen)
         return torch.where(mask, state, fills)
 
     pool_tr = build_pool(level.u_tr, y_tr,
@@ -256,18 +267,20 @@ def teach_patch_fill(pl, log, batch=BATCH, max_epochs=MAX_EPOCHS,
     return best, dict(acc=acc, gap=gap, rows=rows, prior=prior), curve
 
 
-def patch_pool(pl, gbank, y, g, patches, gen):
+def patch_pool(pl, gbank, y, g, patches, gen, v_cmp=V_CMP):
     """One realistically corrupted patch state per sample."""
     _, mask = pl.bernoulli_mask(len(patches), gen)
     state = pl.masked(patches, mask)
     q = torch.rand(len(patches), generator=gen) * Q_MAX
     hit = (torch.rand(patches.shape, generator=gen) < q[:, None]) & mask
     state = torch.where(hit, pl.marginal_draw(pl.ptab, y, gen), state)
-    fills = pl.read_all(gbank, y, g, state, T_HOT, gen)
+    fills = read_all_patch_physical(pl, gbank, y, g, state,
+                                    V_READ, v_cmp, gen)
     return torch.where(mask, state, fills)
 
 
-def teach_patch_repair(pl, gbank, log, batch=BATCH, max_epochs=MAX_EPOCHS,
+def teach_patch_repair(pl, gbank, log, v_cmp=V_CMP,
+                       batch=BATCH, max_epochs=MAX_EPOCHS,
                        patience=PATIENCE):
     """-> (r_state, results, curve)."""
     pool_tr = patch_pool(pl, gbank, pl.y_tr, pl.g_tr, pl.p_tr,
@@ -310,7 +323,8 @@ def teach_patch_repair(pl, gbank, log, batch=BATCH, max_epochs=MAX_EPOCHS,
 # The joint bank.
 # ---------------------------------------------------------------------------
 
-def joint_pool(jl, backbone_level, g1, g2, y, g_true, p_true, gen, log, tag):
+def joint_pool(jl, backbone_level, g1, g2, y, g_true, p_true, gen, log, tag,
+               v_cmp=V_CMP):
     """Corrupt both levels the way the deployed system fails.
 
     Backbone: Bernoulli mask, a fraction of the survivors replaced from
@@ -329,7 +343,8 @@ def joint_pool(jl, backbone_level, g1, g2, y, g_true, p_true, gen, log, tag):
     g_state = torch.where(mask_g, g_state,
                           torch.full((1,), -1, dtype=torch.long))
     units = torch.cat([y[:, None], g_state], 1)
-    fills = backbone_level.read_all(g1, units, T_HOT, gen)[:, 1:]
+    fills = read_all_backbone_physical(backbone_level, g1, units,
+                                       V_READ, v_cmp, gen)[:, 1:]
     g_pool = torch.where(mask_g, g_state, fills)
 
     keep_p = torch.rand(B, generator=gen)
@@ -339,7 +354,8 @@ def joint_pool(jl, backbone_level, g1, g2, y, g_true, p_true, gen, log, tag):
     p_state = torch.where(hit_p, pl.marginal_draw(pl.ptab, y, gen), p_true)
     p_state = torch.where(mask_p, p_state,
                           torch.full((1,), -1, dtype=torch.long))
-    fills = pl.read_all(g2, y, g_pool, p_state, T_HOT, gen)
+    fills = read_all_patch_physical(pl, g2, y, g_pool, p_state,
+                                    V_READ, v_cmp, gen)
     p_pool = torch.where(mask_p, p_state, fills)
     wg = (g_pool != g_true).float().mean().item()
     wp = (p_pool != p_true).float().mean().item()

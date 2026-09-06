@@ -46,7 +46,7 @@ def main():
     ap.add_argument("--all", action="store_true",
                     help="fit the whole sweep rather than the deployed point alone")
     ap.add_argument("--points", nargs="*", default=None,
-                    help="explicit shapes, e.g. 128x16@p0.5")
+                    help="explicit codes as books x symbols @ keep-p, e.g. 128x16@p0.5")
     ap.add_argument("--threads", type=int, default=8)
     args = ap.parse_args()
     torch.set_num_threads(args.threads)

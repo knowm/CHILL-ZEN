@@ -1,42 +1,23 @@
 """Joules per image for the deployed two-level system.
 
-Paper Sec. V B. A physical model, not a measurement. Three accountings
-are carried for every read class and all three are reported:
+Paper Sec. V B, Table V and Appendix B. A physical estimate from a
+stated geometry (chill_zen/energy_geom.py), not a measurement. Only the
+census enters: lanes and spaces per bank, lane reads and their voltage.
 
-  FLOOR    the thermodynamic 2kBT/sigma^2 at the noise the read
-           actually delivers -- device-independent, by Eq. (2)
-  BOUNDED  the floors-bounded operating point: a 10 mV sense floor and
-           settling-limited timing, t = max(2 ns, 5RC)
-  ANCHOR   the emulator's literal reference read, 50 mV for 1 us, on
-           each of the two device bands
+The census is exact, taken from the banks' lane and space counts:
+2048 hot autoregressive reads, 2048 cold backbone-sweep reads, 1568 hot
+patch reads, 3616 cold joint-sweep reads, and 784 cold decode reads,
+10,064 lane reads per image, and 1,781,920 (space, lane) assertions.
 
-The census is exact, taken from the bank shapes rather than estimated:
-2048 hot autoregressive reads, 1568 hot patch reads, 2048 and 3616 cold
-sweep reads, and 784 cold decode reads -- 10,064 lane reads per image
-over 226 addresses, in 132 sequential steps.
+Expected, at the nominal point: E_sel 1.82e-9 J, E_read 1.97e-11 J,
+E_readout 1.51e-10 J, total 2.00e-9 J, 7.9x below the DTM chain's
+1.568e-8 J. Low-swing select 8.8e-10 J (17.7x); pessimistic corner
+8.1e-9 J (1.9x).
 
-Periphery (P1-P3: line charging, one comparator per lane, address
-select and clock) is added on top, mirroring the E_bias / E_clock /
-E_comm decomposition the DTCA paper uses, so the two totals are
-comparable in kind.
-
-Expected: a device-level bounded total of 8.24e-12 J on the tin/chromium
-band and 5.80e-11 J on tungsten; periphery of 1.05e-11 J, comparator-
-dominated -- at the bounded point the periphery, not the devices, is the
-cost. With periphery: 1.87e-11 J bounded, 1.58e-09 J at the tin/chromium
-anchor, and 3.37e-08 J at the tungsten anchor. That last number is
-larger than the DTM chain's 1.57e-08 and is stated as such.
-
-Per drawn bit the thermal draw costs 9e-17 to 4.5e-16 J (2e4 to 1e5
-kBT), against 2e-15 J per Bernoulli sample for the DTCA's dedicated RNG
-cell.
-
-Cost: about a minute. Requires 03-05, 07 and 11.
+Cost: seconds. Requires nothing.
 
     python experiments/12_energy_model.py
 """
-import argparse
-import math
 import pathlib
 import sys
 
@@ -44,199 +25,81 @@ import torch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
-from chill_zen import artifacts, config                            # noqa: E402
-from chill_zen.energy import (BANDS, C_LINE, E_ADDR, E_CMP, KBT,   # noqa: E402
-                         KSP_BACKBONE, KSP_PATCH, LREP, NG, NPU, S,
-                         V_COLD, V_FLOOR, V_LV, PW_ANCHOR,
-                         g_sum_from_bytes, pooled_read, sigma_target,
-                         t_read)
-
-DTM_BEST_J = 1.568e-8          # their deepest chain, from their Fig. 1
-DTM_RNG_J = 2e-15              # their per-Bernoulli-sample RNG cell
+from chill_zen import artifacts                                    # noqa: E402
+from chill_zen.energy_geom import (DTM_BEST_J, NOMINAL, POINTS,     # noqa: E402
+                                   SENSITIVITIES, all_points, energy,
+                                   excluded_bounds, fmt_row,
+                                   two_level_census)
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--backbone", default=config.BACKBONE)
-    args = ap.parse_args()
     log, fh = artifacts.make_log("12_energy_model")
-    log("energy model — A1-A4 and P1-P3 are in chill_zen/energy.py")
+    log("energy model — geometry and constants in chill_zen/energy_geom.py")
+    c = NOMINAL
+    log(f"nominal geometry: {c.ucx}x{c.ucx} unit crossbar, crossbar pitch "
+        f"{c.d_um * 1e3:.0f} nm, transistor pitch {c.t_um:.2f} um, lane "
+        f"pitch {c.lane_pitch_um:.2f} um, C_seg {c.c_seg * 1e15:.2f} fF, "
+        f"C_node {c.c_node(134) * 1e15:.0f} fF (K=134) / "
+        f"{c.c_node(232) * 1e15:.0f} fF (K=232), V_sel {c.v_sel} V, "
+        f"readout {c.e_readout * 1e15:.0f} fJ")
 
-    bb = torch.load(artifacts.path("backbone_banks"))[args.backbone]
-    pb = torch.load(artifacts.path("patch_banks"))
-    jb = torch.load(artifacts.path("joint_bank"))
-    st = torch.load(artifacts.path("verdict"))["st"]
-    g_codes, p_codes = st["g_e2e"].long(), st["p_e2e"].long()
-    lab = torch.arange(10).repeat_interleave(len(g_codes) // 10)
-    B = 200
-    g_c, p_c, y_c = g_codes[:B], p_codes[:B], lab[:B]
+    banks = two_level_census()
+    nom = energy(banks, c)
+    log("\nper-bank census and nominal contributions:")
+    log(f"{'bank':<20}{'lanes':>7}{'spaces':>8}{'LK':>10}{'reads':>7}"
+        f"{'V':>7}{'E_sel':>10}{'E_read':>10}{'E_rdout':>10}")
+    for p in nom["per_bank"]:
+        log(f"{p['name']:<20}{p['lanes']:>7}{p['spaces']:>8}"
+            f"{p['assertions']:>10}{p['reads']:>7}{p['v_read'] * 1e3:>5.0f}mV"
+            f"{p['sel']:>10.2e}{p['read']:>10.2e}{p['readout']:>10.2e}")
+    log(f"{'total':<20}{'':>7}{'':>8}{nom['assertions']:>10}"
+        f"{nom['reads']:>7}{'':>7}{nom['sel']:>10.2e}{nom['read']:>10.2e}"
+        f"{nom['readout']:>10.2e}")
+    log(f"\nshares at the nominal point: sel {nom['sel'] / nom['total']:.1%}, "
+        f"readout {nom['readout'] / nom['total']:.1%}, "
+        f"read {nom['read'] / nom['total']:.1%}")
 
-    classes = {}
-    g1a, g1b = bb["g"]["ga"], bb["g"]["gb"]
-    hot_rows = []
-    for k in range(NG):
-        aat = torch.full((B, KSP_BACKBONE), -1, dtype=torch.long)
-        aat[:, :LREP] = y_c[:, None]
-        if k > 0:
-            aat[:, LREP:LREP + k] = g_c[:, :k]
-        lanes = slice((1 + k) * S, (2 + k) * S)
-        yv, mv = pooled_read(g1a[lanes], g1b[lanes], aat)
-        hot_rows.append((LREP + k, yv.flatten(), mv.flatten()))
-    classes["backbone draw"] = dict(kind="hot", nreads=NG * S, steps=hot_rows)
+    log("\noperating points (Table V):")
+    points = all_points(banks)
+    for name, e in points.items():
+        log("  " + fmt_row(name, e))
+    log("\nsingle-knob sensitivities from the nominal row:")
+    sens = {name: energy(banks, cc) for name, cc in SENSITIVITIES.items()}
+    for name, e in sens.items():
+        log("  " + fmt_row(name, e))
+    log(f"\ntheir deepest DTM chain: {DTM_BEST_J:.3e} J/sample")
 
-    r1a, r1b = bb["r"]["ga"], bb["r"]["gb"]
-    aat = torch.cat([y_c[:, None].expand(-1, LREP), g_c], 1)
-    yv, mv = pooled_read(r1a[S:], r1b[S:], aat)
-    classes["backbone sweep"] = dict(
-        kind="cold", nreads=NG * S,
-        steps=[(KSP_BACKBONE, yv.flatten(), mv.flatten())])
+    bnd = excluded_bounds(banks, c)
+    tot = nom["total"]
+    log("\nbounds on the excluded terms (Appendix B 7), nominal:")
+    log(f"  rails: {bnd['rail_c'] * 1e9:.2f} nF over {nom['reads'] and sum(b.lanes for b in banks)} lanes; "
+        f"charged per read step at the read voltage: {bnd['rail_charge']:.1e} J "
+        f"({bnd['rail_charge'] / tot:.2%} of the total)")
+    log(f"  leakage: {bnd['per_space_gates']} off gates per space on a DC path, "
+        f"{bnd['gates']:.2e} gates; at 5 pA, 10 ns pulses per read step: "
+        f"{bnd['leak_pulsed']:.1e} J ({bnd['leak_pulsed'] / tot:.2%}); "
+        f"if the rails were held for 30 us at 50 mV: {bnd['leak_held']:.1e} J "
+        f"({bnd['leak_held'] / tot:.1%})")
+    log(f"  synapse pairs {nom['assertions'] * 16:.3e}, memristors "
+        f"{nom['assertions'] * 32:.3e}")
+    g = nom["per_bank"][0]
+    log(f"  g bank: {g['assertions']} assertions, 142336 do work; segmenting "
+        f"per group saves {(1 - 142336 / g['assertions']):.1%} of the g bank's "
+        f"E_sel, {(g['sel'] * (1 - 142336 / g['assertions'])) / nom['sel']:.1%} "
+        f"of E_sel")
+    sens_d = energy(banks, SENSITIVITIES["crossbar pitch 100 nm"])
+    log(f"  crossbar pitch 100 nm moves the total by "
+        f"{sens_d['total'] / tot - 1:.1%}")
 
-    g2a, g2b = pb["g"]["ga"], pb["g"]["gb"]
-    aat = torch.cat([y_c[:, None].expand(-1, LREP), g_c,
-                     torch.full((B, NPU), -1, dtype=torch.long)], 1)
-    yv, mv = pooled_read(g2a, g2b, aat)
-    classes["patch draw"] = dict(
-        kind="hot", nreads=NPU * S,
-        steps=[(LREP + NG, yv.flatten(), mv.flatten())])
-
-    ja, jbb = jb["bank"]["ga"], jb["bank"]["gb"]
-    aat = torch.cat([y_c[:, None].expand(-1, LREP), g_c, p_c], 1)
-    yv, mv = pooled_read(ja, jbb, aat)
-    classes["joint sweep"] = dict(
-        kind="cold", nreads=(NG + NPU) * S,
-        steps=[(KSP_PATCH, yv.flatten(), mv.flatten())])
-
-    # The decode, charged as a lane operation (review E; E3d).
-    # decode_global is bias + p * sum_m atoms[m][code_m] -- the pooled
-    # read of Eq. (5) with a constant denominator, since every book is
-    # present at decode time. 784 output lanes over the same 226-address
-    # context as the joint sweep, one parallel group read. Magnitudes
-    # are proxied by the joint sweep's pooled read at the same context
-    # size. It runs host-side today (Limitation 7); it is charged here
-    # so neither side of the comparison carries an unbudgeted step.
-    classes["decode"] = dict(kind="cold", nreads=784,
-                             steps=[(KSP_PATCH, yv.flatten(), mv.flatten())])
-
-    log("\nper-class device-level energies (per lane read, medians):")
-    log(f"{'band':<6}{'class':<18}{'floor':>10}{'bounded':>10}{'anchor':>10}"
-        f"{'sigma tgt':>11}{'sigma del':>11}")
-    dev = {}
-    for band in BANDS:
-        dev[band] = {}
-        for name, c in classes.items():
-            eF, eB, eA, sig_t, sig_d = [], [], [], [], []
-            for n_sel, yv, mv in c["steps"]:
-                gs = g_sum_from_bytes(n_sel, mv.median().item(), band)
-                t_b = t_read(gs)
-                if c["kind"] == "hot":
-                    st_tgt = sigma_target(yv, mv).median().item()
-                    e_floor = 2 * KBT / st_tgt ** 2
-                    v_op = max(V_FLOOR,
-                               math.sqrt(2 * KBT / (t_b * gs * st_tgt ** 2)))
-                    e_b = v_op ** 2 * gs * t_b
-                    eF.append(e_floor)
-                    eB.append(e_b)
-                    sig_t.append(st_tgt)
-                    sig_d.append(math.sqrt(2 * KBT / e_b))
-                else:
-                    e_b = V_COLD ** 2 * gs * t_b
-                    eB.append(e_b)
-                    eF.append(e_b)          # a cold read has no draw floor
-                    sig_t.append(0.0)
-                    sig_d.append(math.sqrt(2 * KBT / e_b))
-                eA.append(V_LV ** 2 * gs * PW_ANCHOR)
-            w = ([S] * len(c["steps"]) if name == "backbone draw"
-                 else [c["nreads"]])
-            tot = sum(w)
-            dev[band][name] = dict(
-                kind=c["kind"], nreads=c["nreads"],
-                e_floor=sum(e * wi for e, wi in zip(eF, w)) / tot,
-                e_bound=sum(e * wi for e, wi in zip(eB, w)) / tot,
-                e_anchor=sum(e * wi for e, wi in zip(eA, w)) / tot,
-                sig_tgt=sum(sig_t) / len(sig_t),
-                sig_del=sum(sig_d) / len(sig_d))
-            d = dev[band][name]
-            log(f"{band:<6}{name:<18}{d['e_floor']:>10.2e}"
-                f"{d['e_bound']:>10.2e}{d['e_anchor']:>10.2e}"
-                f"{d['sig_tgt']:>11.1e}{d['sig_del']:>11.1e}")
-
-    n_reads = sum(d["nreads"] for d in dev["W"].values())
-    hot_reads = classes["backbone draw"]["nreads"] + \
-        classes["patch draw"]["nreads"]
-    log(f"\ncensus: {n_reads} lane reads per image "
-        f"(hot {hot_reads}, cold {n_reads - hot_reads}) over "
-        f"{NG + NPU} addresses, in {NG + 4} sequential steps")
-    log(f"  of which decode: {classes['decode']['nreads']} cold lane reads, "
-        "one parallel group read (magnitudes proxied by the joint sweep's "
-        "pooled read; runs host-side today, Limitation 7)")
-    band_tot = {}
-    for band in BANDS:
-        band_tot[band] = dict(
-            floor=sum(d["e_floor"] * d["nreads"] for d in dev[band].values()),
-            bounded=sum(d["e_bound"] * d["nreads"] for d in dev[band].values()),
-            anchor=sum(d["e_anchor"] * d["nreads"] for d in dev[band].values()))
-        log(f"  [{band}] floor {band_tot[band]['floor']:.3e}  bounded "
-            f"{band_tot[band]['bounded']:.3e}  anchor "
-            f"{band_tot[band]['anchor']:.3e} J")
-    # Per band, not min() over bands (review E): on the tin/chromium
-    # band the 5RC settling time binds; on tungsten the 2 ns
-    # electronics floor binds, so "bounded below by 5CV^2 regardless of
-    # band" holds only where settling binds.
-    tot_B = band_tot["SnCr"]["bounded"]
-    tot_B_w = band_tot["W"]["bounded"]
-    tot_A = band_tot["SnCr"]["anchor"]
-    tot_A_w = band_tot["W"]["anchor"]
-    tot_F = band_tot["W"]["floor"]
-
-    # periphery, P1-P3
-    v_hot_op = max(V_FLOOR, 0.012)
-    e_drive = (sum(LREP + k for k in range(NG)) * C_LINE * v_hot_op ** 2
-               + KSP_BACKBONE * C_LINE * V_COLD ** 2
-               + (LREP + NG) * C_LINE * v_hot_op ** 2
-               + KSP_PATCH * C_LINE * V_COLD ** 2)
-    e_cmp = n_reads * E_CMP
-    n_group_reads = NG + NG + NPU + (NG + NPU) + 1   # + the decode
-    e_addr = n_group_reads * E_ADDR
-    e_periph = e_drive + e_cmp + e_addr
-    log(f"\nperiphery per image: line charging {e_drive:.2e} + comparators "
-        f"{e_cmp:.2e} + address/clock {e_addr:.2e} = {e_periph:.2e} J")
-
-    lo, hi, hi_w = tot_B + e_periph, tot_A + e_periph, tot_A_w + e_periph
-    lo_w = tot_B_w + e_periph
-    log(f"\nWITH PERIPHERY, per image (tin/chromium band): {lo:.2e} .. "
-        f"{hi:.2e} J")
-    log(f"  tungsten band: bounded {lo_w:.2e} .. anchor {hi_w:.2e} J")
-    log(f"  devices alone: bounded SnCr {tot_B:.2e} / W {tot_B_w:.2e}; "
-        f"anchor SnCr {tot_A:.2e} / W {tot_A_w:.2e}")
-
-    log("\ncomparisons:")
-    log(f"  their deepest DTM chain: {DTM_BEST_J:.3e} J/sample -> "
-        f"bounded {DTM_BEST_J / lo:.0f}x less, tin/chromium anchor "
-        f"{DTM_BEST_J / hi:.1f}x less, tungsten anchor "
-        f"{hi_w / DTM_BEST_J:.1f}x MORE")
-    log(f"  at the tungsten band's bounded point: {DTM_BEST_J / lo_w:.0f}x "
-        "less")
-    hot = [d for d in dev["W"].values() if d["kind"] == "hot"]
-    e_hot_bit = (sum(d["e_bound"] * d["nreads"] for d in hot)
-                 / sum(d["nreads"] for d in hot)) * S / 4
-    e_flr_bit = (sum(d["e_floor"] * d["nreads"] for d in hot)
-                 / sum(d["nreads"] for d in hot)) * S / 4
-    log(f"  per drawn bit (16 lanes carry 4 bits): bounded {e_hot_bit:.2e} J "
-        f"= {e_hot_bit / KBT:.1e} kBT; at the thermodynamic floor "
-        f"{e_flr_bit:.2e} J = {e_flr_bit / KBT:.1e} kBT")
-    log(f"  their RNG cell: {DTM_RNG_J:.0e} J = {DTM_RNG_J / KBT:.1e} kBT "
-        "per Bernoulli sample")
-
-    torch.save(dict(dev=dev, periph=dict(drive=e_drive, cmp=e_cmp,
-                                         addr=e_addr),
-                    band_tot=band_tot,
-                    totals=dict(floor=tot_F, bounded=tot_B,
-                                bounded_w=tot_B_w, anchor=tot_A,
-                                anchor_w=tot_A_w, periph=e_periph,
-                                lo=lo, lo_w=lo_w, hi=hi, hi_w=hi_w),
-                    census=dict(n_reads=n_reads,
-                                per_class={n: d["nreads"]
-                                           for n, d in dev["W"].items()})),
+    torch.save(dict(census=[p for p in nom["per_bank"]],
+                    points={k: {kk: vv for kk, vv in v.items()
+                                if kk != "per_bank"}
+                            for k, v in points.items()},
+                    sensitivities={k: v["total"] for k, v in sens.items()},
+                    totals=dict(lo=points["nominal"]["total"],
+                                hi=points["pessimistic corner"]["total"],
+                                low_swing=points["low-swing 0.5 V"]["total"]),
+                    constants={k: str(v) for k, v in POINTS.items()}),
                artifacts.path("energy_model"))
     log(f"\nsaved: {artifacts.path('energy_model').name}")
     fh.close()

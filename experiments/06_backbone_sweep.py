@@ -1,4 +1,5 @@
-"""Generate and judge from the backbone alone, across code shapes.
+"""Generate and judge from the backbone alone, across book count, alphabet
+size and keep-p.
 
 Paper Sec. IV E (a) and Fig. 5. The one-level system: label clamped,
 M sampled autoregressive reads at T = 0.1 in book order, one cold
@@ -6,9 +7,9 @@ repair sweep, decode. n = 320 (32 per class).
 
 Two readings come out of it. Generation improves with the number of
 books at a fixed alphabet -- 64 to 128 books moves the critic from
-0.806 to 0.834 -- and it degrades with alphabet depth at matched bits:
-64 books of 32 symbols (320 bits) reaches 0.7969 where 128 books of 16
-symbols (512 bits) reaches 0.8344. Deeper books are worse for
+0.813 to 0.834 at keep-p 0.5 -- and it degrades with alphabet depth at
+matched bits: 64 books of 32 symbols (320 bits) reaches 0.7875 where
+128 books of 16 symbols (512 bits) reaches 0.8344. Deeper books are worse for
 generation even where they are better for compression. The keep-p = 1
 control is the plain additive quantization arm.
 
@@ -18,7 +19,7 @@ code: there are no tile boundaries to show.
 The generated states are also the input to the per-size energy census
 of experiment 12, so this must run before that one.
 
-Cost: seconds to a couple of minutes per shape. Requires 01 and 03.
+Cost: seconds to a couple of minutes per code. Requires 01 and 03.
 
     python experiments/06_backbone_sweep.py --all
 """
@@ -71,6 +72,10 @@ def main():
     saved = torch.load(spath) if spath.exists() else {}
     states = saved.get("states", {})
     res = saved.get("res", {})
+    # The states are keyed on the bank configuration that drew them, not
+    # on the tag alone: a retaught bank (a changed fill read, say) must
+    # redraw, or this serves the previous banks' states under the new name.
+    bank_cfgs = saved.get("bank_cfgs", {})
 
     ra, rdv = judge.judge(critic, real, lab)
     log(f"\n{'point':>13}{'critic':>8}{'div':>8}{'tone':>7}{'seam':>7}")
@@ -84,8 +89,10 @@ def main():
             continue
         cs = codes_store[tag]
         level = BackboneLevel(tag, cs["tr"], cs["ev"], y_tr, y_ev)
-        assert store[tag]["cfg"] == backbone_cfg(tag, level.M, level.NCH)
-        if tag not in states:
+        bcfg = store[tag]["cfg"]
+        if bcfg != backbone_cfg(tag, level.M, level.NCH):
+            raise RuntimeError(f"backbone bank configuration mismatch at {tag}")
+        if tag not in states or bank_cfgs.get(tag) != bcfg:
             g1 = level.make_bank(SEED + 100)
             g1.load_state_dict(store[tag]["g"])
             r1 = level.make_bank(SEED + 200)
@@ -94,9 +101,11 @@ def main():
             t0 = time.time()
             states[tag] = draw_backbone(level, g1, r1, lab, gen,
                                         with_label=True).to(torch.int8)
+            bank_cfgs[tag] = bcfg
             log(f"[sweep] {tag}: {len(lab)} states drawn "
                 f"({time.time() - t0:.0f}s)")
-            torch.save(dict(cfg=cfg, states=states, res=res), spath)
+            torch.save(dict(cfg=cfg, states=states, res=res,
+                            bank_cfgs=bank_cfgs), spath)
         b = books[tag]
         img = codec.decode_global(states[tag].long()[:, 1:], b["bias"],
                                   b["atoms"], b["cfg"]["p"]) \
@@ -105,7 +114,8 @@ def main():
         res[tag] = (a, dv, judge.tone_spread(img, lab), judge.seam_ratio(img))
         log(f"{tag:>13}{res[tag][0]:>8.4f}{res[tag][1]:>8.4f}"
             f"{res[tag][2]:>7.3f}{res[tag][3]:>7.3f}")
-    torch.save(dict(cfg=cfg, states=states, res=res), spath)
+    torch.save(dict(cfg=cfg, states=states, res=res, bank_cfgs=bank_cfgs),
+               spath)
     fh.close()
 
 

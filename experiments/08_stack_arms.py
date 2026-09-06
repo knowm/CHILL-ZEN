@@ -11,7 +11,7 @@ rather than between batches:
   joint-recon   the same, from a real backbone code -- the ceiling and
                 the do-no-harm control in one
 
-Expected at the deployed 128-book shape:
+Expected at the deployed 128-book code:
 
     arm            critic     div    tone   seam   std-ratio
     real           0.9031  0.4823   2.360  1.100        1.00

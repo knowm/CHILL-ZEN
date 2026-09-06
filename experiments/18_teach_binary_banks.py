@@ -48,7 +48,13 @@ from chill_zen import artifacts, teach                             # noqa: E402
 from chill_zen.data import N_TRAIN, SEED, load_fashion             # noqa: E402
 from chill_zen.lanes import LaneBank                               # noqa: E402
 from chill_zen.levels import (BackboneLevel, JointLevel,           # noqa: E402
-                              PatchLevel, backbone_cfg)
+                              PatchLevel, backbone_cfg, fill_read_tag)
+
+# The teaching fills are drawn at the level the grayscale sweep found
+# best (code 245), not at this stack's deployed point: the sweep showed
+# the fill level is a separate knob and that teaching hot wins. Left at
+# chill_zen.teach's default rather than pinned here.
+V_CMP_BIN = teach.V_CMP
 
 BACKBONES = ["128x16@p0.5", "64x16@p0.5"]
 STACK_BACKBONE = "128x16@p0.5"
@@ -110,7 +116,8 @@ def main():
         cs = codes_store[tag]
         level = BackboneLevel(tag, cs["tr"].long(), cs["ev"].long(),
                               y_tr, y_ev)
-        cfg = dict(backbone_cfg(tag, level.M, level.NCH),
+        cfg = dict(backbone_cfg(tag, level.M, level.NCH,
+                                fill_read=fill_read_tag(v_cmp=V_CMP_BIN)),
                    binarize=cs["cfg"]["binarize"])
         if tag in store and store[tag]["cfg"] == cfg:
             r = store[tag]["res"]
@@ -118,7 +125,8 @@ def main():
                 f"R repair {r['r']['rep']:.4f}")
         else:
             log(f"[teach] {tag}: {level.LANES} lanes x {level.KSP} spaces")
-            g_sd, r_sd, res = teach.teach_backbone(level, y_tr, y_ev, log)
+            g_sd, r_sd, res = teach.teach_backbone(level, y_tr, y_ev, log,
+                                                   v_cmp=V_CMP_BIN)
             store[tag] = dict(cfg=cfg, g=g_sd, r=r_sd, res=res)
             torch.save(store, bpath)
             r = res
@@ -141,7 +149,8 @@ def main():
                     kd["tr"].long().reshape(len(y_tr), -1),
                     kd["ev"].long().reshape(len(y_ev), -1))
     ppath = artifacts.path("binary_patch_banks")
-    pcfg = dict(pl.cfg(), binarize=cs["cfg"]["binarize"])
+    pcfg = dict(pl.cfg(fill_read=fill_read_tag(v_cmp=V_CMP_BIN)),
+                binarize=cs["cfg"]["binarize"])
     pstore = torch.load(ppath) if ppath.exists() else None
     if pstore is not None and pstore["cfg"] == pcfg:
         log("[teach] patch banks cached")
@@ -151,7 +160,8 @@ def main():
         g2_sd, g_res, _ = teach.teach_patch_fill(pl, log)
         g2 = pl.make_bank(SEED + 100)
         g2.load_state_dict(g2_sd)
-        r2_sd, r_res, _ = teach.teach_patch_repair(pl, g2, log)
+        r2_sd, r_res, _ = teach.teach_patch_repair(pl, g2, log,
+                                                   v_cmp=V_CMP_BIN)
         torch.save(dict(cfg=pcfg, g=g2_sd, r=r2_sd, g_res=g_res,
                         r_res=r_res), ppath)
     lift2 = g_res["acc"] - g_res["prior"]
@@ -166,7 +176,8 @@ def main():
     # ---- the joint bank ----
     jl = JointLevel(pl)
     jpath = artifacts.path("binary_joint_bank")
-    jcfg = dict(jl.cfg(), binarize=cs["cfg"]["binarize"])
+    jcfg = dict(jl.cfg(fill_read=fill_read_tag(v_cmp=V_CMP_BIN)),
+                binarize=cs["cfg"]["binarize"])
     jstore = torch.load(jpath) if jpath.exists() else None
     if jstore is not None and jstore["cfg"] == jcfg:
         log("[teach] joint bank cached")
@@ -182,10 +193,10 @@ def main():
         maj = torch.cat([bl.maj[1:], pl.maj])
         pool_tr = teach.joint_pool(jl, bl, g1, g2, y_tr, pl.g_tr, pl.p_tr,
                                    torch.Generator().manual_seed(SEED + 500),
-                                   log, "tr")
+                                   log, "tr", v_cmp=V_CMP_BIN)
         pool_ev = teach.joint_pool(jl, bl, g1, g2, y_ev, pl.g_ev, pl.p_ev,
                                    torch.Generator().manual_seed(SEED + 550),
-                                   log, "ev")
+                                   log, "ev", v_cmp=V_CMP_BIN)
         j_sd, j_res, _ = teach.teach_joint(jl, y_tr, y_ev, truth_tr,
                                            truth_ev, pool_tr, pool_ev, maj,
                                            log)

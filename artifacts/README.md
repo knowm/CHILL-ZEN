@@ -30,7 +30,7 @@ over 232 spaces of 16 symbols, held as int32 pairs.
 |---|---|---|
 | `backbone-books.pt` | backbone codebooks | 12 MB |
 | `backbone-codes.pt` | encoded backbone codes | 17 MB |
-| `backbone-banks.pt` | G1 and R1 per code shape | 96 MB |
+| `backbone-banks.pt` | G1 and R1 per backbone code (books x symbols @ keep-p) | 96 MB |
 | `patch-books.pt` | residual patch codebooks | 1 MB |
 | `patch-codes.pt` | encoded patch codes | 41 MB |
 | `patch-banks.pt` | G2 and R2 | 93 MB |

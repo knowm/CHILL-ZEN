@@ -7,8 +7,8 @@ threshold collapses distinct codes onto identical renders, so
 code-distinctness is not evidence, and binary images can collide or
 copy in ways grayscale ones cannot.
 
-For each binary arm the paper reports (`comparator-two-level-P6`, the
-11.10; `comparator-binary-one-level-{128,64}`):
+For each binary arm the paper reports (`comparator-two-level-P6`, Table
+VII's binary-trained two-level row; `comparator-binary-one-level-{128,64}`):
 
 * distinct renders among the 5,120, and the size of the largest
   duplicate group;

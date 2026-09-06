@@ -3,9 +3,13 @@
 Three reporting measurements behind Sec. IV B and Sec. V A:
 
 * **Seeds** -- three fresh seeds of the Table II verdict (end-to-end
-  and reconstruction arms, n = 1000 each). Table II carries the mean
-  +/- spread (max - min), replacing the previously asserted +/-0.005
-  evaluation noise.
+  and reconstruction arms, n = 1000 each), both arms at the operating
+  point of Sec. IV C (10 mV, comparator 2 mV) through the physical
+  read, so the two rows differ in the draw and in nothing else. Table
+  II carries the mean +/- spread (max - min). Before 2026-09-06 the
+  hot reads here went through the fixed-gain emulator read (T = 0.1,
+  50 mV, 1 us, no comparator), which is what the retired expected
+  values below the line record.
 * **Memorization and mode coverage** -- n = 5120 (512 per class, its
   own declared seed): distinct joint-code and backbone-code counts,
   exact-copy count, and the nearest-train-neighbour L2 distribution of
@@ -16,13 +20,20 @@ Three reporting measurements behind Sec. IV B and Sec. V A:
   claiming that the sweep settles: the churn decays but persists, so
   one dose is a reconciliation pass, not a fixed point.
 
-Expected:
+Expected (2026-09-06, both arms at the operating point):
 
-    end-to-end       critic 0.8317 spread 0.0130   div 0.4715 / 0.0067
-    reconstruction   critic 0.8877 spread 0.0040   div 0.5019 / 0.0007
+    end-to-end       critic 0.9007 spread 0.0310   div 0.5487 / 0.0052
+    reconstruction   critic 0.8963 spread 0.0110   div 0.5184 / 0.0015
     distinct codes   5120/5120 joint and backbone, exact copies 0
-    NN-to-train L2   generated q01/q50 1.558/2.880, held-out 1.465/3.433
-    flip rate        dose 2: 40.8/226 addresses, dose 3: 21.7, dose 4: 13.5
+    NN-to-train L2   generated q01/q50 1.859/3.704, held-out 1.465/3.433
+    flip rate        dose 2: 82.1/226 addresses, dose 3: 43.9, dose 4: 25.6
+
+Retired (fixed-gain hot reads, before 2026-09-06):
+
+    end-to-end       critic 0.8297 spread 0.0160   div 0.4830 / 0.0053
+    reconstruction   critic 0.8837 spread 0.0070   div 0.5055 / 0.0006
+    NN-to-train L2   generated q01/q50 1.623/3.037
+    flip rate        dose 2: 41.8/226 addresses, dose 3: 22.6, dose 4: 14.2
 
 Cost: about ten minutes. Requires 01-05.
 
@@ -41,7 +52,9 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 from chill_zen import artifacts, config, judge                     # noqa: E402
 from chill_zen.data import N_TRAIN, SEED, load_fashion             # noqa: E402
-from chill_zen.generate import T_GEN, draw_backbone, render        # noqa: E402
+from chill_zen.generate import render                              # noqa: E402
+from chill_zen.physical import (draw_backbone_physical,            # noqa: E402
+                                read_patches_physical)
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from importlib import import_module                           # noqa: E402
@@ -52,15 +65,25 @@ SEEDS_A = [SEED + 960, SEED + 961, SEED + 962]
 SEED_B = SEED + 970
 N_PER_A, N_PER_B = 100, 512
 DOSES = 4
+# The operating point of Sec. IV C: 10 mV read, comparator at 2 mV
+# (register code 95). Both hot reads of every arm run here, so the two
+# rows of Table II differ in the draw and in nothing else.
+V_OP, V_N_OP = 0.010, 2e-3
 
 
 def gen_states(S, lab, gen, g_real=None):
-    """One full two-level pass; g_real substitutes the draw (recon arm)."""
+    """One full two-level pass at the operating point; g_real substitutes
+    the draw (recon arm). The hot reads (backbone draw, patch read) go
+    through the physical read; the cold sweeps are the deployed
+    noiseless reads."""
     pl, jl = S["pl"], S["jl"]
-    g_open = (draw_backbone(S["bl"], S["g1"], S["r1"], lab, gen)
-              if g_real is None else g_real)
-    none = torch.full((len(lab), pl.NPU), -1, dtype=torch.long)
-    p_d = pl.read_all(S["g2"], lab, g_open, none, T_GEN, gen)
+    if g_real is None:
+        g_open, _ = draw_backbone_physical(S["bl"], S["g1"], S["r1"], lab,
+                                           gen, V_OP, V_N_OP)
+    else:
+        g_open = g_real
+    p_d, _ = read_patches_physical(pl, S["g2"], lab, g_open, gen, V_OP,
+                                   V_N_OP)
     pj = jl.read_joint(S["jbank"], lab, g_open, p_d, 0.0, None)
     return pj
 

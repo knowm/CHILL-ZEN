@@ -16,8 +16,8 @@ other component frozen.
 Expected: next-book accuracy 0.3720 against a class-majority prior of
 0.2550 and a majority prior of 0.1290, with the Bernoulli fill probe at
 0.2954 against the deployed bank's 0.3065 -- the reteach did what it
-was asked to. And the end-to-end critic moves from 0.8340 to 0.8300:
-minus 0.004, at the noise floor.
+was asked to. And the end-to-end critic moves from 0.8360 to 0.8330:
+minus 0.003, at the noise floor.
 
 That is the result. The draw's deficit is distributional, not a
 schedule mismatch, which is why the paper's next experiment is a
@@ -172,7 +172,8 @@ def main():
     g_real = S["gcodes"]["ev"].long()[real_idx]
 
     vcfg = dict(seed=SEED + 900, backbone=args.backbone, patch=args.patch,
-                t_gen=T_GEN, n_per=N_PER, draw_bank="prefix-schedule")
+                t_gen=T_GEN, n_per=N_PER, draw_bank="prefix-schedule",
+                banks=(cfg, pl.cfg(), jl.cfg()))
     vpath = artifacts.path("prefix_verdict")
     if vpath.exists() and torch.load(vpath)["cfg"] == vcfg:
         st = torch.load(vpath)["st"]
@@ -209,8 +210,16 @@ def main():
             f"{rows[name][2]:>7.3f}{rows[name][3]:>7.3f}"
             f"{rows[name][4]:>7.2f}")
     torch.save(dict(cfg=vcfg, st=st, real=(ra, rdv), rows=rows), vpath)
-    log("\ncompare with experiment 07: the deployed draw bank scores "
-        "0.8340 end-to-end on this same seed.")
+    vp07 = artifacts.path("verdict")
+    rec = torch.load(vp07) if vp07.exists() else {}
+    if "rows" in rec:
+        dep = rec["rows"]["end-to-end"][0]
+        log(f"\ncompare with experiment 07: the deployed draw bank scores "
+            f"{dep:.4f} end-to-end on this same seed "
+            f"({rows['end-to-end'][0] - dep:+.4f}).")
+    else:
+        log("\ncompare with experiment 07 (run it for the deployed bank's "
+            "end-to-end critic on this same seed).")
     fh.close()
 
 

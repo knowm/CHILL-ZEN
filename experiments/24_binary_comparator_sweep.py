@@ -1,18 +1,20 @@
 """The comparator-noise sweep on the binary two-level stack (Sec. IV C).
 
-Same physical read as 23 (`chill_zen.physical`: read_noise 0.02, emulator law at
-(V, t_b), SnCr settling, flat v_n/V in quadrature), on the binary
-two-level stack (`128x16@p0.5` backbone, `2x16@p0.5` patch). Six points
-P0-P5 plus the deployed control (backbone T = 0.3, patch T = 0.1);
-`--extend` adds P6-P8 (v_n/V = 0.3, 0.5, 0.75), declared after the
-first grid did not turn over.
+Same physical read as 23 (`chill_zen.physical`: the emulator's own
+`sample_read` at read_noise 0.02, evaluated at (V, t_b), SnCr settling,
+the comparator term as `NoiseParams.v_cmp`), on the binary two-level
+stack (`128x16@p0.5` backbone, `2x16@p0.5` patch). Six points P0-P5 plus
+the deployed control (backbone T = 0.3, patch T = 0.1); `--extend` adds
+P6-P7 (v_n/V = 0.3, 0.5), declared after the first grid did not turn
+over. Every level is one the comparator's 8-bit register reaches exactly
+(100 uV floor, 20 uV step, 5.20 mV ceiling).
 
 Part 1, screen: n = 1000, three seeds, the binary-verdict judge on
 0.5-midpoint binarized renders. Part 2, render: n = 5120 per point into
 `head_to_head/gen/comparator-two-level-*.npy` for
 `head_to_head/07_comparator_score.py` (the head-to-head venv). Must
 reproduce the binary column of the Sec. IV C table in NUMBERS.md, P0-P5
-plus the P6-P8 rows that `--extend` adds.
+plus the P6-P7 rows that `--extend` adds.
 
 Cost: about 20 minutes (screen + render, emulator venv only; FID
 scoring is a separate step). Requires 17-19.
@@ -38,7 +40,7 @@ from chill_zen import artifacts, judge                             # noqa: E402
 from chill_zen.data import N_TRAIN, SEED, load_fashion             # noqa: E402
 from chill_zen.generate import draw_backbone                       # noqa: E402
 from chill_zen.physical import (draw_backbone_physical, log_comp,  # noqa: E402
-                                read_patches_physical)
+                                read_patches_physical, register_level)
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 bv = import_module("19_binary_verdict")
@@ -49,7 +51,7 @@ GEN = pathlib.Path(__file__).resolve().parents[1] / \
     "experiments" / "head_to_head" / "gen"
 POINTS = {                            # name: (V, v_n) -- same grid as 23
     "P0 10mV/0":      (0.010, 0.0),
-    "P1 10mV/150uV":  (0.010, 150e-6),
+    "P1 10mV/160uV":  (0.010, 160e-6),
     "P2 10mV/500uV":  (0.010, 500e-6),
     "P3 10mV/1mV":    (0.010, 1e-3),
     "P4 10mV/2mV":    (0.010, 2e-3),
@@ -58,8 +60,14 @@ POINTS = {                            # name: (V, v_n) -- same grid as 23
 EXTEND = {                            # indices continue from P5
     "P6 10mV/3mV":    (0.010, 3e-3),
     "P7 10mV/5mV":    (0.010, 5e-3),
-    "P8 10mV/7.5mV":  (0.010, 7.5e-3),
 }
+# The grid stops at P7. A ninth point at v_n = 7.5 mV was swept before the
+# comparator level was a register; 7.5 mV is above the register's ceiling
+# (code 255 = 5.20 mV), so it is not a level a comparator could be
+# programmed to and it is not reported. The turnover it was declared to
+# find is already in P6 -> P7. Render seeds are keyed on the point's index
+# (SEED_BLOCK + 31 * i), so dropping the last point leaves P6 and P7
+# untouched.
 T_BACKBONE, T_PATCH = 0.3, 0.1        # the deployed arm
 N_PER_SCREEN, N_PER_SCORE = 100, 512
 SEEDS = [SEED + 950, SEED + 951, SEED + 952]
@@ -109,11 +117,16 @@ def main():
     arms = dict(EXTEND) if args.extend else {"deployed T=0.3/0.1": None, **POINTS}
     offset = 1 + len(POINTS) if args.extend else 0
     if args.extend:
-        log("[extend] P6-P8, grid extension to find the turnover")
+        log("[extend] P6-P7, grid extension to find the turnover")
     results = {}
     log(f"\n--- screen, n = 1000, three seeds ---")
     log(f"{'point':<20}{'seed':>6}{'critic':>8}{'div':>8}{'seam':>7}")
     for name, pt in arms.items():
+        if pt is not None:
+            code, v_cmp = register_level(pt[1])
+            log(f"{name}: V = {pt[0] * 1e3:.0f} mV, v_n = {v_cmp * 1e6:.0f} uV "
+                f"(code {code if code is not None else '-- (not modeled)'}), "
+                f"v_n/V = {v_cmp / pt[0]:.3f}")
         rows, comp = [], None
         for seed in SEEDS:
             gen = torch.Generator().manual_seed(seed)

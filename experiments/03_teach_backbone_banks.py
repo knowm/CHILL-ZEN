@@ -6,15 +6,15 @@ target addresses. G1 is soft and teaches on Bernoulli-masked codes with
 the label always held; R1 is sharp and teaches on the corruption G1
 itself produces. Selection is the best epoch's probe, not the last.
 
-Reported per shape: G1's fill accuracy on held-out holes against the
+Reported per backbone code (books x symbols @ keep-p): G1's fill accuracy on held-out holes against the
 majority prior it must beat, and R1's repair and preserve rates.
-Expected at the deployed 128-book shape: fill 0.3065 against a 0.1358
+Expected at the deployed 128-book code: fill 0.3065 against a 0.1358
 prior (lift +0.1708), pool wrong fraction 0.542, repair 0.2648.
 
-Cost: about 9 minutes per bank per shape at 128 books. Requires 01.
+Cost: about 9 minutes per bank at 128 books. Requires 01.
 
     python experiments/03_teach_backbone_banks.py                # deployed
-    python experiments/03_teach_backbone_banks.py --all          # 12 shapes
+    python experiments/03_teach_backbone_banks.py --all          # 12 codes
 """
 import argparse
 import os

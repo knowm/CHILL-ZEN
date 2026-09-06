@@ -24,7 +24,7 @@ the old target/delivered pair (model B, the thermodynamic identity,
 backward-solved), the new physical lane sigma (model E, the emulator's
 own law, evaluated directly at the operating point -- these agree
 within about 25%, a finding this script re-confirms rather than fits),
-the comparator's sigma_cmp at the grayscale point (v_n = 1 mV, P3) and
+the comparator's sigma_cmp at the grayscale point (v_n = 2 mV, P4) and
 the binary point (v_n = 3 mV, P6), and the composite. It confirms
 `e_bound` is unchanged (to floating-point noise) and adds the
 comparator's own energy line
@@ -58,7 +58,7 @@ load_stack = import_module("07_verdict").load_stack
 load_binary_stack = import_module("19_binary_verdict").load_binary_stack
 
 GAIN_DEV = 0.02                # the device (never varied)
-V_N_GRAY = 1e-3                # P3
+V_N_GRAY = 2e-3                # P4, register code 95
 V_N_BIN = 3e-3                 # P6
 V_N_REF = 5e-3                 # P5, at the 50 mV reference-read twin
 V_REF = 0.050
@@ -108,7 +108,7 @@ def grayscale():
     log(f"\n=== physical-point energy reconciliation (grayscale) "
         f"({time.strftime('%Y-%m-%d %H:%M')}) ===")
     log(f"GAIN_DEV {GAIN_DEV} (device), V_FLOOR {V_FLOOR * 1e3:.0f} mV, "
-        f"band {BAND}; v_n grayscale {V_N_GRAY * 1e3:.1f} mV (P3), "
+        f"band {BAND}; v_n grayscale {V_N_GRAY * 1e3:.1f} mV (P4), "
         f"binary {V_N_BIN * 1e3:.1f} mV (P6), reference {V_N_REF * 1e3:.1f} "
         f"mV at {V_REF * 1e3:.0f} mV (P5)")
 
@@ -151,7 +151,7 @@ def grayscale():
 
     log("\ncomparator energy: E_CMP = 1 fJ per lane per read (P2), already "
         "charged in the periphery total (12_energy_model.py); a raw-latch "
-        "class starved to v_n = 1-3 mV rms prices the same as one held at "
+        "class starved to v_n = 2-3 mV rms prices the same as one held at "
         "full bias -- the noise setting is a bias schedule, not an extra "
         "component.")
     fh.close()

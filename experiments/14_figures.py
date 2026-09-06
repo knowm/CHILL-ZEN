@@ -5,7 +5,7 @@ No experiment runs here: decode, render and plot only.
   fig-samples.png     real | end-to-end | reconstruction strips, n = 1000
   fig-codec.png       (a) backbone / +patch / real  (b) rate-distortion
   fig-backbone.png    (a) backbone-only samples by book count
-                      (b) critic against code shape
+                      (b) critic against book count, alphabet size and keep-p
   fig-teach.png       the joint bank's teaching curve, split by level
   fig-noise.png       read noise against read voltage: the thermal 1/V
                       term over the flicker floor, at three pool sizes
@@ -186,7 +186,7 @@ def main():
     a2.set_xticklabels(books)
     a2.set_xlabel("number of books")
     a2.set_ylabel("critic agreement")
-    a2.set_title("(b) generation vs code shape")
+    a2.set_title("(b) generation vs books, alphabet size, keep-p")
     a2.legend(frameon=False, fontsize=6)
     fig.tight_layout(pad=0.4)
     fig.savefig(artifacts.figure("fig-backbone.png"), bbox_inches="tight")
@@ -209,6 +209,14 @@ def main():
     print("fig-teach.png")
 
     # ---------------- fig-noise ------------------------------------------
+    # Read noise against read voltage at the settling-limited pulse of
+    # Sec. IV C. The thermal term is the kT/C noise of the lane's output
+    # node (Appendix B geometry, C_node proportional to K, plus 5 fF of
+    # comparator input), the flicker floor is the emulator's at each
+    # pool's measured magnitude, and the comparator's 2 mV operating
+    # level is drawn for scale. Text only: no experiment behind it.
+    from chill_zen.energy import KBT
+    from chill_zen.energy_geom import NOMINAL
     op = artifacts.path("operating_point")
     if op.exists():
         cl = torch.load(op)["classes"]
@@ -216,23 +224,31 @@ def main():
         m_sweep = cl["joint sweep (cold)"]["m_med"]
     else:
         m_draw, m_sweep = 2071.0, 22647.0
+    C_IN = 5e-15                    # comparator input, on every node
     V = torch.logspace(-3.3, 0.0, 300)
     fig, ax = plt.subplots(figsize=(3.4, 2.5))
-    for m, ls, lbl in ((float(GMAX), "-", r"$m = m_{\rm ref}$ (one pair)"),
-                       (m_draw, "--", rf"$m = {m_draw / 1e3:.1f}"
-                                      r"{\times}10^3$ (draw pool)"),
-                       (m_sweep, ":", rf"$m = {m_sweep / 1e4:.1f}"
-                                      r"{\times}10^4$ (sweep pool)")):
+    pools = ((6, 100.0, "-", "first read ($K = 6$)"),
+             (134, m_draw, "--", "backbone chain end ($K = 134$)"),
+             (232, m_sweep, ":", "joint sweep ($K = 232$)"))
+    for K, m, ls, lbl in pools:
+        c_node = NOMINAL.c_node(K) + C_IN
+        s_th = math.sqrt(KBT / c_node) / V
         f_m = math.sqrt(GMAX / m)
-        s_th = GAIN_PHYS * A_THERMAL_UNIT * f_m / V
         s_fl = GAIN_PHYS * A_FLICKER_UNIT * f_m * 0.9      # (1 - y^2) ~ 0.9
         s = torch.sqrt(s_th ** 2 + s_fl ** 2)
         ln = ax.loglog(V, s, ls, label=lbl)
         ax.axhline(s_fl, color=ln[0].get_color(), lw=0.6, alpha=0.5)
-    ax.axvline(0.05, color="k", lw=0.8, alpha=0.6)
-    ax.annotate("subthreshold\nread voltage", xy=(0.05, 0.12),
-                xycoords=("data", "axes fraction"), fontsize=6,
-                ha="left", xytext=(3, 0), textcoords="offset points")
+        print(f"fig-noise: K={K:<4} C_node {c_node * 1e15:5.1f} fF  "
+              f"sigma at 10 mV: thermal {math.sqrt(KBT / c_node) / 0.010:.4f}"
+              f"  flicker {s_fl:.4f}")
+    ax.loglog(V, 2e-3 / V, color="0.4", lw=0.8, alpha=0.8,
+              label=r"comparator, $v_n = 2$ mV")
+    for v, lbl, a in ((0.010, "hot read", 0.6), (0.05, "cold read", 0.3)):
+        ax.axvline(v, color="k", lw=0.8, alpha=a)
+        ax.annotate(lbl, xy=(v, 0.06), xycoords=("data", "axes fraction"),
+                    fontsize=6, ha="left", xytext=(3, 0),
+                    textcoords="offset points")
+    ax.set_ylim(1e-3, 2.0)
     ax.set_xlabel("read voltage $V$ (V)")
     ax.set_ylabel(r"read noise $\sigma_y$")
     ax.legend(frameon=False, fontsize=6, loc="upper right")

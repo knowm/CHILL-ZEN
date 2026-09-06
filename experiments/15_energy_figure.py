@@ -3,8 +3,9 @@
 Paper Fig. 9 (`fig:energy`, Sec. V C). Every FID here is produced by
 the evaluation code,
 reference statistics, binarization threshold and sample count of the
-DTM paper; the energies are this work's model at the floors-bounded
-point, with a band out to the tin/chromium reference read.
+DTM paper; the energies are this work's model (chill_zen/energy_geom.py,
+Appendix B) at the nominal point, with a band out to the pessimistic
+corner.
 
 (a) their own axes -- energy per sample on a log scale against inverse
     FID -- with their five reported series replotted from their data,
@@ -17,13 +18,13 @@ now at the physical operating point of Sec. IV C (two-level at
 v_n/V = 0.30, one-level 128 and 64 at the same point) at their
 computed energies.
 
-Requires experiment 13. FIDs come from the recorded scores below
-(NUMBERS.md Sec. V B / V C), which are the physical-point runs
-(`head_to_head/07_comparator_score.py`) the paper reports --
-`comparator-*` renders are not committed (gen/ is gitignored), so the
-recorded numbers stand without re-rendering, same convention as
-before. The emulator-temperature numbers of an earlier draft are
-superseded and not read here.
+Requires experiment 13. FIDs are read from the physical-point scoring
+pass (`head_to_head/comparator-score-results.json`, written by
+`07_comparator_score.py`), which is what Table VII reports; the codec
+ceiling and the real-train control come from `score-results.json`. The
+recorded values below are fallbacks for a clone that has not run the
+head-to-head. The emulator-temperature arms in `score-results.json` and
+`binary-score-results.json` are superseded and are not plotted.
 
     python experiments/15_energy_figure.py
 """
@@ -52,26 +53,39 @@ plt.rcParams.update({
 
 DTM_BEST = (1.568e-8, 24.9)
 
-# The recorded, physical-point verdicts (NUMBERS.md Sec. V C / IV C):
-# grayscale at P3 (10 mV, 1 mV), binary-trained at P6 (10 mV, 3 mV).
-# comparator-* renders are not committed, so these stand without
-# re-rendering (same convention the emulator-temperature numbers used).
+# Fallbacks only: the recorded physical-point verdicts (NUMBERS.md
+# Sec. V C), each grayscale arm at its best level on the register grid,
+# binary-trained at P6 (10 mV, 3 mV). Used when the scoring pass has not
+# been run here.
 RECORDED = {
-    "one-level-16": 44.887, "one-level-32": 32.810,
-    "one-level-64": 26.608, "one-level-128": 25.677,
-    "two-level": 18.731, "codec-ceiling": 14.205, "real-train": 1.907,
+    "one-level-16": 44.15, "one-level-32": 24.81,
+    "one-level-64": 22.62, "one-level-128": 22.11,
+    "two-level": 18.09, "codec-ceiling": 14.205, "real-train": 1.907,
 }
 RECORDED_BINARY = {
-    "binary-two-level-T0.3": 11.102,
-    "binary-one-level-128-T0.2": 16.534,
-    "binary-one-level-64-T0.2": 17.207,
+    "binary-two-level-T0.3": 9.69,
+    "binary-one-level-128-T0.2": 15.46,
+    "binary-one-level-64-T0.2": 15.10,
 }
-# Binary energies (22_binary_energy.py): two-level with periphery;
-# one-level device-bounded SnCr, decode included.
+# Which physical-point arm each plotted series is. The binary keys keep
+# the T-arm names because 22_binary_energy.py's census is stored under
+# them; the FID is the physical-point render's.
+PHYSICAL = {
+    "one-level-16": "comparator-one-level-16",
+    "one-level-32": "comparator-one-level-32",
+    "one-level-64": "comparator-one-level-64",
+    "one-level-128": "comparator-one-level-128",
+    "two-level": "comparator-two-level",
+    "binary-two-level-T0.3": "comparator-two-level-P6",
+    "binary-one-level-128-T0.2": "comparator-binary-one-level-128",
+    "binary-one-level-64-T0.2": "comparator-binary-one-level-64",
+}
+# Binary energies (22_binary_energy.py), nominal point; the model charges
+# counts only, so these equal the grayscale twins'.
 BINARY_E = {
-    "binary-two-level-T0.3": 1.871e-11,
-    "binary-one-level-128-T0.2": 3.642e-12,
-    "binary-one-level-64-T0.2": 2.311e-12,
+    "binary-two-level-T0.3": 2.00e-9,
+    "binary-one-level-128-T0.2": 7.5e-10,
+    "binary-one-level-64-T0.2": 2.1e-10,
 }
 
 
@@ -80,25 +94,35 @@ def main():
     h2h = ROOT / "experiments" / "head_to_head"
     spath = h2h / "score-results.json"
     scores = json.loads(spath.read_text()) if spath.exists() else None
-    bpath = h2h / "binary-score-results.json"
-    bscores = json.loads(bpath.read_text()) if bpath.exists() else None
+    ppath = h2h / "comparator-score-results.json"
+    phys = json.loads(ppath.read_text()) if ppath.exists() else None
     epath = artifacts.path("binary_energy")
     if epath.exists():
         er = torch.load(epath)["results"]
-        BINARY_E["binary-two-level-T0.3"] = er["two-level"]["with_periph"]
-        BINARY_E["binary-one-level-128-T0.2"] = \
-            er["128x16@p0.5"]["bands"]["SnCr"]["bounded"]
-        BINARY_E["binary-one-level-64-T0.2"] = \
-            er["64x16@p0.5"]["bands"]["SnCr"]["bounded"]
+        BINARY_E["binary-two-level-T0.3"] = er["two-level"]["nominal"]
+        BINARY_E["binary-one-level-128-T0.2"] = er["128x16@p0.5"]["nominal"]
+        BINARY_E["binary-one-level-64-T0.2"] = er["64x16@p0.5"]["nominal"]
 
     def F(arm):
-        if scores is not None:
+        # Physical-point rows from the comparator scoring pass: each
+        # grayscale arm at its best level on the register grid
+        # (34_grayscale_grid.py) when the grid has been scored, else the
+        # single-point render of 25. The codec ceiling and the real-train
+        # control are the same images either way and come from the
+        # deployed scoring pass.
+        if arm in PHYSICAL and phys is not None:
+            grid = [v["fid"] for k, v in phys.items()
+                    if k.startswith(f"comparator-gray-{arm}-")]
+            if grid:
+                return min(grid)
+            return phys[PHYSICAL[arm]]["fid"]
+        if arm not in PHYSICAL and scores is not None:
             return scores[f"{arm}@0.1"]["theirs"]
         return RECORDED[arm]
 
     def FB(arm):
-        if bscores is not None:
-            return bscores[arm]["fid"]
+        if phys is not None:
+            return phys[PHYSICAL[arm]]["fid"]
         return RECORDED_BINARY[arm]
 
     sizes = [16, 32, 64, 128]
@@ -121,7 +145,7 @@ def main():
     # Series are labelled on the curves: a legend box large enough for six
     # entries would cover points in every corner of this plane.
     labels = {
-        "DTM": ("DTM (prob. comp.)", 2.2e-9, 0.0437, "left"),
+        "DTM": ("DTM (prob. comp.)", 2.5e-8, 0.0460, "left"),
         "MEBM": ("MEBM (prob. comp.)", 1.4e-5, 0.0243, "left"),
         "GAN": ("GAN (GPU)", 3.5e-3, 0.0300, "left"),
         "VAE": ("VAE (GPU)", 7e-4, 0.0595, "right"),
@@ -137,17 +161,17 @@ def main():
     a1.fill(x_lo + x_hi[::-1], inv + inv[::-1], color="tab:red",
             alpha=0.15, lw=0)
     a1.plot(x_lo, inv, "-", color="tab:red", marker="x", ms=4.5, lw=1.2)
-    a1.annotate("CHILL ZEN\n[this work]", (1.5e-13, 0.0615), color="tab:red",
+    a1.annotate("CHILL ZEN\n[this work]", (1.2e-12, 0.0615), color="tab:red",
                 fontsize=6.5, fontweight="bold", ha="left", va="center",
                 linespacing=1.1)
     a1.plot(x_lo[-1], inv[-1], "*", color="tab:red", ms=9)
     a1.plot(x_hi, inv, ":", color="tab:red", lw=0.7, alpha=0.7)
     a1.plot(bx, [1.0 / f for f in by], "--D", color="tab:brown", ms=3.5,
             lw=0.9)
-    a1.annotate("binary-trained", (1.5e-13, 0.098), color="tab:brown",
+    a1.annotate("binary-trained", (1.2e-12, 0.098), color="tab:brown",
                 fontsize=6, ha="left", va="center")
     a1.set_title("(a) the reported plane")
-    a1.set_xlim(1e-13, 1e1)
+    a1.set_xlim(1e-12, 1e1)
     a1.set_ylim(0, 0.112)
     a1.set_xlabel("Energy Consumption [J/Sample]")
     a1.set_ylabel(r"Performance [FID$^{-1}$]")
@@ -161,35 +185,35 @@ def main():
     a2.fill(x_lo + x_hi[::-1], ys + ys[::-1], color="tab:red", alpha=0.15,
             lw=0)
     a2.plot(x_lo, ys, "-o", color="tab:red", ms=4, lw=1.2,
-            label="CHILL ZEN, bounded energy")
+            label="CHILL ZEN, nominal point")
     a2.plot(x_hi, ys, "--^", color="tab:red", ms=3.5, lw=0.8, alpha=0.55,
-            label="CHILL ZEN, SnCr anchor")
+            label="CHILL ZEN, pessimistic corner")
     a2.plot(x_lo[-1], ys[-1], "*", color="tab:red", ms=10)
     names = ["16", "32", "64", "128", "two-level"]
-    offs = [(5, 2), (4, -10), (4, -10), (-4, -12), (7, 1)]
+    offs = [(5, 2), (4, -10), (4, -10), (-16, 4), (7, 1)]
     for x, yv, nm, off in zip(x_lo, ys, names, offs):
         a2.annotate(nm, (x, yv), textcoords="offset points", xytext=off,
                     fontsize=6, color="tab:red")
     a2.plot(bx, by, "--D", color="tab:brown", ms=3.5, lw=0.9,
-            label="binary-trained (best T)")
+            label="binary-trained (physical point)")
     b_names = ["64", "128", "two-level"]
-    b_offs = [(4, -10), (4, 3), (5, -3)]
+    b_offs = [(4, -10), (4, -9), (5, -3)]
     for x, yv, nm, off in zip(bx, by, b_names, b_offs):
         a2.annotate(nm, (x, yv), textcoords="offset points", xytext=off,
                     fontsize=6, color="tab:brown")
     a2.axhline(ceiling, color="tab:green", lw=0.8, ls="-.", alpha=0.9)
     a2.annotate(f"128-book codec ceiling ({ceiling:.1f})",
-                (4e-10, ceiling + 1), fontsize=6, color="tab:green",
+                (4.5e-9, ceiling + 1), fontsize=6, color="tab:green",
                 alpha=0.95)
     a2.axhline(floor, color="k", lw=0.8, ls=":", alpha=0.7)
-    a2.annotate(f"real data ({floor:.2f})", (3e-13, floor + 1), fontsize=6,
+    a2.annotate(f"real data ({floor:.2f})", (6e-9, floor + 1), fontsize=6,
                 alpha=0.8)
     a2.set_title("(b) the head-to-head, zoomed")
-    a2.set_xlim(3e-13, 5e-8)
+    a2.set_xlim(2e-11, 5e-8)
     a2.set_ylim(0, 50)
     a2.set_xlabel("Energy Consumption [J/Sample]")
     a2.set_ylabel("FID (lower is better)")
-    a2.legend(loc="upper center", fontsize=6, frameon=True, framealpha=0.92,
+    a2.legend(loc="upper right", fontsize=6, frameon=True, framealpha=0.92,
               edgecolor="none")
 
     for ax in (a1, a2):

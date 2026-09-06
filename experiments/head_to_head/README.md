@@ -75,6 +75,7 @@ drawn at the physical operating point, and they need a second pass:
 ```bash
 # render the physical-point arms (emulator environment)
 .venv/bin/python      experiments/head_to_head/25_comparator_headtohead.py  # ~10 min
+.venv/bin/python      experiments/head_to_head/34_grayscale_grid.py         # ~60 min, every grayscale arm at every register level
 .venv/bin/python      experiments/27_binary_comparator_headtohead.py        # ~5 min
 .venv/bin/python      experiments/24_binary_comparator_sweep.py             # ~20 min
 
@@ -95,8 +96,11 @@ The Sec. V C audit is a third pass, and independent of the above:
 .venv-dtm/bin/python experiments/head_to_head/33_binary_memorization.py    # minutes
 ```
 
-Inception features are cached in `cache/feat-*.npy`, keyed by arm and
-threshold, so re-scoring is free.
+Inception features are cached in `cache/feat-<arm>-<sha1>.npy`, keyed by
+the arm (which carries the threshold where it varies) and a digest of
+the images scored, so re-scoring an unchanged arm is free and a
+re-rendered one recomputes. Keyed on the arm alone, a re-rendered arm
+returns the previous run's features and reports the previous run's FID.
 
 ## The gate
 

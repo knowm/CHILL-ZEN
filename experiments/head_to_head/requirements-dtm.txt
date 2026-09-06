@@ -4,6 +4,7 @@
 jax==0.4.38
 jaxlib==0.4.38
 flax==0.10.2
+jaxtyping==0.3.11
 optax==0.2.5
 ml_dtypes==0.6.0
 numpy==2.4.6

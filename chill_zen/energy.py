@@ -1,4 +1,10 @@
-"""The energy model (paper Sec. V B).
+"""The read operating-point model behind experiments 11 and 28.
+
+The joule accounting of paper Sec. V B and Appendix B moved to
+`energy_geom.py`, which charges counts only (lanes, spaces, reads); the
+constants A3 and P1-P3 below no longer enter any published energy number
+and are kept for the settling-time and noise readings of experiments 11
+and 28.
 
 A physical model, never a measurement. It maps the emulator's read
 settings onto (V, t, G) through the substrate's read-noise law and the

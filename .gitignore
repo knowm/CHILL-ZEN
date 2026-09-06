@@ -13,7 +13,7 @@ __pycache__/
 /main.pdf
 /main.blg
 
-# Figures are outputs of experiments/14-16 and 29, but the eight the paper
+# Figures are outputs of experiments/14-16 and 29, but the seven the paper
 # includes are committed so `make paper` works from a fresh clone.
 /figures/*
 !/figures/fig-backbone.png
@@ -33,6 +33,10 @@ __pycache__/
 /experiments/head_to_head/comparator-score-results.json
 
 # Artifacts: rebuilt by `make artifacts`.
+# Teaching-level sweeps (CHILLZEN_FILL_VCMP) are run into sibling trees
+# that must never be committed.
+/artifacts-fill*/
+/logs-fill*/
 # Only the frozen judge is committed, because it is a fixed reference
 # rather than a result.
 /artifacts/*.pt

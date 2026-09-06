@@ -15,7 +15,22 @@ are listed under [Known wrinkles](#known-wrinkles).
 
 The lane emulator itself is not in this repository. It is
 [`knowm/ktram-neural-core`](https://github.com/knowm/ktram-neural-core),
-and every read and weight update below goes through it.
+and every read and weight update below goes through it. That includes
+the read-noise law of the paper's Eq. (2) in full: the two device terms
+and the comparator's input-referred noise are all the emulator's, and
+the comparator level is its 8-bit trim register (100 uV floor, 20 uV
+step, 5.20 mV ceiling), not a number this repository invents. Where a
+draw here is device-only by design, the call site says so with
+`comparator=False` rather than relying on a library default.
+
+The teaching path runs on the same read. The G fills that the R banks
+and the joint bank teach against are drawn through `chill_zen.physical`
+at the emulator's device noise, the 10 mV read, and the
+comparator register at code 245 (`levels.FILL_V_CMP`). That level was
+chosen by sweeping the teaching read (codes 45, 95, 145, 245) and
+re-measuring everything downstream of each; NUMBERS.md Sec. III B has
+the table. Every bank's config records its fill read, so banks taught at
+another level are refitted rather than reused.
 
 ---
 
@@ -72,7 +87,8 @@ The codecs and banks are what take hours, and they are large (the joint
 bank alone is 3616 lanes over 232 spaces). `make artifacts` runs
 experiments 00-05 and produces every one of them from scratch: about an
 hour and a half for the deployed point, and about four hours in all once
-`make sweep` adds the code shapes the design studies compare. Once they
+`make sweep` adds the backbone codes (book count, alphabet size, keep-p)
+the design studies compare. Once they
 exist, `make all` finishes experiments 06 through 14 in about
 twenty-five minutes; the binary arms, the comparator sweeps and the
 head-to-head are hours more on top of that.
@@ -88,12 +104,12 @@ Costs are wall-clock on eight CPU threads.
 | step | what | cost |
 |---|---|---|
 | `00_train_critic.py` | the judge's frozen critic | 1 min |
-| `01_fit_backbone_codec.py` | the backbone codec (`--all` for the 15-shape sweep) | 14 min / 70 min |
-| `02_fit_patch_codec.py` | the residual patch codec, six shapes | 5 min |
+| `01_fit_backbone_codec.py` | the backbone codec (`--all` for the 15-point sweep over books, alphabet size and keep-p) | 14 min / 70 min |
+| `02_fit_patch_codec.py` | the residual patch codec, six (books per slot, keep-p) points | 5 min |
 | `03_teach_backbone_banks.py` | G1 and R1 (`--all` for the sweep) | 18 min / 65 min |
 | `04_teach_patch_banks.py` | G2 and R2 | 23 min |
 | `05_teach_joint_bank.py` | the joint repair bank, pool included | 25 min |
-| `06_backbone_sweep.py` | one-level generation across code shapes | minutes |
+| `06_backbone_sweep.py` | one-level generation across book count, alphabet size and keep-p | minutes |
 | `07_verdict.py` | the two-level verdict at n = 1000 (single seed; Table II is the three-seed version from 21 and 23) | 1 min |
 | `08_stack_arms.py` | what each component of the stack contributes | 1 min |
 | `09_prefix_schedule.py` | the draw's one targeted ablation | 14 min |
@@ -111,19 +127,34 @@ Costs are wall-clock on eight CPU threads.
 | `21_reporting.py` | Table II's seed spread; memorization; the sweep's flip rate | 10 min |
 | `22_binary_energy.py` | the energy model on the binary census | minutes |
 | `23_comparator_sweep.py` | the comparator-noise sweep, grayscale (Fig. 4a; Table II's end-to-end row) | 15 min |
-| `24_binary_comparator_sweep.py` | the same sweep on the binary-trained stack (`--extend` for the last three points) | 20 min + scoring |
+| `24_binary_comparator_sweep.py` | the same sweep on the binary-trained stack (`--extend` for the last two points) | 20 min + scoring |
 | `27_binary_comparator_headtohead.py` | binary one-level rows of Table VII at the operating point | 5 min |
 | `28_physical_energy.py` | the energy model restated at the operating point (nothing moves) | 1 min |
-| `29_comparator_figure.py` | Fig. 4 | seconds |
+| `29_comparator_figure.py` | Fig. 4 (`make comparator-figure`; reads 23's artifact and the scoring pass, so run it after `07_comparator_score.py`) | seconds |
 | `31_free_draw.py` | the free-label draw for the audit of Sec. V C | 25 min |
+| `35_cold_noise_control.py` | the cold sweeps at the physical floor against the noiseless argmax (Sec. IV C's cold-read control) | 6 min |
+| `36_sneak_paths.py` | the unit crossbar's sneak network and the energy of each way out (Limitation 2) | seconds |
+| `38_readout_options.py` | the readout priced five ways (continuous-time, clocked ramp, tournament) and the comparator's noise-energy bound (Appendix B) | seconds |
+| `37_dose_chain.py` | the joint sweep chained to eight doses, with and without sweep read noise (`--quench`: noisy doses then one cold dose); Sec. III B's one-dose statement | 5 min each |
 
 The binary arms are scored by `experiments/head_to_head/06_binary_arm.py`
 and the operating-point rows by `07_comparator_score.py`, both in the
-head-to-head's own environment.
+head-to-head's own environment. `head_to_head/25_comparator_headtohead.py`
+renders the grayscale arms at the critic's operating point and
+`head_to_head/34_grayscale_grid.py` renders them at every level of the
+register grid (about an hour); `07_comparator_score.py` scores both and
+prints each arm's best level, which Table VII, Fig. 8 and Fig. 9 use.
+
+The comparator sweep is three steps in two environments, in this order:
 
 ```bash
-.venv/bin/python experiments/07_verdict.py
+make comparator                 # 23, 24, and 24 --extend
+.venv-dtm/bin/python experiments/head_to_head/07_comparator_score.py
+make comparator-figure          # 29, from the two results files
 ```
+
+Fig. 4 is a separate target because it reads that scoring pass; run it
+before the scoring and it draws the previous scoring's binary curve.
 
 The head-to-head has its own sequence and its own environment; see
 [`experiments/head_to_head/README.md`](experiments/head_to_head/README.md).
@@ -131,8 +162,10 @@ The head-to-head has its own sequence and its own environment; see
 `make all` runs the grayscale main sequence, experiments 00–14, in
 order. The rest are separate commands, because each costs hours or
 needs artifacts `all` does not build: `make binary` (17–19, 22),
-`make comparator` (23, 24, 29), `make physical` (27, 28),
-`make audit` (31), `make ablations` (20), `make reporting` (21), and
+`make comparator` (23, 24), `make comparator-figure` (29),
+`make physical` (25, 34, 27, 28),
+`make audit` (31), `make cold-control` (35), `make ablations` (20),
+`make reporting` (21), and
 `make head-to-head-figures` (15, 16). The Makefile header lists them
 in the order they need to run.
 
@@ -148,24 +181,25 @@ physical-operating-point arm in a single pass.
 script that produces it, and the value to expect. It is the file to
 check a run against.
 
-The headline (Table II), three seeds at n = 1000, from `21_reporting.py`
-and `23_comparator_sweep.py`:
+The headline (Table II), three seeds at n = 1000, both arms with their
+hot reads at the operating point (10 mV, comparator 2 mV), from
+`21_reporting.py`:
 
 ```
 arm               critic            div             tone   stdr
 real              0.8860            0.4866          2.362  1.00
-reconstruction    0.8877 ± 0.0040   0.5019 ± 0.0007 2.071  1.11
-end-to-end        0.9043 ± 0.0070   0.5179 ± 0.0039 1.929  1.15
+reconstruction    0.8963 ± 0.0110   0.5184 ± 0.0015 2.004  1.13
+end-to-end        0.9007 ± 0.0310   0.5487 ± 0.0052 1.590  1.14
 ```
 
 and from the head-to-head (Table VII), scored by the DTM replication
 code against its own shipped reference at its own 0.1 threshold and
-n = 5120, every arm drawn at the operating point of Sec. IV C:
+n = 5120, each arm at its best level on the register grid of Sec. IV C:
 
 ```
-arm                        FID     div   bounded J
-two-level                18.73  0.1519    1.87e-11
-binary-trained two-level 11.10  0.1423    1.87e-11
+arm                        FID     div   J (nominal)
+two-level                18.09  0.1558    2.00e-9
+binary-trained two-level  9.69  0.1472    2.00e-9
 their DTM, 8 steps       24.90       —    1.57e-08
 ```
 

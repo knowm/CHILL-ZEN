@@ -3,16 +3,22 @@
 The grid was declared before any result was seen. The physical hot
 read:
 
-    sigma_y^2 = (0.02 * sigma_unit(y, m; V, t_b))^2 + (v_n / V)^2
+    sigma_y^2 = (0.02 * sigma_unit(y, m; V, t_b))^2 + (v_cmp / V)^2
 
-with read_noise pinned at the device (0.02), the emulator's own law
-evaluated at the read voltage V and the settling-limited pulse t_b
-(SnCr band, energy-model convention), and a flat comparator
-input-referred term v_n / V added in quadrature. No temperature dial.
-Nothing in kt-ram-neural-core is changed. The physical read itself is
+is the emulator's own read (`_lane.sample_read`), with read_noise
+pinned at the device (0.02), evaluated at the read voltage V and the
+settling-limited pulse t_b (SnCr band, energy-model convention). The
+comparator term is `NoiseParams.v_cmp`, flat in y and m. No temperature
+dial. Nothing in kt-ram-neural-core is changed. The read itself is
 `chill_zen.physical` (`physical_read`, `draw_backbone_physical`,
 `read_patches_physical`), library code so the same read drives the
 one-level frontier (25) and the binary stack (24) without duplication.
+
+Every swept level is one the comparator's 8-bit trim register reaches
+exactly (100 uV floor, 20 uV step, 5.20 mV ceiling); `chill_zen.physical`
+raises on any level it does not. P0 is the modeling switch -- no
+comparator term at all -- not code 0, which is the quietest comparator
+modeled.
 
 Six points (V, v_n) plus the deployed T = 0.1 control, three seeds,
 n = 1000, judged as in 07. Must reproduce the grayscale column of the
@@ -39,7 +45,7 @@ from chill_zen import artifacts, config, judge                     # noqa: E402
 from chill_zen.data import N_TRAIN, SEED, load_fashion             # noqa: E402
 from chill_zen.generate import draw_backbone, render                # noqa: E402
 from chill_zen.physical import (draw_backbone_physical, log_comp,  # noqa: E402
-                                read_patches_physical)
+                                read_patches_physical, register_level)
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 load_stack = import_module("07_verdict").load_stack
@@ -47,9 +53,9 @@ load_stack = import_module("07_verdict").load_stack
 N_PER = 100
 SEEDS = [SEED + 950, SEED + 951, SEED + 952]
 T_DEP = 0.1
-POINTS = {                            # name: (V, v_n)
+POINTS = {                            # name: (V, v_n) -- v_n on the register
     "P0 10mV/0":      (0.010, 0.0),
-    "P1 10mV/150uV":  (0.010, 150e-6),
+    "P1 10mV/160uV":  (0.010, 160e-6),
     "P2 10mV/500uV":  (0.010, 500e-6),
     "P3 10mV/1mV":    (0.010, 1e-3),
     "P4 10mV/2mV":    (0.010, 2e-3),
@@ -88,7 +94,8 @@ def main():
     log, fh = artifacts.make_log("23_comparator_sweep")
     log(f"\n=== 23_comparator_sweep.py ({time.strftime('%Y-%m-%d %H:%M')}) ===")
     log("read_noise 0.02 (device), band SnCr, t_b = max(2 ns, 5RC) per read, "
-        "composite sigma^2 = lane^2 + (v_n/V)^2")
+        "emulator sample_read: sigma^2 = lane^2 + (v_cmp/V)^2; "
+        "v_cmp on the 8-bit register (100 uV + code * 20 uV)")
     X, y = load_fashion(seed=0)
     y_ev = y[N_TRAIN:].long()
     S = load_stack(config.BACKBONE, config.PATCH)
@@ -123,8 +130,10 @@ def main():
     finish("deployed", rows)
 
     for name, (v_read, v_n) in POINTS.items():
-        log(f"\n{name}: V = {v_read * 1e3:.0f} mV, v_n = {v_n * 1e6:.0f} uV, "
-            f"v_n/V = {v_n / v_read:.3f}")
+        code, v_cmp = register_level(v_n)
+        log(f"\n{name}: V = {v_read * 1e3:.0f} mV, v_n = {v_cmp * 1e6:.0f} uV "
+            f"(code {code if code is not None else '-- (not modeled)'}), "
+            f"v_n/V = {v_cmp / v_read:.3f}")
         rows = []
         comp = None
         for seed in SEEDS:
@@ -139,11 +148,17 @@ def main():
         log_comp(comp, log)
 
     log("\nsummary (mean over seeds)")
-    log(f"{'point':<16}{'v_n/V':>7}{'critic':>8}{'div':>8}{'tone':>7}{'seam':>7}{'stdr':>7}")
+    log(f"{'point':<16}{'code':>6}{'v_n/V':>7}{'critic':>8}{'div':>8}{'tone':>7}"
+        f"{'seam':>7}{'stdr':>7}")
     for name, r in results.items():
-        vnv = POINTS[name][1] / POINTS[name][0] if name in POINTS else float("nan")
+        if name in POINTS:
+            code, v_cmp = register_level(POINTS[name][1])
+            vnv, cs = v_cmp / POINTS[name][0], ("--" if code is None else str(code))
+        else:
+            vnv, cs = float("nan"), ""
         m = r["mean"]
-        log(f"{name:<16}{vnv:>7.3f}{m[0]:>8.4f}{m[1]:>8.4f}{m[2]:>7.3f}{m[3]:>7.3f}{m[4]:>7.2f}")
+        log(f"{name:<16}{cs:>6}{vnv:>7.3f}{m[0]:>8.4f}{m[1]:>8.4f}{m[2]:>7.3f}"
+            f"{m[3]:>7.3f}{m[4]:>7.2f}")
     torch.save(dict(results=results, real=(ra, rdv), points=POINTS, seeds=SEEDS,
                     gain=0.02, band="SnCr"), artifacts.path("comparator_sweep"))
     log("saved: comparator-sweep-results.pt")

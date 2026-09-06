@@ -101,8 +101,13 @@ def main():
     real = X[N_TRAIN:, 0][real_idx].clamp(0, 1)
     g_real = S["gcodes"]["ev"].long()[real_idx]
 
+    # The banks are part of the key. Without them a retaught stack leaves
+    # these states looking valid, and the verdict below is drawn from
+    # banks that no longer exist.
     cfg = dict(seed=SEED + 900, backbone=args.backbone, patch=args.patch,
-               t_gen=T_GEN, n_per=n_per)
+               t_gen=T_GEN, n_per=n_per,
+               banks=(backbone_cfg(args.backbone, bl.M, bl.NCH),
+                      pl.cfg(), jl.cfg()))
     vpath = artifacts.path("verdict")
     if vpath.exists() and torch.load(vpath)["cfg"] == cfg:
         st = torch.load(vpath)["st"]

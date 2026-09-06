@@ -44,7 +44,7 @@ from chill_zen.data import N_TRAIN, SEED, load_fashion, rel_mse    # noqa: E402
 SRC_THRESH = 0.1        # the protocol's source threshold
 RENDER_THRESH = 0.5     # decode rounds at the midpoint of {0, 1}
 BACKBONES = [(128, 16, 0.5), (64, 16, 0.5)]
-PATCH = (2, 0.5)        # books per slot, keep-p -- the deployed shape
+PATCH = (2, 0.5)        # books per slot, keep-p -- the deployed patch code
 EXPECT = {"128x16@p0.5": (0.0169, 0.0788), "64x16@p0.5": (0.0266, 0.1046)}
 TOL = 1e-3              # three decimals
 

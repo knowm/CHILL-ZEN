@@ -25,6 +25,8 @@ parallel sweep in which the levels correct each other.
 Group sizes: every address is a WTA Group of 16 lanes (the label
 address uses 10 of its 16 symbols).
 """
+import os
+
 import torch
 
 from ktram_neural_core.torch import _lane
@@ -48,9 +50,12 @@ def _sample(yv, mm, T, noise, gen, sigma_flat=None):
     """The hot read. sigma_flat=None is the deployed device read
     (sample_read's state-dependent sigma(y, m)); a float replaces that
     sigma with a constant at the same T -- the E2a ablation. Same RNG
-    stream shape either way."""
+    consumption either way. comparator=False: this is a device-only
+    draw by design -- the comparator term is applied separately and
+    deliberately in `chill_zen.physical`, so taking it here too would
+    count it twice."""
     if sigma_flat is None:
-        return _lane.sample_read(yv, mm, T, noise, gen)
+        return _lane.sample_read(yv, mm, T, noise, gen, comparator=False)
     if T <= 0.0:
         return yv
     r = torch.randn(yv.shape, generator=gen, dtype=yv.dtype,
@@ -62,15 +67,39 @@ def _sample(yv, mm, T, noise, gen, sigma_flat=None):
 # The backbone level.
 # ---------------------------------------------------------------------------
 
-def backbone_cfg(tag, M, nch, batch=256, epochs=15, t_hot=0.3, q_max=0.5):
+# The read the repair banks' G fills are drawn at (see chill_zen.teach).
+# It goes into every taught bank's config, so a bank taught at a
+# different fill read does not match and is refit rather than reused.
+FILL_V_READ = 0.010     # the sense floor, as deployed
+# Code 245, sigma 0.500 at the sense floor. Chosen by the teaching-level
+# sweep, not by argument: the fills' level is a knob of its own, and
+# teaching at code 45 (the operating point at the time) is markedly worse
+# than teaching hot. The register's ceiling here is 0.520, so there is
+# little left above this. CHILLZEN_FILL_VCMP overrides it to re-run the
+# sweep; the level in force is recorded in every bank's config by
+# fill_read_tag, so banks taught at different levels do not match.
+FILL_V_CMP = float(os.environ.get("CHILLZEN_FILL_VCMP", 5e-3))
+
+
+def fill_read_tag(v_read=None, v_cmp=None):
+    """How the G fills were drawn, as one config-comparable string."""
+    v_read = FILL_V_READ if v_read is None else v_read
+    v_cmp = FILL_V_CMP if v_cmp is None else v_cmp
+    return (f"V={v_read * 1e3:g}mV,v_cmp={v_cmp * 1e6:g}uV,"
+            f"read_noise=0.02")
+
+
+def backbone_cfg(tag, M, nch, batch=256, epochs=15, fill_read=None,
+                 q_max=0.5):
     """The teaching configuration recorded inside a frozen bank file."""
     return dict(seed=SEED, init=INIT, tag=tag, m=M, lrep=LREP, nch=nch,
-                batch=batch, epochs=epochs, t_hot=t_hot,
+                batch=batch, epochs=epochs,
+                fill_read=fill_read or fill_read_tag(),
                 q=f"U(0,{q_max})")
 
 
 class BackboneLevel:
-    """Shapes, tuples and reads for one backbone code shape."""
+    """Sizes, tuples and reads for one backbone code (books x symbols @ keep-p)."""
 
     def __init__(self, tag, codes_tr, codes_ev, y_tr, y_ev):
         self.tag = tag
@@ -145,17 +174,19 @@ class BackboneLevel:
 # The patch level and the joint bank.
 # ---------------------------------------------------------------------------
 
-def patch_cfg(backbone, patch, ksp, nch, batch=256, epochs=15, t_hot=0.3,
-              q_max=0.5, q_gap=0.25):
+def patch_cfg(backbone, patch, ksp, nch, batch=256, epochs=15,
+              fill_read=None, q_max=0.5, q_gap=0.25):
     return dict(seed=SEED, init=INIT, backbone=backbone, patch=patch,
                 ksp=ksp, nch=nch, lrep=LREP, batch=batch, epochs=epochs,
-                t_hot=t_hot, q=f"U(0,{q_max})", q_gap=q_gap)
+                fill_read=fill_read or fill_read_tag(),
+                q=f"U(0,{q_max})", q_gap=q_gap)
 
 
-def joint_cfg(backbone, patch, ksp, nch, batch=256, epochs=15, t_hot=0.3,
-              q_max=0.5):
+def joint_cfg(backbone, patch, ksp, nch, batch=256, epochs=15,
+              fill_read=None, q_max=0.5):
     return dict(seed=SEED, init=INIT, backbone=backbone, patch=patch,
-                ksp=ksp, nch=nch, t_hot=t_hot, q=f"U(0,{q_max})",
+                ksp=ksp, nch=nch, fill_read=fill_read or fill_read_tag(),
+                q=f"U(0,{q_max})",
                 corrupt="marginal+G-fills-both-levels", batch=batch,
                 epochs=epochs, sharp=True)
 
@@ -265,7 +296,9 @@ class JointLevel:
             yv, mm = bank._y_m(self.pl.build_aat(
                 y[i:i + chunk], g[i:i + chunk], patches[i:i + chunk]))
             if T > 0:
-                yv = _lane.sample_read(yv, mm, T, bank.noise, gen)
+                # device-only by design; see _sample
+                yv = _lane.sample_read(yv, mm, T, bank.noise, gen,
+                                       comparator=False)
             out[i:i + chunk] = yv.reshape(-1, self.NU, S).argmax(-1)
         return out
 

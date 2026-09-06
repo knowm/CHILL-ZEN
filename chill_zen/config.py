@@ -1,7 +1,7 @@
 """The deployed operating point, and the sweeps the paper reports.
 
 One place for every configuration string, so a script never invents a
-shape and a reader never has to grep for what "deployed" means.
+code string and a reader never has to grep for what "deployed" means.
 
 The deployed system is a 904-bit code: a 128-book, 16-symbol backbone
 over the whole image at keep-p 0.5 (512 bits) plus a 2-book, 16-symbol
@@ -9,8 +9,8 @@ residual code on each of 49 4x4-pixel slots (392 bits), with the label
 clamped alongside.
 """
 
-BACKBONE = "128x16@p0.5"          # the deployed backbone code shape
-PATCH = "2x16@p0.5"               # the deployed residual patch code shape
+BACKBONE = "128x16@p0.5"          # the deployed backbone code: books x symbols @ keep-p
+PATCH = "2x16@p0.5"               # the deployed residual patch code: books per slot x symbols @ keep-p
 
 # The backbone codec sweep of Sec. IV E (a) and Fig. 5(b). Tuples are
 # (books, symbols, keep-p).
@@ -21,7 +21,7 @@ BACKBONE_SWEEP = [
     (16, 32, 0.5), (32, 32, 0.5), (64, 32, 0.5),
 ]
 
-# The shapes that get banks taught and are generated from.
+# The backbone codes that get banks taught and are generated from.
 BACKBONE_POINTS = [
     "16x16@p0.75", "32x16@p0.75", "64x16@p0.75", "128x16@p0.75",
     "16x16@p0.5", "32x16@p0.5", "64x16@p0.5", "128x16@p0.5",

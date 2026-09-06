@@ -232,8 +232,9 @@ def draw_window(bl, g1, lab, gen, tmat):
             idx = torch.where(book == k)[0]
             T = float(tmat[k, t])
             if T > 0:
+                # device-only by design; see chill_zen.levels._sample
                 yb[idx] = _lane.sample_read(yb[idx], mb[idx], T,
-                                            g1.noise, gen)
+                                            g1.noise, gen, comparator=False)
         units[rows, 1 + book] = yb.argmax(-1)
     return units[:, 1:]
 

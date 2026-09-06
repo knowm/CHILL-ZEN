@@ -124,14 +124,22 @@ def their_features(images, batch_size=100, tag=None):
     keeps the activations so several statistics can be built from one
     pass. `01_gate.py` is the check that it matches their own function
     to floating-point noise.
+
+    The cache file is named for the tag and the images' sha1, because an
+    arm that is re-rendered keeps its tag: named for the tag alone, a
+    changed arm returns the previous run's features and reports the
+    previous run's FID.
     """
     import math
 
     import jax
     import jax.numpy as jnp
 
+    cf = None
     if tag is not None:
-        cf = CACHE / f"feat-{tag}.npy"
+        import hashlib
+        a = np.ascontiguousarray(np.asarray(images, np.float32))
+        cf = CACHE / f"feat-{tag}-{hashlib.sha1(a.tobytes()).hexdigest()[:12]}.npy"
         if cf.exists():
             return np.load(cf)
 
@@ -168,7 +176,7 @@ def their_features(images, batch_size=100, tag=None):
                   flush=True)
     act = np.concatenate(act, 0)
     if tag is not None:
-        np.save(CACHE / f"feat-{tag}.npy", act)
+        np.save(cf, act)
     return act
 
 

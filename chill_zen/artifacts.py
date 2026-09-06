@@ -51,6 +51,7 @@ NAMES = {
     "operating_point": "operating-point.pt",
     "energy_model": "energy-model.pt",
     "energy_frontier": "energy-frontier.pt",
+    "sneak_paths": "sneak-paths.pt",
 }
 
 
