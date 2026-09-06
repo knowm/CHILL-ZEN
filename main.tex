@@ -743,8 +743,9 @@ verdicts change and the critic is still $0.893 \pm 0.024$ against
 $0.890 \pm 0.012$. The addresses a cold read can flip are the near-ties,
 and on this code a near-tie decodes the same either way. Treating the
 cold read as $T = 0$ is therefore a simplification the judge cannot
-see, with a margin of ten in the comparator's cold setting. The margin
-has a price the other way: Appendix~\ref{app:energy} prices a
+see, with a margin of ten in the comparator's cold setting; the
+head-to-head of Sec.~\ref{sec:headtohead} was not re-scored under it.
+The margin has a price the other way: Appendix~\ref{app:energy} prices a
 comparator quiet enough for code 45 at what the model charges and one
 quiet enough for code 0 at ten times more.
 
@@ -1048,8 +1049,11 @@ codebook atoms stored as differential pairs, one output lane per
 pixel, and every code address present at the end of a generation, the
 pooled read of Eq.~(\ref{eq:pool}) returns the sum of the selected
 atoms at a fixed scale. It is about 8\% of the reads. This paper's
-emulation runs that map in host floating point; the model charges it
-as the 784 cold lane reads it is designed to be. The DTM has no decode
+emulation runs that map in host floating point, as it does the render
+and the judging; the model charges it as the 784 cold lane reads it is
+designed to be. Running it on lanes, with the atoms quantized to a
+pair's resolution and read at 50\,mV, has not been emulated and its
+precision is not measured. The DTM has no decode
 for binarized Fashion-MNIST because its spins are the pixels. That is
 a property of a binary-pixel model rather than a saving that carries:
 the DTM reaches grayscale through a multi-spin embedding and color
@@ -1155,8 +1159,8 @@ fixes every element of the protocol at once. It establishes that our
 scoring path is identical to the replication's; it does not establish
 that Ref.~\cite{jelincic2025dtm} computed its published figures through
 this pipeline, which we cannot check. The held-out test split scores
-2.142 at $n = 5120$, the small-sample floor every generated row below
-carries.
+2.142 at $n = 5120$, the small-sample floor that every generated row
+below, and the DTM rows scored at the same $n$, carry.
 
 The grayscale-trained rows are the frozen systems of
 Sec.~\ref{sec:results}, rendering grayscale in $[0,1]$ with the
@@ -1333,48 +1337,6 @@ estimates from the model of Appendix~\ref{app:energy}.}
 \label{fig:energy}
 \end{figure*}
 
-\begin{table*}[t!]
-\caption{What each way out of the sneak paths costs, priced by the
-model of Appendix~\ref{app:energy} on the deployed census with the
-nominal constants; every row is printed by
-\texttt{experiments/36\_sneak\_paths.py}. The read column is for a
-$4 \times 4$ array with every device at a common conductance $G$. The
-pull-down rows charge one more select line per assertion, the
-complement line of the node-side multiplexer, and double that
-multiplexer's stack along $V_y$; their read term carries the drivers'
-sink of three times the selected pool's current. The selector-column
-rows charge one line per assertion and have no multiplexer on the
-node; they differ only in whether the sixteen pass gates sit beside
-the array along the select line, the convention of the $4 \times 4$,
-or stack along $V_y$.\label{tab:sneak}}
-\footnotesize
-\begin{ruledtabular}
-\begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}p{3.9cm}ccc}
-geometry & what the node reads & added circuitry & $E_{\mathrm{sel}}$ (J) &
-  total (J) & ratio \\
-\colrule
-$4 \times 4$, floating lines, as priced & 44\% the selected symbol,
-  48\% its six row and column neighbours, 8\% the other nine & none &
-  $1.8\times10^{-9}$ & $2.0\times10^{-9}$ & $7.9\times$ less \\
-$4 \times 4$, node-side lines at fixed ground & the selected pair at a
-  gain of 0.31; the hot read rises to 32.5\,mV to restore 10\,mV at the
-  comparator & a pull-down gate per node-side line per lane, on a
-  complement select line & $2.7\times10^{-9}$ & $3.0\times10^{-9}$ &
-  $5.2\times$ less \\
-$4 \times 4$, node-side lines track $V_y$ & the selected pair & the
-  same pull-downs, to a per-lane replica of $V_y$; the buffer that
-  drives it is unpriced & $2.7\times10^{-9}$ & $3.0\times10^{-9}$ &
-  $5.2\times$ less \\
-$16 \times 1$ selector column, pass gates beside the array & the
-  selected pair & sixteen select lines per space instead of eight; no
-  node-side multiplexer & $1.4\times10^{-9}$ & $1.6\times10^{-9}$ &
-  $9.9\times$ less \\
-$16 \times 1$ selector column, pass gates stacked along $V_y$ & the
-  selected pair & the same & $7.4\times10^{-10}$ & $9.1\times10^{-10}$
-  & $17.2\times$ less \\
-\end{tabular}
-\end{ruledtabular}
-\end{table*}
 
 \section{Limitations}\label{sec:limitations}
 
@@ -1391,46 +1353,19 @@ $16 \times 1$ selector column, pass gates stacked along $V_y$ & the
   the one-time energy of programming the roughly $5.7\times10^{7}$
   memristors the banks require.
 \item\label{lim:sneak} The unit crossbar has no selector at the
-  memristor and floats its unselected lines, and the emulator does not
-  carry what follows from that. A floating line is not an open circuit:
-  it settles where its net current is zero and passes current from one
-  device to the next. With every device of a $4 \times 4$ array at a
-  common conductance $G$, the sneak network between the selected row
-  and the selected column is three lumped stages of $3G$, $9G$ and $3G$
-  in series, $1.29G$ in parallel with the selected device, so the
-  selected device is $7/16$ of the conductance the node sees. To first
-  order the read of a symbol is 44\% that symbol, 48\% the six symbols
-  that share its row or column of the array, and 8\% the other nine.
-  A feedback pulse divides the same way, so those six see $3/7$ of
-  every pulse. At the $16 \times 16$ corner the selected share is 12\%.
+  memristor and floats its unselected lines, so a symbol's read is
+  44\% that symbol and 48\% the six symbols that share its row or
+  column of the array (Appendix~\ref{app:energy},
+  Sec.~\ref{app:sneak}), and a feedback pulse divides the same way.
   The emulator's crossbar fidelity is ideal, every read returns the
   selected pair alone, and every result of this paper is at that
   fidelity. Teaching closes its loop on the same read that inference
   uses, so the bias part of this crosstalk is the static non-ideality
   that in-the-loop learning absorbs; the loss of address resolution
   and the write disturb are not, and neither has been measured.
-  Table~\ref{tab:sneak} prices the ways out on the same census and
-  constants as Appendix~\ref{app:energy}. Only the node-side
-  unselected lines need holding; the rail-side lines can float once
-  the node side is held. Holding them at a fixed potential makes the
-  differential read exact but leaves a shunt of $2.25G$ per side on
-  the node, a common gain loss of about three that the hot read
-  voltage must make up. Holding them at a replica of $V_y$ is exact
-  but needs a per-lane buffer that sinks three times the selected
-  pool's current, and the model cannot price its bias without the
-  device conductance it was built to cancel. A $16 \times 1$ selector
-  column, one 1-of-16 multiplexer on the rail side and no multiplexer
-  on the node, has no second line for current to sneak onto and
-  removes the problem in the geometry: a 16-line decoder is little
-  more than two 4-line decoders, and because one select line is
-  charged per assertion instead of two it prices below the
-  $4 \times 4$ under either layout of its pass gates. It costs twice
-  the select lines to route and, with fifteen off gates on the
-  rail-side lines of each side, two and a half times the leakage
-  paths, which stay negligible only because the rails are pulsed per
-  read (Appendix~\ref{app:energy}); held rails would leak a quarter to
-  a half of its total. It is the geometry we would build and not the
-  one this paper prices.
+  Table~\ref{tab:sneak} prices the ways out; the $16 \times 1$
+  selector column, which has no sneak path, is the geometry we would
+  build and not the one this paper prices.
 \item The comparator is a model; no circuit has been designed. Its noise is one flat
   term set per read, its offset is assumed trimmed per lane to below a
   tenth of the read voltage at each bias setting, and
@@ -1439,23 +1374,6 @@ $16 \times 1$ selector column, pass gates stacked along $V_y$ & the
   Sec.~\ref{sec:comparator} state what a comparator must supply; they
   do not show a circuit that supplies it. The flicker term's
   extrapolation to nanosecond pulses is likewise unverified.
-\item Cold reads are treated as $T = 0$ in the deployed generation.
-  Physically they sit at the flicker floor with the comparator at its
-  quietest setting, and the control of Sec.~\ref{sec:comparator} shows
-  that running the sweeps at that floor, or at ten times it, flips
-  only near-tied addresses and moves no judge at $n = 1000$; the
-  head-to-head of Sec.~\ref{sec:headtohead} was not re-scored under
-  it. The energy model does not make the simplification and charges
-  every cold read at its 50\,mV read voltage.
-\item Decode, render, and judging run in host floating point. The
-  decode is the fixed linear map that a lane read computes, and the
-  energy model charges it as 784 cold lane reads; running it on lanes,
-  with the atoms quantized to a pair's resolution and read at 50\,mV,
-  has not been emulated and its precision is not measured. Priced
-  instead as a digital $784 \times 226$ matrix-vector product at
-  10--50\,fJ per 8-bit multiply-accumulate, it would add 1.8--8.9\,nJ
-  to the $2.0$\,nJ total; that is the range for a reader who does not
-  grant the lane decode.
 \item The quality bar of Sec.~\ref{sec:results} is a pixel-critic
   agreement score, not FID, because Ref.~\cite{jelincic2025dtm}
   establishes no grayscale reference. The end-to-end critic exceeds
@@ -1468,9 +1386,7 @@ $16 \times 1$ selector column, pass gates stacked along $V_y$ & the
   70\,000-image dataset, while the reference statistics of
   Sec.~\ref{sec:headtohead} are over the 60\,000-image train split
   that Ref.~\cite{jelincic2025dtm} trains on; the training sets are
-  neither identical nor the same size. The generated side of every FID
-  is 5120 images and carries the small-sample floor of 2.14 that the
-  reference side does not; the DTM numbers are scored at the same $n$.
+  neither identical nor the same size.
 \item Every grayscale row of Table~\ref{tab:headtohead} is reported
   at its best level on a six-level comparator grid, selected by the
   same FID it reports; no finer grid and no held-out selection was
@@ -1767,15 +1683,13 @@ $V$. The read's energy is therefore
 independent of the memristor's conductance band, of how a 20\,nm device
 differs from a larger one, of the write compliance current, and of the
 sneak conductance inside a floating-line unit crossbar. Inside a
-$4 \times 4$ array with floating unselected lines and every device at a
-common conductance $G$, the sneak network is three lumped stages of
-$3G$, $9G$ and $3G$ in series, $1.29G$ in parallel with the selected
-device, so the selected device is $7/16$ of the conductance the node
-sees. For the energy that is immaterial: sneak conductance shortens
-the settling time and leaves Eq.~(\ref{eq:app-read}) unchanged. For
-the read it is not, and Limitation~\ref{lim:sneak} states what the
-node reads and prices the ways out with this model
-(Table~\ref{tab:sneak}).
+$4 \times 4$ array with floating unselected lines the selected device
+is $7/16$ of the conductance the node sees (Sec.~\ref{app:sneak}). For
+the energy that is immaterial: sneak conductance shortens the settling
+time and leaves Eq.~(\ref{eq:app-read}) unchanged. For the read it is
+not; Sec.~\ref{app:sneak} derives what the node reads and prices the
+ways out, and Limitation~\ref{lim:sneak} states what follows for the
+results.
 
 Equation~(\ref{eq:app-read}) also qualifies the thermodynamic identity
 of Sec.~\ref{sec:energy}, Eq.~(\ref{eq:ethermal}). That identity, $E\,\sigma^2 = 2\kB T$, assumes the read
@@ -1859,6 +1773,84 @@ reads, so a lane conducts only during its own read; a rail held across
 the image would have every selected device in the bank conducting
 throughout. Charging the rails per read is bounded in
 Sec.~\ref{app:excluded} and carried as zero.
+
+\subsection{Sneak paths and the ways out}\label{app:sneak}
+
+A floating line is not an open circuit: it settles where its net
+current is zero and passes current from one device to the next. With
+every device of a $4 \times 4$ array at a common conductance $G$, the
+sneak network between the selected row and the selected column is
+three lumped stages of $3G$, $9G$ and $3G$ in series, $1.29G$ in
+parallel with the selected device, so the selected device is $7/16$ of
+the conductance the node sees. To first order the read of a symbol is
+44\% that symbol, 48\% the six symbols that share its row or column of
+the array, and 8\% the other nine; a feedback pulse divides the same
+way, so those six see $3/7$ of every pulse. At the $16 \times 16$
+corner the selected share is 12\%. The nodal solve behind these
+numbers is \texttt{experiments/36\_sneak\_paths.py}.
+
+Table~\ref{tab:sneak} prices three ways out on the same census and
+constants. Only the node-side unselected lines need holding; the
+rail-side lines can float once the node side is held. Holding them at
+a fixed potential makes the differential read exact but leaves a shunt
+of $2.25G$ per side on the node, a common gain loss of about three
+that the hot read voltage must make up. Holding them at a replica of
+$V_y$ is exact but needs a per-lane buffer that sinks three times the
+selected pool's current, and the model cannot price its bias without
+the device conductance it was built to cancel. A $16 \times 1$
+selector column, one 1-of-16 multiplexer on the rail side and no
+multiplexer on the node, has no second line for current to sneak onto
+and removes the problem in the geometry: a 16-line decoder is little
+more than two 4-line decoders, and because one select line is charged
+per assertion instead of two it prices below the $4 \times 4$ under
+either layout of its pass gates. It costs twice the select lines to
+route and, with fifteen off gates on the rail-side lines of each side,
+two and a half times the leakage paths, which stay negligible only
+because the rails are pulsed per read (Sec.~\ref{app:excluded}); held
+rails would leak a quarter to a half of its total.
+
+\begin{table*}[t!]
+\caption{What each way out of the sneak paths costs, priced by the
+model of Appendix~\ref{app:energy} on the deployed census with the
+nominal constants; every row is printed by
+\texttt{experiments/36\_sneak\_paths.py}. The read column is for a
+$4 \times 4$ array with every device at a common conductance $G$. The
+pull-down rows charge one more select line per assertion, the
+complement line of the node-side multiplexer, and double that
+multiplexer's stack along $V_y$; their read term carries the drivers'
+sink of three times the selected pool's current. The selector-column
+rows charge one line per assertion and have no multiplexer on the
+node; they differ only in whether the sixteen pass gates sit beside
+the array along the select line, the convention of the $4 \times 4$,
+or stack along $V_y$.\label{tab:sneak}}
+\footnotesize
+\begin{ruledtabular}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}p{3.9cm}ccc}
+geometry & what the node reads & added circuitry & $E_{\mathrm{sel}}$ (J) &
+  total (J) & ratio \\
+\colrule
+$4 \times 4$, floating lines, as priced & 44\% the selected symbol,
+  48\% its six row and column neighbours, 8\% the other nine & none &
+  $1.8\times10^{-9}$ & $2.0\times10^{-9}$ & $7.9\times$ less \\
+$4 \times 4$, node-side lines at fixed ground & the selected pair at a
+  gain of 0.31; the hot read rises to 32.5\,mV to restore 10\,mV at the
+  comparator & a pull-down gate per node-side line per lane, on a
+  complement select line & $2.7\times10^{-9}$ & $3.0\times10^{-9}$ &
+  $5.2\times$ less \\
+$4 \times 4$, node-side lines track $V_y$ & the selected pair & the
+  same pull-downs, to a per-lane replica of $V_y$; the buffer that
+  drives it is unpriced & $2.7\times10^{-9}$ & $3.0\times10^{-9}$ &
+  $5.2\times$ less \\
+$16 \times 1$ selector column, pass gates beside the array & the
+  selected pair & sixteen select lines per space instead of eight; no
+  node-side multiplexer & $1.4\times10^{-9}$ & $1.6\times10^{-9}$ &
+  $9.9\times$ less \\
+$16 \times 1$ selector column, pass gates stacked along $V_y$ & the
+  selected pair & the same & $7.4\times10^{-10}$ & $9.1\times10^{-10}$
+  & $17.2\times$ less \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
 
 \subsection{Constants}\label{app:constants}
 
@@ -1979,7 +1971,11 @@ $1.57\times10^{-8}$\,J, is the deepest point of their Fig.~1 decoded
 from the vector figure ($1.961\,T$\,nJ at $T = 8$); their text puts
 the same model at ``around $1.6\,T$\,nJ,'' which is
 $1.28\times10^{-8}$\,J and makes the nominal ratio 6.4 rather than
-7.9. The two accountings are therefore comparable in kind, and both
+7.9. A reader who does not grant the lane decode of
+Sec.~\ref{sec:energy} should carry a digital $784 \times 226$
+matrix-vector product instead, 1.8--8.9\,nJ at 10--50\,fJ per 8-bit
+multiply-accumulate on the 2.0\,nJ total. The two accountings are
+therefore comparable in kind, and both
 are estimates: theirs extrapolated from one fabricated circuit, ours
 from a stated geometry.
 

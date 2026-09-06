@@ -243,7 +243,7 @@ estimate from a stated geometry, never a measurement.
 | single-knob sensitivities, as DTM/ours | separate a/b lines 6.4; 16x16 4.6; readout 45 fJ 6.8; wire 0.3 fF/um + gate 0.5 fF 5.0; crossbar pitch 100 nm 7.5; transistor pitch 0.4 um 6.6 | `12` |
 | bounds on the excluded terms | rails 1.43 nF over 10,080 lanes, pulsed per read step: 5.4e-12 J (0.3%); leakage 12 off gates per space on a DC path, 2.14e7 gates, 2.5e-13 J at 5 pA and 10 ns pulses (held 30 us at 50 mV would be 1.6e-10 J, 8%); kickback 4 mV on 131 fF | `12` (excluded_bounds), Appendix B |
 | their cell, for comparison | E_cell = 2 fJ per conditional update, E_comm about half; RNG 2e-15 J per Bernoulli sample | their Eq. 13 |
-| digital-decode alternative, carried in Limitation 5 for a reader who does not grant the lane decode | 784 x 226 = 177,184 MACs at 10-50 fJ per 8-bit MAC = 1.8-8.9 nJ on the 2.0 nJ total | arithmetic; the lane decode is the design and is priced as 784 cold reads |
+| digital-decode alternative, carried in Appendix B's basis of comparison for a reader who does not grant the lane decode | 784 x 226 = 177,184 MACs at 10-50 fJ per 8-bit MAC = 1.8-8.9 nJ on the 2.0 nJ total | arithmetic; the lane decode is the design and is priced as 784 cold reads |
 
 Per-image energy across the frontier, `13`; the model charges counts
 only, so the binary-trained arms (`22`) equal their grayscale twins:
