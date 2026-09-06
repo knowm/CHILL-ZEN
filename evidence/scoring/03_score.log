@@ -1,0 +1,72 @@
+
+=== scoring (2026-09-04 00:19) ===
+gate: threshold 0.1; self-consistency 0.000039; real-data floor at n = 5120 2.142
+references: theirs = their shipped statistics (60,000 train at 0.1); midpoint = the same 60,000 at 0.5, their extractor
+arms: 14 (arm, binarization) sets, 5120 images each
+
+  arm @ binarization          on-frac      div   vs theirs  vs midpoint
+  two-level@0.1                0.4802   0.1643      19.431       47.017
+  one-level-128@0.1            0.5098   0.1640      21.975       47.722
+  one-level-64@0.1             0.5350   0.1597      23.811       64.861
+  one-level-32@0.1             0.5300   0.1397      30.300       82.643
+  one-level-16@0.1             0.5574   0.1288      45.296      106.196
+  codec-ceiling@0.1            0.4949   0.1634      14.205       59.261
+  real-train@0.1               0.4492   0.1806       1.907       30.564
+  two-level@0.5                0.3218   0.1919      32.050       29.087
+  one-level-128@0.5            0.3023   0.1949      39.119       33.900
+  one-level-64@0.5             0.3078   0.1963      32.427       33.756
+  one-level-32@0.5             0.2731   0.1701      41.018       39.116
+  one-level-16@0.5             0.3038   0.1716      42.065       48.788
+  codec-ceiling@0.5            0.2990   0.2232      28.190       15.801
+  real-train@0.5               0.3080   0.2403      32.866        2.040
+
+-- the head-to-head: their code, their reference, their 0.1 binarization, their n --
+   the bar is FID 24.9 at 1.568e-08 J/sample (their 8-step DTM). Real-data floor 2.142.
+   arm                     FID   on-frac      div  under bar
+   two-level            19.431    0.4802   0.1643        YES
+   one-level-128        21.975    0.5098   0.1640        YES
+   one-level-64         23.811    0.5350   0.1597        YES
+   one-level-32         30.300    0.5300   0.1397           
+   one-level-16         45.296    0.5574   0.1288           
+   codec-ceiling        14.205    0.4949   0.1634           
+   real-train            1.907    0.4492   0.1806           
+
+-- verdict --
+   two-level scores 19.431 against their 24.9; 3 arms clear the bar.
+saved: score-results.json
+
+=== scoring (2026-09-04 07:18) ===
+gate: threshold 0.1; self-consistency 0.000039; real-data floor at n = 5120 2.142
+references: theirs = their shipped statistics (60,000 train at 0.1); midpoint = the same 60,000 at 0.5, their extractor
+arms: 14 (arm, binarization) sets, 5120 images each
+
+  arm @ binarization          on-frac      div   vs theirs  vs midpoint
+  two-level@0.1                0.4802   0.1643      19.431       47.017
+  one-level-128@0.1            0.5098   0.1640      21.975       47.722
+  one-level-64@0.1             0.5350   0.1597      23.811       64.861
+  one-level-32@0.1             0.5300   0.1397      30.300       82.643
+  one-level-16@0.1             0.5574   0.1288      45.296      106.196
+  codec-ceiling@0.1            0.4949   0.1634      14.205       59.261
+  real-train@0.1               0.4492   0.1806       1.907       30.564
+  two-level@0.5                0.3218   0.1919      32.050       29.087
+  one-level-128@0.5            0.3023   0.1949      39.119       33.900
+  one-level-64@0.5             0.3078   0.1963      32.427       33.756
+  one-level-32@0.5             0.2731   0.1701      41.018       39.116
+  one-level-16@0.5             0.3038   0.1716      42.065       48.788
+  codec-ceiling@0.5            0.2990   0.2232      28.190       15.801
+  real-train@0.5               0.3080   0.2403      32.866        2.040
+
+-- the head-to-head: their code, their reference, their 0.1 binarization, their n --
+   the bar is FID 24.9 at 1.568e-08 J/sample (their 8-step DTM). Real-data floor 2.142.
+   arm                     FID   on-frac      div  under bar
+   two-level            19.431    0.4802   0.1643        YES
+   one-level-128        21.975    0.5098   0.1640        YES
+   one-level-64         23.811    0.5350   0.1597        YES
+   one-level-32         30.300    0.5300   0.1397           
+   one-level-16         45.296    0.5574   0.1288           
+   codec-ceiling        14.205    0.4949   0.1634           
+   real-train            1.907    0.4492   0.1806           
+
+-- verdict --
+   two-level scores 19.431 against their 24.9; 3 arms clear the bar.
+saved: score-results.json

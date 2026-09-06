@@ -1,0 +1,33 @@
+
+=== the gate (2026-09-01 11:45) ===
+vendored evaluation code at commit 7c22d19c218ab353a770f7c2b1504570b7cbe3ba
+reference  bw_fashion_mnist_train.npz sha256 66003004dc99115b
+reference  mu (2048,) float32, sigma (2048, 2048) float64; trace 131.6094
+data       train (60000, 28, 28) test (10000, 28, 28), canonical idx files
+
+-- threshold probe (mean feature against their mu, n = 2000 train images) --
+   thresh  on-frac     rel L2    cosine
+     0.00   0.4926    0.24048  0.970696
+     0.10   0.4459    0.01407  0.999903
+     0.30   0.3852    0.11370  0.994681
+     0.50   0.3126    0.22605  0.977833
+  best 0.1 (rel L2 0.01407); next 0.3 (0.11370) — 8.1x worse
+
+-- check 1: the 60,000 train images at threshold 0.1, against their reference --
+  FID = 0.000039   [mean term 0.000019, covariance term 0.000019]   (20s)
+  mu     max abs diff 6.012e-04
+  sigma  max abs diff 3.010e-04
+  CHECK 1: PASS (bar: under 0.5)
+  for contrast: the SAME 60,000 images binarized at 0.5 score 29.75 against their reference — worse than their generator
+
+-- check 2: the held-out floor at threshold 0.1 --
+  FID(test[:5120]) = 2.142
+  FID(test[:10000]) = 1.194
+
+-- gate --
+  check 1 (self-consistency, under 0.5): 0.000039  PASS
+  check 2 (held-out floor, finite and positive): 1.194  PASS
+  GATE: PASS
+  real-data floor at their n (5120): 2.142
+  the bar to beat: 24.9 (their 8-step DTM)
+saved: gate-results.npz

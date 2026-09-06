@@ -1,0 +1,33 @@
+
+=== free-label draw, n = 5120 (2026-09-02 10:52) ===
+labels ~ uniform prior, seed 24100, class counts [514, 506, 514, 498, 509, 527, 530, 507, 515, 500]
+[draw] binary two-level at P6: 146s
+[gen] audit-free-binary-two-level: (5120, 28, 28)  mean 0.4595
+[draw] grayscale two-level at P3: 144s
+[gen] audit-free-two-level: (5120, 28, 28)  mean 0.3052
+done; score with head_to_head/32_audit_score.py
+
+=== free-label draw, n = 5120 (2026-09-03 23:25) ===
+labels ~ uniform prior, seed 24100, class counts [514, 506, 514, 498, 509, 527, 530, 507, 515, 500]
+[draw] binary two-level at P6: 142s
+[gen] audit-free-binary-two-level: (5120, 28, 28)  mean 0.4438
+[draw] grayscale two-level at P3: 143s
+[gen] audit-free-two-level: (5120, 28, 28)  mean 0.3217
+done; score with head_to_head/32_audit_score.py
+
+=== free-label draw, n = 5120 (2026-09-04 08:32) ===
+labels ~ uniform prior, seed 24100, class counts [514, 506, 514, 498, 509, 527, 530, 507, 515, 500]
+[draw] binary two-level at P6: 236s
+[gen] audit-free-binary-two-level: (5120, 28, 28)  mean 0.4438
+[draw] grayscale two-level at P4: 238s
+[gen] audit-free-two-level: (5120, 28, 28)  mean 0.3323
+done; score with head_to_head/32_audit_score.py
+
+=== free-label draw, n = 5120 (2026-09-04 11:33) ===
+labels ~ uniform prior, seed 24100, class counts [514, 506, 514, 498, 509, 527, 530, 507, 515, 500]
+[draw] binary two-level at P6: 157s
+[gen] audit-free-binary-two-level: (5120, 28, 28)  mean 0.4438
+[audit] grayscale two-level at P3 (v_n 1000 uV, FID 18.09 clamped), the grid's best level
+[draw] grayscale two-level at P3: 151s
+[gen] audit-free-two-level: (5120, 28, 28)  mean 0.3217
+done; score with head_to_head/32_audit_score.py

@@ -1,0 +1,101 @@
+binary verdict, stage screen (2026-09-01 16:48)
+
+real bar (0.1-binarized eval, n = 1000):
+arm                     critic     div   seam
+real                    0.8680  0.1811  1.061
+one-level T=0.1         0.7510  0.1296  0.962   div screen FAIL (19s)
+two-level T=0.1         0.7550  0.1364  0.972   div screen PASS (19s)
+one-level T=0.2         0.7540  0.1398  1.070   div screen PASS (19s)
+two-level T=0.2         0.7910  0.1466  1.083   div screen PASS (19s)
+one-level T=0.3         0.7570  0.1475  1.049   div screen PASS (20s)
+two-level T=0.3         0.8010  0.1527  1.019   div screen PASS (20s)
+one-level T=0.5         0.7290  0.1517  1.171   div screen PASS (20s)
+two-level T=0.5         0.7960  0.1601  1.098   div screen PASS (20s)
+
+carried to render: T in [0.1, 0.2, 0.3, 0.5] (rule: two-level div >= 0.75 x real)
+binary verdict done
+binary verdict, stage window (2026-09-01 16:50)
+  window ctx   0: |y| med 0.317; m med 250; sigma_unit med 0.9140; T_max med W 0.014, SnCr 0.014
+  window ctx  16: |y| med 0.413; m med 779; sigma_unit med 0.4781; T_max med W 0.027, SnCr 0.027
+  window ctx  64: |y| med 0.445; m med 2356; sigma_unit med 0.2651; T_max med W 0.043, SnCr 0.048
+  window ctx 127: |y| med 0.453; m med 4429; sigma_unit med 0.1909; T_max med W 0.043, SnCr 0.067
+[window] tmax_step median at steps 0/64/127: 0.014 / 0.043 / 0.043
+
+arm                     critic     div   seam
+real                    0.8680  0.1811
+window (G-only)         0.7890  0.1025  1.040   div screen FAIL (9s)
+window arm screened out; reported, not scored (it is a row, not a gate)
+binary verdict done
+binary verdict, stage screen (2026-09-03 14:34)
+
+real bar (0.1-binarized eval, n = 1000):
+arm                     critic     div   seam
+real                    0.8680  0.1811  1.061
+one-level T=0.1         0.7510  0.1296  0.962   div screen FAIL (20s)
+two-level T=0.1         0.7550  0.1364  0.972   div screen PASS (20s)
+one-level T=0.2         0.7540  0.1398  1.070   div screen PASS (18s)
+two-level T=0.2         0.7910  0.1466  1.083   div screen PASS (18s)
+one-level T=0.3         0.7570  0.1475  1.049   div screen PASS (17s)
+two-level T=0.3         0.8010  0.1527  1.019   div screen PASS (18s)
+one-level T=0.5         0.7290  0.1517  1.171   div screen PASS (17s)
+two-level T=0.5         0.7960  0.1601  1.098   div screen PASS (17s)
+
+carried to render: T in [0.1, 0.2, 0.3, 0.5] (rule: two-level div >= 0.75 x real)
+binary verdict done
+binary verdict, stage window (2026-09-03 14:36)
+  window ctx   0: |y| med 0.317; m med 250; sigma_unit med 0.9140; T_max med W 0.014, SnCr 0.014
+  window ctx  16: |y| med 0.413; m med 779; sigma_unit med 0.4781; T_max med W 0.027, SnCr 0.027
+  window ctx  64: |y| med 0.445; m med 2356; sigma_unit med 0.2651; T_max med W 0.043, SnCr 0.048
+  window ctx 127: |y| med 0.453; m med 4429; sigma_unit med 0.1909; T_max med W 0.043, SnCr 0.067
+[window] tmax_step median at steps 0/64/127: 0.014 / 0.043 / 0.043
+
+arm                     critic     div   seam
+real                    0.8680  0.1811
+window (G-only)         0.7890  0.1025  1.040   div screen FAIL (8s)
+window arm screened out; reported, not scored (it is a row, not a gate)
+binary verdict done
+binary verdict, stage all (2026-09-03 23:30)
+
+real bar (0.1-binarized eval, n = 1000):
+arm                     critic     div   seam
+real                    0.8680  0.1811  1.061
+one-level T=0.1         0.7500  0.1330  0.972   div screen FAIL (15s)
+two-level T=0.1         0.7570  0.1427  0.954   div screen PASS (15s)
+one-level T=0.2         0.7410  0.1540  1.037   div screen PASS (15s)
+two-level T=0.2         0.7610  0.1690  1.001   div screen PASS (15s)
+one-level T=0.3         0.7310  0.1662  1.037   div screen PASS (15s)
+two-level T=0.3         0.7880  0.1811  0.977   div screen PASS (15s)
+one-level T=0.5         0.7040  0.1738  1.137   div screen PASS (15s)
+two-level T=0.5         0.7650  0.1968  1.037   div screen PASS (15s)
+
+carried to render: T in [0.1, 0.2, 0.3, 0.5] (rule: two-level div >= 0.75 x real)
+  window ctx   0: |y| med 0.317; m med 250; sigma_unit med 0.9140; T_max med W 0.014, SnCr 0.014
+  window ctx  16: |y| med 0.413; m med 779; sigma_unit med 0.4781; T_max med W 0.027, SnCr 0.027
+  window ctx  64: |y| med 0.445; m med 2356; sigma_unit med 0.2651; T_max med W 0.043, SnCr 0.048
+  window ctx 127: |y| med 0.453; m med 4429; sigma_unit med 0.1909; T_max med W 0.043, SnCr 0.067
+[window] tmax_step median at steps 0/64/127: 0.014 / 0.043 / 0.043
+
+arm                     critic     div   seam
+real                    0.8680  0.1811
+window (G-only)         0.7890  0.1025  1.040   div screen FAIL (8s)
+window arm screened out; reported, not scored (it is a row, not a gate)
+[draw] T=0.1: 5120 states (91s)
+[render] binary-two-level-T0.1: (5120, 28, 28)  on-fraction 0.4571
+[render] binary-one-level-128-T0.1: (5120, 28, 28)  on-fraction 0.4559
+[draw] T=0.2: 5120 states (92s)
+[render] binary-two-level-T0.2: (5120, 28, 28)  on-fraction 0.4337
+[render] binary-one-level-128-T0.2: (5120, 28, 28)  on-fraction 0.4339
+[draw] T=0.3: 5120 states (91s)
+[render] binary-two-level-T0.3: (5120, 28, 28)  on-fraction 0.4244
+[render] binary-one-level-128-T0.3: (5120, 28, 28)  on-fraction 0.4269
+[draw] T=0.5: 5120 states (91s)
+[render] binary-two-level-T0.5: (5120, 28, 28)  on-fraction 0.4234
+[render] binary-one-level-128-T0.5: (5120, 28, 28)  on-fraction 0.4283
+[render] binary-one-level-64-T0.1: (5120, 28, 28)  on-fraction 0.4482
+[render] binary-one-level-64-T0.2: (5120, 28, 28)  on-fraction 0.4321
+[render] binary-one-level-64-T0.3: (5120, 28, 28)  on-fraction 0.4315
+[render] binary-one-level-64-T0.5: (5120, 28, 28)  on-fraction 0.4355
+[render] binary-codec-ceiling-128: (5120, 28, 28)  on-fraction 0.4539
+[render] binary-stack-ceiling: (5120, 28, 28)  on-fraction 0.4513
+[render] binary-real-train: (5120, 28, 28)  on-fraction 0.4492
+binary verdict done

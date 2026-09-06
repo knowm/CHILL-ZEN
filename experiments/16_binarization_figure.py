@@ -82,7 +82,7 @@ def main():
         for s in ax.spines.values():
             s.set_visible(False)
     np.atleast_1d(axes)[0].set_title(
-        "threshold 0.1 (the DTM convention)"
+        "threshold 0.1 (replication convention)"
         "                                  threshold 0.5",
         fontsize=8, loc="left")
     fig.savefig(artifacts.figure("fig-binarization.png"),

@@ -1,0 +1,48 @@
+
+=== scoring the audit arms (2026-09-02 10:52) ===
+arms: ['audit-bernoulli-class', 'audit-bernoulli-pooled']
+arm                                   FID  on-frac
+audit-bernoulli-class              180.51   0.4518
+audit-bernoulli-pooled             258.10   0.4519
+
+saved: audit-score-results.json
+
+=== scoring the audit arms (2026-09-02 10:59) ===
+arms: ['audit-bernoulli-class', 'audit-bernoulli-pooled', 'audit-free-binary-two-level', 'audit-free-two-level']
+arm                                   FID  on-frac
+audit-bernoulli-class              180.51   0.4518
+audit-bernoulli-pooled             258.10   0.4519
+audit-free-binary-two-level         11.05   0.4595
+audit-free-two-level                18.32   0.5134
+
+saved: audit-score-results.json
+
+=== scoring the audit arms (2026-09-04 02:51) ===
+arms: ['audit-bernoulli-class', 'audit-bernoulli-pooled', 'audit-free-binary-two-level', 'audit-free-two-level']
+arm                                   FID  on-frac
+audit-bernoulli-class              180.51   0.4518
+audit-bernoulli-pooled             258.10   0.4519
+audit-free-binary-two-level         10.10   0.4438
+audit-free-two-level                18.27   0.5188
+
+saved: audit-score-results.json
+
+=== scoring the audit arms (2026-09-04 08:41) ===
+arms: ['audit-bernoulli-class', 'audit-bernoulli-pooled', 'audit-free-binary-two-level', 'audit-free-two-level']
+arm                                   FID  on-frac
+audit-bernoulli-class              180.51   0.4518
+audit-bernoulli-pooled             258.10   0.4519
+audit-free-binary-two-level         10.10   0.4438
+audit-free-two-level                21.92   0.5456
+
+saved: audit-score-results.json
+
+=== scoring the audit arms (2026-09-04 11:39) ===
+arms: ['audit-bernoulli-class', 'audit-bernoulli-pooled', 'audit-free-binary-two-level', 'audit-free-two-level']
+arm                                   FID  on-frac
+audit-bernoulli-class              180.51   0.4518
+audit-bernoulli-pooled             258.10   0.4519
+audit-free-binary-two-level         10.10   0.4438
+audit-free-two-level                18.27   0.5188
+
+saved: audit-score-results.json

@@ -1,0 +1,21 @@
+[draw] 1. per-book marginal TV against train (real-eval bar 0.0454):
+     deployed draw          mean 0.2058  books 0-63 0.2020  books 64-127 0.2095  max 0.3318 at book 126
+     prefix-schedule draw   mean 0.2106  books 0-63 0.2081  books 64-127 0.2130  max 0.3755 at book 5
+[draw] 2. symbol over-pick (drawn frequency - train) against atom contrast:
+     deployed draw          correlation +0.048
+                            top over-picks: book 1 symbol 2 +0.323 (contrast quantile 0.00), book 2 symbol 15 +0.312 (contrast quantile 0.00), book 126 symbol 10 +0.236 (contrast quantile 0.02), book 97 symbol 14 +0.161 (contrast quantile 0.04), book 0 symbol 12 +0.149 (contrast quantile 0.00)
+     prefix-schedule draw   correlation +0.047
+                            top over-picks: book 1 symbol 2 +0.324 (contrast quantile 0.00), book 2 symbol 15 +0.289 (contrast quantile 0.00), book 126 symbol 10 +0.191 (contrast quantile 0.02), book 0 symbol 12 +0.171 (contrast quantile 0.00), book 8 symbol 10 +0.156 (contrast quantile 0.58)
+[draw] 3. adjacent pair-joint TV against train:  deployed draw 0.3966  prefix-schedule draw 0.3798  (real-eval bar 0.1622)
+[draw] 3. offset-7 pair-joint TV against train:  deployed draw 0.3989  prefix-schedule draw 0.3820  (real-eval bar 0.1641)
+[draw] 4. re-encode self-consistency (decode, encode, agree):
+     deployed draw          overall 0.7976  books 0-63 0.8312  64-127 0.7640
+     prefix-schedule draw   overall 0.7742  books 0-63 0.8058  64-127 0.7427
+     real codes             overall 0.6888  books 0-63 0.7143  64-127 0.6634
+[draw] 5. contrast accounting (foreground std; real 0.2548):
+     real images                    0.2548  ratio 1.000
+     backbone decode, real codes    0.2649  ratio 1.039
+     backbone decode, deployed draw 0.3153  ratio 1.237
+     backbone decode, prefix-schedule draw 0.3081  ratio 1.209
+     render, end-to-end             0.3179  ratio 1.248
+     render, reconstruction         0.2843  ratio 1.116

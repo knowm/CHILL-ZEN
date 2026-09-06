@@ -1,0 +1,18 @@
+binary one-level physical point, P6 V=10mV v_n=3.0mV (2026-09-02 08:51)
+[draw] one-level-128: 5120 codes (208s)
+[render] comparator-binary-one-level-128: (5120, 28, 28)  on-fraction 0.4519
+[draw] one-level-64: 5120 codes (46s)
+[render] comparator-binary-one-level-64: (5120, 28, 28)  on-fraction 0.4511
+binary one-level physical render done
+binary one-level physical point, P6 V=10mV v_n=3.0mV (2026-09-03 14:50)
+[draw] one-level-128: 5120 codes (153s)
+[render] comparator-binary-one-level-128: (5120, 28, 28)  on-fraction 0.4519
+[draw] one-level-64: 5120 codes (42s)
+[render] comparator-binary-one-level-64: (5120, 28, 28)  on-fraction 0.4511
+binary one-level physical render done
+binary one-level physical point, P6 V=10mV v_n=3.0mV (2026-09-04 00:12)
+[draw] one-level-128: 5120 codes (140s)
+[render] comparator-binary-one-level-128: (5120, 28, 28)  on-fraction 0.4443
+[draw] one-level-64: 5120 codes (37s)
+[render] comparator-binary-one-level-64: (5120, 28, 28)  on-fraction 0.4464
+binary one-level physical render done

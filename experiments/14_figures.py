@@ -1,6 +1,7 @@
 """The paper's figures, rebuilt from the frozen artifacts.
 
-No experiment runs here: decode, render and plot only.
+The sample strip replays one reporting seed at the selected comparator
+setting; other panels use existing artifacts. No fitting is performed.
 
   fig-samples.png     real | end-to-end | reconstruction strips, n = 1000
   fig-codec.png       (a) backbone / +patch / real  (b) rate-distortion
@@ -55,17 +56,33 @@ def main():
 
     X, y = load_fashion(seed=0)
     y_ev = y[N_TRAIN:].long()
-    st = torch.load(artifacts.path("verdict"))["st"]
-    n_per = len(st["g_e2e"]) // 10
+    # Same generator, seed and batch as the first Table II reporting run.
+    # The old verdict artifact uses fixed-gain reads and is not this figure.
+    from importlib import import_module
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    reporting = import_module("21_reporting")
+    torch.set_num_threads(int(os.environ.get("OMP_NUM_THREADS", "8")))
+    stack = reporting.load_stack(BACKBONE, PATCH)
+    n_per = reporting.N_PER_A
     lab = torch.arange(10).repeat_interleave(n_per)
     real_idx = torch.cat([torch.where(y_ev == c)[0][:n_per]
                           for c in range(10)])
     real = X[N_TRAIN:, 0][real_idx].clamp(0, 1)
-
-    gb = torch.load(artifacts.path("backbone_books"))[BACKBONE]
-    kb = torch.load(artifacts.path("patch_books"))[PATCH]
-    e2e, _ = render(st["g_e2e"], st["p_e2e"], gb, kb)
-    rec, _ = render(st["g_rec"], st["p_rec"], gb, kb)
+    gb, kb = stack["gb"], stack["kb"]
+    g_real = stack["gcodes"]["ev"].long()[real_idx]
+    imgs = []
+    for codes in (None, g_real):
+        gen = torch.Generator().manual_seed(reporting.SEEDS_A[0])
+        state = reporting.gen_states(stack, lab, gen, codes)
+        image, _ = render(state[:, :stack["jl"].NG],
+                          state[:, stack["jl"].NG:], gb, kb)
+        imgs.append(image)
+    e2e, rec = imgs
+    from chill_zen import judge
+    critic = judge.load_critic(artifacts.path("critic"))
+    print("sample figure, seed", reporting.SEEDS_A[0],
+          "critic end-to-end/reconstruction:",
+          judge.judge(critic, e2e, lab)[0], judge.judge(critic, rec, lab)[0])
 
     # ---------------- fig-samples ----------------------------------------
     n_show = 6

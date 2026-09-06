@@ -5,7 +5,7 @@ Three reporting measurements behind Sec. IV B and Sec. V A:
 * **Seeds** -- three fresh seeds of the Table II verdict (end-to-end
   and reconstruction arms, n = 1000 each), both arms at the operating
   point of Sec. IV C (10 mV, comparator 2 mV) through the physical
-  read, so the two rows differ in the draw and in nothing else. Table
+  read, the reconstruction arm bypasses the draw and R1 with real backbone codes. Table
   II carries the mean +/- spread (max - min). Before 2026-09-06 the
   hot reads here went through the fixed-gain emulator read (T = 0.1,
   50 mV, 1 us, no comparator), which is what the retired expected
@@ -66,8 +66,7 @@ SEED_B = SEED + 970
 N_PER_A, N_PER_B = 100, 512
 DOSES = 4
 # The operating point of Sec. IV C: 10 mV read, comparator at 2 mV
-# (register code 95). Both hot reads of every arm run here, so the two
-# rows of Table II differ in the draw and in nothing else.
+# (register code 95). Both hot reads of every arm run here, the reconstruction arm bypasses the draw and R1.
 V_OP, V_N_OP = 0.010, 2e-3
 
 

@@ -1,0 +1,212 @@
+
+=== scoring the comparator sweep (2026-09-02 09:01) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-P8', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    16.53   0.4519  0.1241
+comparator-binary-one-level-64    17.21   0.4511  0.1155
+comparator-one-level-128        25.68   0.5489  0.1390
+comparator-one-level-16         44.89   0.5649  0.1156
+comparator-one-level-32         32.81   0.5532  0.1256
+comparator-one-level-64         26.61   0.5585  0.1286
+comparator-two-level            18.73   0.5101  0.1519
+comparator-two-level-P0         22.65   0.4594  0.1116
+comparator-two-level-P1         21.67   0.4590  0.1134
+comparator-two-level-P2         16.39   0.4590  0.1168
+comparator-two-level-P3         12.99   0.4564  0.1283
+comparator-two-level-P4         11.23   0.4558  0.1374
+comparator-two-level-P5         12.39   0.4548  0.1279
+comparator-two-level-P6         11.10   0.4576  0.1423
+comparator-two-level-P7         11.57   0.4624  0.1430
+comparator-two-level-P8         12.27   0.4668  0.1434
+comparator-two-level-deployed     9.88   0.4393  0.1552
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 11.10 (DTM bar 24.90, grayscale two-level 18.93)
+
+=== scoring the comparator sweep (2026-09-03 15:31) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+
+=== scoring the comparator sweep (2026-09-03 15:31) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    16.53   0.4519  0.1241
+comparator-binary-one-level-64    17.21   0.4511  0.1155
+comparator-one-level-128        25.68   0.5489  0.1390
+comparator-one-level-16         44.89   0.5649  0.1156
+comparator-one-level-32         32.81   0.5532  0.1256
+comparator-one-level-64         26.61   0.5585  0.1286
+comparator-two-level            18.73   0.5101  0.1519
+comparator-two-level-P0         22.65   0.4594  0.1116
+comparator-two-level-P1         21.67   0.4592  0.1132
+comparator-two-level-P2         16.39   0.4590  0.1168
+comparator-two-level-P3         12.99   0.4564  0.1283
+comparator-two-level-P4         11.23   0.4558  0.1374
+comparator-two-level-P5         12.39   0.4548  0.1279
+comparator-two-level-P6         11.10   0.4576  0.1423
+comparator-two-level-P7         11.57   0.4624  0.1430
+comparator-two-level-deployed     9.88   0.4393  0.1552
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 11.10 (DTM bar 24.90; grayscale two-level 18.73 at the physical point, 18.93 at the deployed point)
+
+=== scoring the comparator sweep (2026-09-03 15:34) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    16.53   0.4519  0.1241
+
+=== scoring the comparator sweep (2026-09-03 15:39) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+
+=== scoring the comparator sweep (2026-09-03 15:40) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    16.53   0.4519  0.1241
+comparator-binary-one-level-64    17.21   0.4511  0.1155
+comparator-one-level-128        25.68   0.5489  0.1390
+comparator-one-level-16         44.89   0.5649  0.1156
+comparator-one-level-32         32.81   0.5532  0.1256
+comparator-one-level-64         26.61   0.5585  0.1286
+comparator-two-level            18.73   0.5101  0.1519
+comparator-two-level-P0         22.65   0.4594  0.1116
+comparator-two-level-P1         21.62   0.4592  0.1132
+comparator-two-level-P2         16.39   0.4590  0.1168
+comparator-two-level-P3         12.99   0.4564  0.1283
+comparator-two-level-P4         11.23   0.4558  0.1374
+comparator-two-level-P5         12.39   0.4548  0.1279
+comparator-two-level-P6         11.10   0.4576  0.1423
+comparator-two-level-P7         11.57   0.4624  0.1430
+comparator-two-level-deployed     9.88   0.4393  0.1552
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 11.10 (DTM bar 24.90; grayscale two-level 18.73 at the physical point, 18.93 at the deployed point)
+
+=== scoring the comparator sweep (2026-09-04 02:18) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    15.46   0.4443  0.1303
+comparator-binary-one-level-64    15.10   0.4464  0.1294
+comparator-one-level-128        25.68   0.5489  0.1390
+comparator-one-level-16         44.89   0.5649  0.1156
+comparator-one-level-32         32.81   0.5532  0.1256
+comparator-one-level-64         26.61   0.5585  0.1286
+comparator-two-level            18.73   0.5101  0.1519
+comparator-two-level-P0         22.14   0.4587  0.1143
+comparator-two-level-P1         20.53   0.4584  0.1154
+comparator-two-level-P2         14.86   0.4565  0.1216
+comparator-two-level-P3         10.99   0.4496  0.1350
+comparator-two-level-P4         10.04   0.4443  0.1436
+comparator-two-level-P5         10.73   0.4485  0.1344
+comparator-two-level-P6          9.69   0.4436  0.1472
+comparator-two-level-P7         11.57   0.4500  0.1340
+comparator-two-level-deployed    10.63   0.4218  0.1837
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 9.69 (DTM bar 24.90; grayscale two-level 18.73 at the physical point, 18.93 at the deployed point)
+
+=== scoring the comparator sweep (2026-09-04 07:01) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    15.46   0.4443  0.1303
+comparator-binary-one-level-64    15.10   0.4464  0.1294
+comparator-one-level-128        25.30   0.5540  0.1452
+comparator-one-level-16         44.15   0.5602  0.1162
+comparator-one-level-32         33.82   0.5474  0.1251
+comparator-one-level-64         25.91   0.5584  0.1362
+comparator-two-level            18.09   0.5153  0.1558
+comparator-two-level-P0         22.14   0.4587  0.1143
+comparator-two-level-P1         20.53   0.4584  0.1154
+comparator-two-level-P2         14.86   0.4565  0.1216
+comparator-two-level-P3         10.99   0.4496  0.1350
+comparator-two-level-P4         10.04   0.4443  0.1436
+comparator-two-level-P5         10.73   0.4485  0.1344
+comparator-two-level-P6          9.69   0.4436  0.1472
+comparator-two-level-P7         11.57   0.4500  0.1340
+comparator-two-level-deployed    10.63   0.4218  0.1837
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 9.69 (DTM bar 24.90; grayscale two-level 18.73 at the physical point, 18.93 at the deployed point)
+
+=== scoring the comparator sweep (2026-09-04 08:09) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    15.46   0.4443  0.1303
+comparator-binary-one-level-64    15.10   0.4464  0.1294
+comparator-one-level-128        32.23   0.5909  0.1539
+comparator-one-level-16         44.64   0.5694  0.1190
+comparator-one-level-32         36.05   0.5650  0.1281
+comparator-one-level-64         29.01   0.5848  0.1431
+comparator-two-level            21.95   0.5416  0.1582
+comparator-two-level-P0         22.14   0.4587  0.1143
+comparator-two-level-P1         20.53   0.4584  0.1154
+comparator-two-level-P2         14.86   0.4565  0.1216
+comparator-two-level-P3         10.99   0.4496  0.1350
+comparator-two-level-P4         10.04   0.4443  0.1436
+comparator-two-level-P5         10.73   0.4485  0.1344
+comparator-two-level-P6          9.69   0.4436  0.1472
+comparator-two-level-P7         11.57   0.4500  0.1340
+comparator-two-level-deployed    10.63   0.4218  0.1837
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 9.69 (DTM bar 24.90; grayscale two-level 21.95 at the physical point, 19.43 at the deployed point)
+
+=== scoring the comparator sweep (2026-09-04 09:42) ===
+arms: ['comparator-binary-one-level-128', 'comparator-binary-one-level-64', 'comparator-gray-one-level-128-P0', 'comparator-gray-one-level-128-P1', 'comparator-gray-one-level-128-P2', 'comparator-gray-one-level-128-P3', 'comparator-gray-one-level-128-P4', 'comparator-gray-one-level-128-P6', 'comparator-gray-one-level-16-P0', 'comparator-gray-one-level-16-P1', 'comparator-gray-one-level-16-P2', 'comparator-gray-one-level-16-P3', 'comparator-gray-one-level-16-P4', 'comparator-gray-one-level-16-P6', 'comparator-gray-one-level-32-P0', 'comparator-gray-one-level-32-P1', 'comparator-gray-one-level-32-P2', 'comparator-gray-one-level-32-P3', 'comparator-gray-one-level-32-P4', 'comparator-gray-one-level-32-P6', 'comparator-gray-one-level-64-P0', 'comparator-gray-one-level-64-P1', 'comparator-gray-one-level-64-P2', 'comparator-gray-one-level-64-P3', 'comparator-gray-one-level-64-P4', 'comparator-gray-one-level-64-P6', 'comparator-gray-two-level-P0', 'comparator-gray-two-level-P1', 'comparator-gray-two-level-P2', 'comparator-gray-two-level-P3', 'comparator-gray-two-level-P4', 'comparator-gray-two-level-P6', 'comparator-one-level-128', 'comparator-one-level-16', 'comparator-one-level-32', 'comparator-one-level-64', 'comparator-two-level', 'comparator-two-level-P0', 'comparator-two-level-P1', 'comparator-two-level-P2', 'comparator-two-level-P3', 'comparator-two-level-P4', 'comparator-two-level-P5', 'comparator-two-level-P6', 'comparator-two-level-P7', 'comparator-two-level-deployed']
+arm                               FID  on-frac     div
+comparator-binary-one-level-128    15.46   0.4443  0.1303
+comparator-binary-one-level-64    15.10   0.4464  0.1294
+comparator-gray-one-level-128-P0    34.94   0.4635  0.1626
+comparator-gray-one-level-128-P1    28.51   0.4759  0.1642
+comparator-gray-one-level-128-P2    22.11   0.5174  0.1520
+comparator-gray-one-level-128-P3    25.30   0.5540  0.1452
+comparator-gray-one-level-128-P4    32.23   0.5909  0.1539
+comparator-gray-one-level-128-P6    34.72   0.6060  0.1575
+comparator-gray-one-level-16-P0    60.65   0.5488  0.0901
+comparator-gray-one-level-16-P1    54.79   0.5495  0.0964
+comparator-gray-one-level-16-P2    45.71   0.5518  0.1114
+comparator-gray-one-level-16-P3    44.15   0.5602  0.1162
+comparator-gray-one-level-16-P4    44.64   0.5694  0.1190
+comparator-gray-one-level-16-P6    44.56   0.5748  0.1201
+comparator-gray-one-level-32-P0    24.81   0.4725  0.1190
+comparator-gray-one-level-32-P1    25.76   0.4885  0.1199
+comparator-gray-one-level-32-P2    31.20   0.5238  0.1210
+comparator-gray-one-level-32-P3    33.82   0.5474  0.1251
+comparator-gray-one-level-32-P4    36.05   0.5650  0.1281
+comparator-gray-one-level-32-P6    36.66   0.5724  0.1285
+comparator-gray-one-level-64-P0    26.52   0.5028  0.1359
+comparator-gray-one-level-64-P1    24.67   0.5029  0.1449
+comparator-gray-one-level-64-P2    22.62   0.5291  0.1426
+comparator-gray-one-level-64-P3    25.91   0.5584  0.1362
+comparator-gray-one-level-64-P4    29.01   0.5848  0.1431
+comparator-gray-one-level-64-P6    30.61   0.5955  0.1451
+comparator-gray-two-level-P0    29.67   0.4381  0.1593
+comparator-gray-two-level-P1    25.46   0.4507  0.1619
+comparator-gray-two-level-P2    18.65   0.4866  0.1592
+comparator-gray-two-level-P3    18.09   0.5153  0.1558
+comparator-gray-two-level-P4    21.95   0.5416  0.1582
+comparator-gray-two-level-P6    23.48   0.5499  0.1593
+comparator-one-level-128        32.23   0.5909  0.1539
+comparator-one-level-16         44.64   0.5694  0.1190
+comparator-one-level-32         36.05   0.5650  0.1281
+comparator-one-level-64         29.01   0.5848  0.1431
+comparator-two-level            21.95   0.5416  0.1582
+comparator-two-level-P0         22.14   0.4587  0.1143
+comparator-two-level-P1         20.53   0.4584  0.1154
+comparator-two-level-P2         14.86   0.4565  0.1216
+comparator-two-level-P3         10.99   0.4496  0.1350
+comparator-two-level-P4         10.04   0.4443  0.1436
+comparator-two-level-P5         10.73   0.4485  0.1344
+comparator-two-level-P6          9.69   0.4436  0.1472
+comparator-two-level-P7         11.57   0.4500  0.1340
+comparator-two-level-deployed    10.63   0.4218  0.1837
+
+saved: comparator-score-results.json
+best physical point: comparator-two-level-P6 at 9.69 (DTM bar 24.90; grayscale two-level 21.95 at the physical point, 19.43 at the deployed point)
+
+grayscale register grid (34_grayscale_grid.py), best level per arm:
+  one-level-16    P3   44.15   P0 60.65  P1 54.79  P2 45.71  P3 44.15  P4 44.64  P6 44.56
+  one-level-32    P0   24.81   P0 24.81  P1 25.76  P2 31.20  P3 33.82  P4 36.05  P6 36.66
+  one-level-64    P2   22.62   P0 26.52  P1 24.67  P2 22.62  P3 25.91  P4 29.01  P6 30.61
+  one-level-128   P2   22.11   P0 34.94  P1 28.51  P2 22.11  P3 25.30  P4 32.23  P6 34.72
+  two-level       P3   18.09   P0 29.67  P1 25.46  P2 18.65  P3 18.09  P4 21.95  P6 23.48

@@ -1,0 +1,50 @@
+binary energy census (2026-09-01 16:51) T=0.3
+
+two-level (binary banks):
+  [two-level] census 10064 reads; device bounded SnCr 8.241e-12 / W 6.017e-11; anchor SnCr 1.582e-09 / W 3.393e-08 J
+  periphery 1.05e-11 J; WITH PERIPHERY bounded SnCr 1.871e-11 J (grayscale post-decode 1.87e-11)
+
+one-level 128x16@p0.5 (binary banks; grayscale device-bounded pre-decode 6.97e-12):
+  [128x16@p0.5] census 4880 reads; device bounded SnCr 3.642e-12 / W 1.432e-11; anchor SnCr 3.974e-10 / W 8.712e-09 J
+
+one-level 64x16@p0.5 (binary banks; grayscale device-bounded pre-decode 3.47e-12):
+  [64x16@p0.5] census 2832 reads; device bounded SnCr 2.311e-12 / W 5.120e-12; anchor SnCr 1.349e-10 / W 2.937e-09 J
+
+saved: binary-energy-results.pt
+binary energy census (2026-09-03 23:40) T=0.3
+
+two-level (binary banks):
+  [two-level] census 10064 reads; device bounded SnCr 8.241e-12 / W 5.491e-11; anchor SnCr 1.447e-09 / W 3.128e-08 J
+  periphery 1.05e-11 J; WITH PERIPHERY bounded SnCr 1.871e-11 J (grayscale post-decode 1.87e-11)
+
+one-level 128x16@p0.5 (binary banks; grayscale device-bounded pre-decode 6.97e-12):
+  [128x16@p0.5] census 4880 reads; device bounded SnCr 3.642e-12 / W 1.334e-11; anchor SnCr 3.721e-10 / W 8.215e-09 J
+
+one-level 64x16@p0.5 (binary banks; grayscale device-bounded pre-decode 3.47e-12):
+  [64x16@p0.5] census 2832 reads; device bounded SnCr 2.311e-12 / W 4.901e-12; anchor SnCr 1.293e-10 / W 2.827e-09 J
+
+saved: binary-energy-results.pt
+binary-trained arms: same census as the grayscale twins, so the same energy (the model charges counts only)
+
+two-level:
+  nominal                      sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+  low-swing 0.5 V              sel 7.13e-10  read 1.97e-11  readout 1.51e-10  total 8.83e-10  DTM/ours  17.7x
+  7 nm-class periphery         sel 6.57e-10  read 1.60e-11  readout 1.51e-10  total 8.24e-10  DTM/ours  19.0x
+  7 nm-class, 0.5 V            sel 2.57e-10  read 1.60e-11  readout 1.51e-10  total 4.24e-10  DTM/ours  37.0x
+  pessimistic corner           sel 7.84e-09  read 7.89e-11  readout 1.51e-10  total 8.07e-09  DTM/ours   1.9x
+
+128x16@p0.5:
+  nominal                      sel 6.72e-10  read 5.86e-12  readout 7.32e-11  total 7.51e-10  DTM/ours  20.9x
+  low-swing 0.5 V              sel 2.62e-10  read 5.86e-12  readout 7.32e-11  total 3.41e-10  DTM/ours  45.9x
+  7 nm-class periphery         sel 2.42e-10  read 4.76e-12  readout 7.32e-11  total 3.20e-10  DTM/ours  49.0x
+  7 nm-class, 0.5 V            sel 9.45e-11  read 4.76e-12  readout 7.32e-11  total 1.72e-10  DTM/ours  90.9x
+  pessimistic corner           sel 2.89e-09  read 2.34e-11  readout 7.32e-11  total 2.98e-09  DTM/ours   5.3x
+
+64x16@p0.5:
+  nominal                      sel 2.04e-10  read 1.94e-12  readout 4.25e-11  total 2.49e-10  DTM/ours  63.1x
+  low-swing 0.5 V              sel 7.97e-11  read 1.94e-12  readout 4.25e-11  total 1.24e-10  DTM/ours 126.3x
+  7 nm-class periphery         sel 7.35e-11  read 1.58e-12  readout 4.25e-11  total 1.18e-10  DTM/ours 133.4x
+  7 nm-class, 0.5 V            sel 2.87e-11  read 1.58e-12  readout 4.25e-11  total 7.28e-11  DTM/ours 215.5x
+  pessimistic corner           sel 8.77e-10  read 7.77e-12  readout 4.25e-11  total 9.27e-10  DTM/ours  16.9x
+
+saved: binary-energy-results.pt

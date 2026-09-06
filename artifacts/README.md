@@ -1,9 +1,10 @@
 # Frozen artifacts
 
 Codebooks, bank weights, teaching pools, generated states and results
-tables. Every one of them is config-keyed: the configuration it was
-produced under is stored inside the file, and a script that finds a
-mismatch refits rather than trusting it. Delete a file to force it to
+tables. Several artifacts store a recipe configuration, and their loaders
+check that configuration. These checks do not uniformly hash upstream
+codebooks, banks or source code; a matching recipe is not proof of
+identical input contents. Delete a file to force it to
 be rebuilt.
 
 ## What is in git
@@ -14,7 +15,7 @@ That is deliberate. The critic is a fixed reference rather than a
 result: it is the frozen judge every verdict table is scored by, it
 never sees a generated image, and `00_train_critic.py --force`
 rebuilds it in about three seconds — bit for bit on the same machine,
-and to the same metrics elsewhere (see *Determinism* in the top-level
+with no measured cross-machine tolerance (see *Determinism* in the top-level
 README). Everything else here is an output of a script in
 `experiments/`, and shipping an output would let the script that is
 supposed to recompute it skip the step instead, which is the opposite
@@ -64,4 +65,5 @@ place each of those steps takes minutes.
 
 A rebuild on a different machine will not produce byte-identical
 codebooks, for the reasons under *Determinism* in the top-level README.
-The acceptance test for a rebuild is `NUMBERS.md`, not a checksum.
+Compare rebuilt results with `NUMBERS.md` and the saved evidence;
+no cross-machine numerical tolerance has been established.

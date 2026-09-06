@@ -9,4 +9,4 @@ matplotlib>=3.5
 requests
 
 # The lane emulator is not on PyPI; install it from its repository:
-#   pip install "ktram-neural-core @ git+https://github.com/knowm/ktram-neural-core@main#subdirectory=python"
+#   pip install "ktram-neural-core @ git+https://github.com/knowm/ktram-neural-core@6899ca6717377a952782724c33c85b0c4e580e56#subdirectory=python"

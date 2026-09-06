@@ -1,0 +1,28 @@
+sneak paths in a floating-line unit crossbar; every device at a common conductance G, one row and one column driven
+
+4 x 4: stages 3G / 9G / 3G in series = 1.286G in parallel with the selected G; node sees 2.286G; selected share 0.4375 = 7/16
+   floating columns at 0.5714 V, floating rows at 0.4286 V of the 1 V read; the 6 row/column neighbours see 0.4286 of a pulse, the 9 others 0.1429
+   first-order weights (selected = 1): each row/column neighbour 0.184, each of the others 0.020; shares of the read: selected 0.438, neighbours 0.482, others 0.080
+
+16 x 16: stages 15G / 225G / 15G in series = 7.258G in parallel with the selected G; node sees 8.258G; selected share 0.1211 = 31/256
+   floating columns at 0.5161 V, floating rows at 0.4839 V of the 1 V read; the 30 row/column neighbours see 0.4839 of a pulse, the 225 others 0.0323
+   first-order weights (selected = 1): each row/column neighbour 0.234, each of the others 0.001; shares of the read: selected 0.121, neighbours 0.851, others 0.028
+
+half-select, 4 x 4, node-side unselected lines held, rail-side lines floating:
+  fixed ground: shunt on the node 2.250G per side (the three column neighbours through the floating rows); the pool's own 2G per pair against 4.50G of shunt gives a read gain of 0.308; restoring 10 mV at the comparator needs a hot read of 32.5 mV. Driver sinks 3.0 G V^2 per side, three times the selected device.
+  tracking V_y: node sees 1.000G, the selected device alone; floating rows sit at V_y and carry nothing; the replica driver sinks 3.0 G V^2 per side, 3KGV per lane at K spaces.
+  16 x 1 selector column: no second line exists for current to sneak onto; the read is the selected device, with no driver.
+
+the energy model at each option (deployed census; Limitation 2):
+  floating lines, as priced    sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+      hot read 10.0 mV; lines per assertion 2; lane pitch 1.00 um; C_seg 0.80 fF; C_node 161 / 278 fF (K = 134 / 232); leakage paths per space 6
+  node-side lines at fixed ground sel 2.74e-09  read 1.29e-10  readout 1.51e-10  total 3.02e-09  DTM/ours   5.2x
+      hot read 32.5 mV; lines per assertion 3; lane pitch 1.00 um; C_seg 0.80 fF; C_node 230 / 399 fF (K = 134 / 232); leakage paths per space 6
+  node-side lines track V_y    sel 2.74e-09  read 1.13e-10  readout 1.51e-10  total 3.00e-09  DTM/ours   5.2x
+      hot read 10.0 mV; lines per assertion 3; lane pitch 1.00 um; C_seg 0.80 fF; C_node 230 / 399 fF (K = 134 / 232); leakage paths per space 6
+  16 x 1 selector column, mux beside the array sel 1.43e-09  read 5.26e-12  readout 1.51e-10  total 1.58e-09  DTM/ours   9.9x
+      hot read 10.0 mV; lines per assertion 1; lane pitch 3.25 um; C_seg 1.25 fF; C_node 43 / 74 fF (K = 134 / 232); leakage paths per space 32
+  16 x 1 selector column, mux stacked along V_y sel 7.41e-10  read 2.10e-11  readout 1.51e-10  total 9.13e-10  DTM/ours  17.2x
+      hot read 10.0 mV; lines per assertion 1; lane pitch 0.25 um; C_seg 0.65 fF; C_node 172 / 297 fF (K = 134 / 232); leakage paths per space 32
+
+saved: sneak-paths.pt

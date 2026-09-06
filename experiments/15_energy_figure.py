@@ -1,9 +1,8 @@
 """fig-energy: the frontier on the performance-versus-energy plane.
 
-Paper Fig. 8 (`fig:energy`, Sec. V C). Every FID here is produced by
-the evaluation code,
-reference statistics, binarization threshold and sample count of the
-DTM paper; the energies are this work's model (chill_zen/energy_geom.py,
+Paper Fig. 8 (`fig:energy`, Sec. V C). CHILL ZEN FIDs use the
+replication pipeline; the other series are published values whose
+scoring path is unverified; the energies are this work's model (chill_zen/energy_geom.py,
 Appendix B) at the nominal point, with a band out to the pessimistic
 corner.
 
@@ -11,7 +10,7 @@ corner.
     FID -- with their five reported series replotted from their data,
     and the CHILL ZEN frontier drawn as the same kind of curve;
 (b) the same frontier against the DTM chain alone, as FID, so the
-    margin is readable, with the codec ceiling and the real-data floor.
+    margin is readable, with backbone reconstruction and real-data references.
 
 Both panels also carry the three binary-trained arms of Table VII, all
 now at the physical operating point of Sec. IV C (two-level at
@@ -202,7 +201,7 @@ def main():
         a2.annotate(nm, (x, yv), textcoords="offset points", xytext=off,
                     fontsize=6, color="tab:brown")
     a2.axhline(ceiling, color="tab:green", lw=0.8, ls="-.", alpha=0.9)
-    a2.annotate(f"128-book codec ceiling ({ceiling:.1f})",
+    a2.annotate(f"backbone reconstruction ({ceiling:.1f})",
                 (4.5e-9, ceiling + 1), fontsize=6, color="tab:green",
                 alpha=0.95)
     a2.axhline(floor, color="k", lw=0.8, ls=":", alpha=0.7)

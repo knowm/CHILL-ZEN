@@ -27,32 +27,28 @@
 \begin{abstract}
 We present CHILL ZEN---Comparator-Heated In-memory Lane Learning
 with Zero-Ended Noise---a generative architecture for probabilistic
-in-memory hardware. Each weight is a differential memristor pair, and
-a read returns the weight plus noise. The sampling temperature is an
-argument of the read instruction, over a range that reaches zero, so
-generation is one hot autoregressive pass over a discrete address code
-followed by one zero-temperature reconciliation sweep, with no mixing
-phase. A lane read pools hundreds of pairs, and pooling quenches the
-read's own noise down to the kT/C floor of the output node: at the
-10\,mV read the devices deliver under two-fifths of the noise the draw
-needs on the first read and under a tenth thereafter, so the draw's
-randomness has to come from the periphery. It comes from the
-comparator that resolves each read, one per lane, with settable
-input-referred noise; at the operating point that circuit supplies
-most of the draw's variance. Sweeping its noise
-locates the operating point
-and fixes a design requirement on the comparator. The energy case
-against a mixing chain is a count: an image needs about 3600 noisy
-reads here where an eight-step chain needs of order $10^{7}$
-conditional updates. On grayscale Fashion-MNIST a two-level stack matches the
-real bar on the critic on its reconstruction arm and scores above it
-end-to-end, in about 131 sequential read steps per image. Binarized and scored under the evaluation protocol of the
-denoising thermodynamic model of Jelin\v{c}i\v{c} \emph{et al.}, the
-same system scores FID 18.1 at its FID-best comparator level against
-24.9 for their deepest chain, at a
-modeled $2\times10^{-9}$\,J per image against their
-$1.57\times10^{-8}$\,J; trained directly on the binarized data, the
-architecture scores FID 9.7.
+in-memory hardware. Images are represented by additive discrete codes.
+Locally taught lane banks generate a backbone code autoregressively,
+repair it, draw residual patch codes in parallel, and apply one joint
+repair sweep. Generation uses about 3600 noisy lane reads and 131
+sequential read steps, without an equilibrium sampling phase.
+In the emulator, pooling suppresses device noise and an adjustable
+comparator-noise term supplies most of the randomness needed for
+generation. On Fashion-MNIST, the grayscale-trained two-level system
+scores FID 18.1 after binarization; training on binary images gives
+9.7, at the best settings on the tested noise grids. Under the stated
+energy models, the two-level system requires approximately eight
+times less energy per image than the published eight-step DTM:
+$2\times10^{-9}$\,J against $1.57\times10^{-8}$\,J, with lower
+FID than its reported 24.9. Our scores use the released DTM
+replication pipeline; the original paper's exact scoring path is
+unverified and the training splits differ. The energy comparison
+includes modeled readout and lane-decoder costs. We also price a
+selector-column alternative that removes the nominal crossbar's
+sneak paths, which are absent from the emulator. The reduction in
+sampling work motivates the energy advantage: about 3600 noisy lane
+reads here versus approximately $10^7$ conditional updates in the
+DTM chain.
 \end{abstract}
 
 \maketitle
@@ -83,31 +79,19 @@ Boltzmann machines whose nodes are subthreshold-transistor
 random-number generators (RNGs) with a measured decorrelation time
 $\tau_0 \approx 100$\,ns \cite{jelincic2025dtm,freitas2025taming}.
 
-Our answer to the same constraint is to make the sampling temperature
-an argument of the read instruction, over a
-range that reaches zero, so that generation is one hot pass over the
-code followed by one cold sweep rather than a mixing chain. We call the system CHILL
+We address this constraint by making sampling temperature an argument
+of the read instruction, including noiseless reads in the emulator.
+Generation uses one hot pass over the code followed by one cold sweep. We call the system CHILL
 ZEN, for Comparator-Heated In-memory Lane Learning with Zero-Ended
 Noise.
 
-The randomness is the harder half of the design. A stored weight pair
-carries its own read noise, and pooling many pairs on one lane
-quenches that noise in the same proportion that it sharpens the
-answer, down to the kT/C floor of the lane's output node: at the
+ Pooling stored weight pairs on one lane reduces their read noise down to the output node's kT/C floor: at the
 10\,mV read the deployed lanes deliver under two-fifths of the noise
 a generative draw needs on the first read and under a tenth
-thereafter, and no read voltage a comparator can resolve recovers the
-rest. The draw's temperature therefore has to be supplied by the
-periphery. It is supplied by the comparator that resolves each read,
-one per lane, with settable input-referred noise; at the operating
+thereafter, under the stated read-voltage and offset assumptions. The periphery must therefore supply the sampling temperature. Each lane has a comparator with adjustable input-referred noise; at the operating
 point the comparator carries most of the draw's variance, over nine tenths after the first read, and the pooled
 devices carry the remainder. In this respect CHILL ZEN and the DTCA are alike: each
-obtains its randomness from a noise circuit at every node. What
-separates them is count. One CHILL ZEN image needs about 3600 noisy
-reads, where an eight-step DTM chain needs of order $10^{7}$
-conditional updates, every one of them a random draw, and that count,
-rather than the cost of a random bit, is where the energy accounting
-of Sec.~\ref{sec:energy} comes from. We state the comparator's design
+obtains its randomness from a noise circuit at every node.  One CHILL ZEN image needs about 3600 noisy reads; an eight-step DTM chain needs of order $10^{7}$ random conditional updates. These operation counts determine the energy accounting of Sec.~\ref{sec:energy}. We state the comparator's design
 requirement and measure the operating point.
 
 Our contributions are:
@@ -116,8 +100,8 @@ Our contributions are:
   by its code, its paired generator and repair banks, and its
   one-pass, one-sweep procedure (Sec.~\ref{sec:model});
 \item the two-level result on grayscale Fashion-MNIST
-  \cite{xiao2017fashion}, with the residual error localized to one
-  component, the label$\to$code draw (Secs.~\ref{sec:headline} and
+  \cite{xiao2017fashion}, with reconstruction controls and a diagnosis of an earlier
+  label$\to$code draw (Secs.~\ref{sec:headline} and
   \ref{sec:gap});
 \item the comparator-noise result: pooled reads quench their own
   noise, the comparator supplies the draw temperature, and a sweep of
@@ -151,18 +135,20 @@ w = \frac{G_a - G_b}{G_a + G_b}, \qquad m = G_a + G_b .
 \label{eq:wm}
 \end{equation}
 The weight $w$ is the balance of the pair and the magnitude $m$ is its
-total. The magnitude is the weight's inertia: a feedback pulse moves
-$w$ in proportion to $1/m$, so the effective learning rate falls on
-the Robbins--Monro $1/n$ schedule with no schedule stored anywhere.
-It is also a count of evidence. Forward feedback increments one
-conductance by a quantum, which is the conjugate update of a Beta
-distribution, so the pair holds a Beta posterior with mean and
-concentration
+total. The magnitude controls the pair's response to feedback: a fixed
+conductance increment produces a smaller change in $w$ at larger $m$.
+For forward-only increments, conductances measured in units of the
+increment can be interpreted as Beta pseudo-counts $a$ and $b$, with
 \begin{equation}
-\mu = \frac{G_a}{G_a + G_b}, \qquad \kappa = G_a + G_b, \qquad
-\sigma^2 = \frac{\mu(1-\mu)}{\kappa + 1}.
+\mu = \frac{a}{a+b}, \qquad \kappa = a+b, \qquad
+\sigma^2 = \frac{\mu(1-\mu)}{\kappa+1}.
 \label{eq:beta}
 \end{equation}
+The deployed rules also use reverse feedback, so magnitude need not
+grow monotonically and is not a cumulative evidence count. The Beta
+analogy describes forward accumulation; it does not make the trained
+pair a Bayesian posterior or establish a $1/n$ learning schedule for
+the full rule.
 
 A read returns the stored weight plus noise. The noise has a thermal
 term and a flicker term from the devices, and a third term from the
@@ -192,9 +178,8 @@ fixed pulse width both device
 terms fall as $1/\sqrt{m}$, and the flicker term carries $(1 - w^2)$,
 so a read's scatter narrows the two ways the posterior of
 Eq.~(\ref{eq:beta}) narrows: with accumulated evidence, and toward the
-certain ends. The forms match and the exponents do not; a hot read is
-a sample whose width tracks the weight's own uncertainty rather than a
-draw from the posterior. At the settling-limited pulse the reads of
+certain ends. The forms match and the exponents do not; the device-noise width depends on the stored state, but a hot
+read is not a posterior draw. At the settling-limited pulse the reads of
 this paper use, $t = 5C/G_\Sigma$, the thermal term takes a different
 form: the pooled conductance cancels, and what remains is the kT/C
 noise of the lane's output node,
@@ -233,8 +218,7 @@ At the 10\,mV read the deployed lanes deliver about 0.02--0.04 on
 their own as modeled, and up to about 0.07 on the chain's first read
 by the geometry of Appendix~\ref{app:energy}, where the node is a
 dozen femtofarads; the draw needs 0.1 or more, and reaching it from
-the node alone would take a read of about a millivolt, below what any
-comparator's fixed errors allow. The comparator supplies the
+the node alone would take a read of about a millivolt, below the read voltage assumed for the stated offset budget. The comparator supplies the
 difference, and the temperature schedule of a CHILL ZEN generation is
 a bias schedule on that one circuit per lane: hot reads starve the
 preamplifier, cold reads run it at full bias.
@@ -248,7 +232,7 @@ intrinsic device noise as the annealing source in a memristor Hopfield
 network. Both draw on a single device's variability. In
 Eq.~(\ref{eq:noise}) the noise is a property of the instruction and of
 one peripheral circuit as well as of the device: the same weight can
-be read hot or cold, the range reaches zero, and once hundreds of
+be read hot or cold, with noiseless cold reads in the emulator, and once hundreds of
 pairs are pooled on a lane the peripheral circuit is the larger term.
 
 \begin{figure}
@@ -261,9 +245,8 @@ the geometry of Appendix~\ref{app:energy} plus 5\,fF of comparator
 input, for the first read of the chain ($K = 6$), the end of the
 backbone chain ($K = 134$), and the joint sweep ($K = 232$); the thin
 horizontal lines are the flicker floors at each pool's measured
-magnitude. The node grows with every pair pooled on it, so the pools
-this network reads through are quieter than its first read by up to a
-factor of five. The comparator's operating level, $v_n = 2$\,mV, is
+magnitude. Node capacitance grows with the number of pooled pairs, reducing
+noise by up to a factor of five relative to the first read. The comparator's operating level, $v_n = 2$\,mV, is
 drawn for scale: at the 10\,mV hot read it is the larger term on
 every read.}
 \label{fig:noise}
@@ -280,8 +263,7 @@ y = \frac{\sum_{i \in \mathcal{A}} (G_{a,i} - G_{b,i})}
          {\sum_{i \in \mathcal{A}} m_i},
 \label{eq:pool}
 \end{equation}
-the magnitude-weighted, which is to say inverse-variance-weighted,
-average of the selected weights. Selection is an
+the magnitude-weighted average of the selected weights. Selection is an
 Activation Address Tuple (AAT): an ordered tuple of integers, one per
 address space, and the tuple is the wiring pattern pin for pin. One
 consequence sets the model class: a space's influence on a read is
@@ -331,8 +313,8 @@ receives \texttt{RF}. Cold argmax readout of a group taught this way
 is a classifier at parity with logistic regression on the identical
 encoding (Iris: 0.962 against 0.961 over twenty splits). Hard feedback
 carves a margin; soft feedback keeps every answer the data supports,
-so a soft bank read hot draws from the distribution the data left in
-its weights, and the chain rule runs as sequential lane reads: clamp
+so a soft bank read hot defines a choice distribution over its
+learned lane scores. Generation runs as sequential lane reads: clamp
 what is known, read one space, commit, continue. \emph{RankCut
 readout} reports the above-threshold lanes of a group in rank order
 from a shared falling reference and one comparator per lane, with no
@@ -384,22 +366,19 @@ partial states, is the fixed linear map
 \hat{x} = b + p \sum_{j \in \mathrm{present}} a_j .
 \label{eq:decode}
 \end{equation}
-The keep probability is a coherence-versus-fidelity dial: $p = 1$
-recovers plain additive quantization \cite{babenko2014additive}, with
-the best floor and brittle partial states, and $p < 1$ trades floor
-for cross-address redundancy. Partial codes are in-distribution by
-construction: a half-filled
-address state decodes to a coherent soft image, which is what makes
-hole-filling a learnable lane task.
+The codebooks are fitted on the host by alternating discrete encoding
+and a joint double-precision ridge solve. At $p=1$ the objective
+reduces to plain additive quantization \cite{babenko2014additive};
+$p<1$ includes deleted-address states in training. This makes partial
+codes part of the training objective, although it does not guarantee
+that every partial code decodes to a coherent image.
 
 Stripped of the hardware, the model class is generation over a linear
 additive-quantization codebook with masked-context training and a
 parallel reconciliation sweep, which places it beside MaskGIT
 \cite{chang2022maskgit} and the VQ-VAE lineage
-\cite{vandenoord2017vqvae}. The decode is a fixed
-linear map rather than a learned network, which is what makes partial
-states meaningful and the energy accounting of Sec.~\ref{sec:energy}
-possible. And each level pairs a soft bank that draws with a hard
+\cite{vandenoord2017vqvae}. Decoding uses a fixed linear map, which supports partial states and
+the energy accounting of Sec.~\ref{sec:energy}. And each level pairs a soft bank that draws with a hard
 bank that reconciles, both taught by local lane instructions, where a
 masked transformer uses one network and a confidence schedule.
 
@@ -412,7 +391,15 @@ cold in one full-commit parallel sweep. The two-level system evaluated here has 
 banks G1 and R1) and a \emph{patch level} (level 2: a residual code on
 a grid of patch slots, with bank G2 and a cross-level joint repair
 bank). The \emph{render} is the backbone decode plus the patch decode.
-Generation runs as follows (Fig.~\ref{fig:arch}):
+For context $c=(z_{<m},\ell)$, the draw is
+\begin{equation}
+ z_m = \arg\max_s\{y_{m,s}(c)+\epsilon_{m,s}\},
+ \qquad \epsilon_{m,s}\sim\mathcal{N}(0,\sigma_{m,s}^2),
+\end{equation}
+with independent noise in the emulator. This defines a conditional
+choice probability for each symbol; the teaching rule does not
+calibrate it to the data conditional. Generation runs as follows
+(Fig.~\ref{fig:arch}):
 
 \begin{enumerate}
 \item Clamp the label, replicated across six address spaces.
@@ -420,8 +407,7 @@ Generation runs as follows (Fig.~\ref{fig:arch}):
   books at the operating point of Sec.~\ref{sec:comparator},
   $(V, v_n) = (10\,\mathrm{mV}, 2\,\mathrm{mV})$, the critic's
   optimum on the declared grid (Sec.~\ref{sec:headtohead} reports FID
-  at its own best level of that grid), each read sampling
-  $p(z_m \mid z_{<m}, \ell)$ through the read noise, followed by one
+  at its own best level of that grid), each read choosing the largest noise-perturbed lane score, followed by one
   cold R1 sweep.
 \item Patch level: one parallel hot G2 read, at the same operating
   point, over all 49 residual patch slots under the held global code.
@@ -494,28 +480,27 @@ real-reference row is the bar and parity with it is the target;
 \emph{div}, within-class sample diversity (fraction of pixel pairs
 differing by more than $1/16$); \emph{tone}, the spread of per-image
 foreground mean level within class; and \emph{std-ratio}, foreground
-contrast relative to real, with an alarm margin of 1.10. No FID appears
-in this section; the FID comparison with Ref.~\cite{jelincic2025dtm}
-is made in Sec.~\ref{sec:headtohead}, on binarized renders, under that
-work's own protocol.
+contrast relative to real, with an alarm margin of 1.10. Section~\ref{sec:headtohead} reports FID on binarized renders using
+the DTM replication protocol.
 
-Teaching runs entirely by lane instructions and no gradients are
-computed anywhere. Soft G banks teach on Bernoulli-masked codes with
+The banks are trained using local lane instructions without gradients. The
+codec is fitted on the host, and the frozen critic is trained with Adam. Soft G banks teach on Bernoulli-masked codes with
 the label always held; hard R banks teach on realistically corrupted
 pools (marginal corruption plus G fills); the joint bank teaches
-on two-level corrupted states. Each bank is probed per epoch and the
-best-probe snapshot is kept. The fills are drawn through the same read
-that generates: the emulator's device noise at the 10\,mV read, with
-the comparator's trim register supplying the temperature. The fill
-level is a knob of its own, and it was set by measurement rather than
-by matching the operating point: fills drawn at code 45, the
-operating point at the time, taught markedly worse banks than hotter
-fills, and the
-end-to-end critic rose with the fill level, 0.857 at code 45, 0.877 at
-95, 0.878 at 145 and 0.890 at code 245, flattening toward the
-register's ceiling, which is where teaching stands. The binary-trained
-banks of Sec.~\ref{sec:headtohead} teach at the same level, carried
-over from this sweep rather than swept on that stack. Two choices in that recipe, holding the label and committing a single
+on two-level corrupted states. Each bank is probed per epoch on the same 2000-image evaluation
+partition and the best-probe snapshot is kept. That partition also
+informed the fill-noise and generation-noise choices; it is a
+validation set, not an untouched test set. New generation seeds
+measure sampling variation for the selected banks, not uncertainty
+from training or model selection.
+
+Repair-training fills use the 10\,mV read with comparator register
+code 245 ($v_n=5$\,mV). This setting was chosen during development
+and carried over to the binary-trained stack. The intermediate
+fill-sweep logs were not retained, and generation noise also differed
+between those runs, so they do not establish an isolated effect of
+fill noise. The released scripts reproduce the final recipe.
+Two choices in that recipe, holding the label and committing a single
 cold dose, follow the pool-share argument of Sec.~\ref{sec:lane}.
 
 \subsection{The two-level result}\label{sec:headline}
@@ -523,26 +508,29 @@ cold dose, follow the pool-share argument of Sec.~\ref{sec:lane}.
 The deployed system is a 904-bit code plus the clamped label: a
 $128\times16$ global backbone at keep-$p$ 0.5 (512 bits) and a
 $2\times16$ residual patch code on a $7\times7$ grid of
-$4\times4$-pixel slots (392 bits). Table~\ref{tab:headline} gives the
-verdict as mean $\pm$ seed spread (max $-$ min) over three fresh seeds
-at $n = 1000$; the spread is the evaluation noise at this $n$. The
-reconstruction arm replaces the draw with the code of a real image and
-runs every other component as deployed. Its critic matches the real
-bar within seed spread, so everything after the draw adds no error
-measurable by this classifier; its contrast does not match, since the
-std-ratio of 1.13 exceeds the 1.10 alarm on this arm as it does
-end-to-end. The end-to-end arm, drawn from the label alone,
-scores above both, by a margin inside its own seed spread. A score
-above the real bar measures agreement with a fixed classifier only.
+$4\times4$-pixel slots (392 bits). Table~\ref{tab:headline} reports means and seed ranges (max $-$ min)
+over three generation seeds at $n=1000$, with one fitted set of banks.
+The reconstruction arm supplies a real backbone code directly to G2,
+bypassing both the autoregressive draw and R1; G2 and the joint sweep
+then run as deployed. It tests those downstream stages together,
+rather than isolating the draw alone.
+
+The reconstruction and end-to-end critic scores are 0.8963 and 0.9007,
+against 0.8860 for the first 100 validation images per class. These
+are label-agreement scores, not evidence that generated images match
+or exceed real-image quality. A classifier can reward class
+prototypes. End-to-end tone variation is lower than real (1.590
+against 2.362), while contrast is higher (1.14 against 1.00) and
+exceeds the stated 1.10 alarm. The seed ranges are descriptive;
+they are not confidence intervals or a test of equivalence.
 
 % Both rows: 21_reporting.py, both arms with their hot reads at the
 % operating point (V, v_n) = (10 mV, 2 mV), seeds 960-962.
 \begin{table}
-\caption{The two-level verdict: mean $\pm$ seed spread (max $-$ min)
-over three seeds at $n = 1000$. Both arms run their hot reads at the
-operating point of Sec.~\ref{sec:comparator}; the reconstruction arm
-replaces the draw with ground truth and the end-to-end arm draws from
-the label alone.
+\caption{The two-level verdict: mean (seed range, max $-$ min)
+over three generation seeds at $n = 1000$. Both arms run their hot reads at the
+operating point of Sec.~\ref{sec:comparator}; the reconstruction arm bypasses the draw and R1 with a real backbone
+code; the end-to-end arm draws from the label alone.
 \label{tab:headline}}
 \begin{ruledtabular}
 \footnotesize
@@ -550,9 +538,9 @@ the label alone.
 arm & critic & div & tone & std-ratio \\
 \colrule
 real references & 0.8860 & 0.4866 & 2.362 & 1.00 \\
-reconstruction & $\textbf{0.8963} \pm 0.0110$ & $0.5184 \pm 0.0015$
+reconstruction & $0.8963\ (0.0110)$ & $0.5184\ (0.0015)$
   & 2.004 & 1.13 \\
-end-to-end & $0.9007 \pm 0.0310$ & $0.5487 \pm 0.0052$ & 1.590
+end-to-end & $0.9007\ (0.0310)$ & $0.5487\ (0.0052)$ & 1.590
   & 1.14 \\
 \end{tabular}
 \end{ruledtabular}
@@ -561,10 +549,11 @@ end-to-end & $0.9007 \pm 0.0310$ & $0.5487 \pm 0.0052$ & 1.590
 \begin{figure*}
 \includegraphics[width=\textwidth]{figures/fig-samples.png}
 \caption{\textbf{Given a real backbone code, the patch level and joint
-sweep produce images the judge scores level with real ones.} Real
+sweep produce images with similar classifier agreement to real ones.} Real
 references (left), end-to-end draws from the label alone at the
 operating point of Sec.~\ref{sec:comparator} (center), and the
-reconstruction arm (right), six per class.}
+reconstruction arm (right), six per class. The strips are the first six samples per
+class from reporting seed 960 ($n=1000$), with no sample selection.}
 \label{fig:samples}
 \end{figure*}
 
@@ -573,9 +562,8 @@ The generated batch shows no memorization signature: over 5120 drawn
 images every joint and backbone code is distinct, none is an exact
 copy of a training image, and their nearest-neighbour distances to the
 training set sit at or beyond those of held-out real images ($L_2$
-first percentile 1.86 against 1.47, median 3.70 against 3.43). The joint
-sweep is a do-no-harm reconciliation on good states and moves
-diversity toward the real bar (0.4910 against 0.4823 at $n = 320$,
+first percentile 1.86 against 1.47, median 3.70 against 3.43). In an earlier fixed-gain control, the joint
+sweep moved diversity toward the real reference (0.4910 against 0.4823 at $n = 320$,
 from 0.5250 before the sweep).
 It is not a fixed point: a second dose still flips 82 of 226 addresses
 per image, a third 44, and a fourth 26.
@@ -585,12 +573,13 @@ per image, a third 44, and a fourth 26.
 Every hot read in this paper runs at a modeled read voltage of
 $V = 10$\,mV, with the pulse width settling-limited,
 $t_b = \max(2\,\mathrm{ns}, 5RC)$. Ten millivolts is where the
-comparator's fixed errors, a trimmed offset of about 1\,mV and the
-repeatable kickback of Appendix~\ref{app:energy}, are a tenth of the
-signal (Sec.~\ref{sec:ktbit}); we call it the sense floor. At that
+comparator's fixed errors, a target trimmed offset of 1\,mV, are a tenth of the
+full-scale read (Sec.~\ref{sec:ktbit}); we call this assumed
+operating limit the sense floor. Kickback is a separate, unresolved
+readout requirement (Appendix~\ref{app:energy}). At that
 read the lanes alone deliver a device read noise of 0.02--0.04 across
 the backbone chain as modeled, with flicker 5--70\% of the variance:
-dominant on the chain's first read, where the pool is a single book,
+dominant on the chain's first read, where only the replicated label is present,
 and falling to 5\% by the last as thermal takes over. The thermal
 term is nearly flat in chain position in the model because the
 settling time and the pooled conductance move together, which is the
@@ -598,8 +587,7 @@ kT/C form of Sec.~\ref{sec:ktbit} at the model's fixed 100\,fF of node
 capacitance. The geometry of Appendix~\ref{app:energy} puts the node
 at about 12\,fF on the first read and 161--278\,fF thereafter, so by
 that geometry the first read is noisier than modeled, about 0.07, and
-the later reads are as modeled. Either way the devices cannot be made
-to supply more: the node's kT/C caps what a read's own physics can
+the later reads are as modeled. At that voltage the devices supply less noise than the selected draw: the node's kT/C caps what a read's own physics can
 deliver, at under two-fifths of the noise the draw turns out to need
 on the first read and under a tenth thereafter, and reaching the
 draw's noise from the node alone would take a read of about a
@@ -630,27 +618,19 @@ either, trimmed & as above & tens of $\mu$V & $\sim 0.003$ \\
 \emph{The sweep.} We swept $v_n / V$ at $V = 10$\,mV from 0 (lanes
 only) to 0.20 on the grayscale end-to-end draw and to 0.50 on the
 binary-trained two-level draw of Sec.~\ref{sec:headtohead}, holding
-every other component as deployed. The lanes alone fall short in both
-stacks (Fig.~\ref{fig:comparatorsweep}), each
-improves as the comparator's noise is raised, and each has an interior
-optimum, at $v_n / V = 0.20$ for grayscale and $0.2$--$0.3$ for
-binary; the binary optimum sits on the two points added to the grid
-after a first pass, and a 7.5\,mV point swept before the level was a
-register lies above the register's ceiling and is not reported. The
+every other component as deployed. Both stacks improve with added comparator noise (Fig.~\ref{fig:comparatorsweep}): the best grayscale critic occurs at the tested endpoint $v_n / V=0.20$, and binary FID is lowest at $0.2$--$0.3$. The binary optimum lies on two grid points added after a first pass. A 7.5\,mV point tested before the register was introduced exceeds its ceiling and is not reported. The
 figure also marks a control, the same draw with the
 emulator's device noise gain raised by hand. That gain is a device
 calibration, not an operating knob, and no circuit produces that
 noise; the control is a reference only.
 
-The swept level is not a free parameter. The emulator carries it as an
+The comparator-noise level is a tunable model parameter. The emulator carries it as an
 8-bit trim register, $v_n = 100\,\mu\mathrm{V} + \mathrm{code} \times
 20\,\mu\mathrm{V}$ over codes 0--255, so each level is reported as a
 register code, and the grid is codes 3, 20, 45, 95, 145 and 245, of
 which the grayscale critic sweep runs the first four and the grayscale
 FID grid of Sec.~\ref{sec:headtohead} the first five plus the
-device-only point. The
-register is a modeling convenience, with its step chosen so that
-these levels fall on exact codes; it validates nothing about a part.
+device-only point. The register step places these levels on exact codes; this modeling choice does not validate a hardware implementation.
 There is no zero setting---no comparator reaches zero
 input-referred noise---so $v_n / V = 0$ is the device-only law, a
 statement about the model rather than a register value. At $V = 10$\,mV
@@ -699,9 +679,7 @@ dedicated noise source at the input. But the same latch carries
 range of a lane's output (Table~\ref{tab:comparator}), and no shift of
 the weights cancels an offset larger than the range; with sixteen
 lanes in a group each carrying its own, the winner would be the lane
-with the lowest offset, not the lane with the highest weight. The
-offset is static and the noise is not, so the two belong to different
-mechanisms. CHILL ZEN therefore requires a comparator whose offset is
+with the lowest offset, not the lane with the highest weight. Static offset and read noise require separate control mechanisms. CHILL ZEN therefore requires a comparator whose offset is
 trimmed per lane, once, to below about a tenth of the read voltage
 (1\,mV at 10\,mV) at each bias it runs at, and whose input-referred
 noise is settable, from near zero for verdicts to
@@ -732,16 +710,16 @@ move: critic 0.890 against 0.890 for the noiseless sweeps, diversity
 0.550 against 0.549, tone and contrast unchanged. At 1\,mV, ten times
 the floor, a quarter of the R1 verdicts and 52 of the 226 joint
 verdicts change and the critic is still $0.893 \pm 0.024$ against
-$0.890 \pm 0.012$. The addresses a cold read can flip are the near-ties,
-and on this code a near-tie decodes the same either way. Treating the
+$0.890 \pm 0.012$. These address changes leave the measured aggregate judges nearly
+unchanged; they do not imply identical decoded images. Treating the
 cold read as $T = 0$ is therefore a simplification the judge cannot
 see, with a margin of ten in the comparator's cold setting; the
 head-to-head of Sec.~\ref{sec:headtohead} was not re-scored under it.
-The margin has a price the other way: Appendix~\ref{app:energy} prices a
-comparator quiet enough for code 45 at what the model charges and one
-quiet enough for code 0 at ten times more.
+Appendix~\ref{app:energy} gives conditional noise-energy estimates;
+the bandwidth, noise, and energy have not been demonstrated together
+in one comparator.
 
-The model has three caveats. The flicker term's extrapolation
+The noise model also has these caveats. The flicker term's extrapolation
 from the emulator's 1\,$\mu$s reference to nanosecond pulses assumes
 the $1/f$ band extends that far. The emulator's device constants are
 placeholders pending measurement; the thermal term needs none, since
@@ -755,26 +733,23 @@ supplies most of a read's noise, the thermodynamic identity of
 Sec.~\ref{sec:energy} describes only the lane's share; the
 comparator's energy is counted separately there.
 
-\subsection{The remaining error}\label{sec:gap}
+\subsection{What the controls establish}\label{sec:gap}
 
-The generation stack factors as draw $\to$ repair $\to$ decoration
-$\to$ joint sweep $\to$ render, and the reconstruction arm of
-Table~\ref{tab:headline} replaces exactly one component, the draw,
-with ground truth. Its match to the real bar on the critic localizes
-the residual error, conditional on the codec, to the label$\to$code
-draw; its contrast does not match (std-ratio 1.13 against the 1.10
-alarm), and Sec.~\ref{sec:headtohead} measures what the codec costs. The control
-draw of Sec.~\ref{sec:comparator} isolates the same bank from the
-other direction: it scores $0.8273 \pm 0.0120$, and that entire gap
-belongs to the draw. The judge is silent about the codec itself: the
-reconstruction arm passes through it too, and
-Sec.~\ref{sec:headtohead} finds that the codec alone accounts for 12.3
-FID points the critic scores as zero error. The two measurements bound
-different components, and neither alone bounds the system.
+The reconstruction arm shows that G2 and the joint sweep preserve
+high classifier agreement when supplied with real backbone codes.
+Because it bypasses both the draw and R1, and because classifier
+agreement does not determine distributional fidelity, it does not
+localize all remaining error to one bank. The end-to-end tone and
+contrast differences remain at the selected comparator setting.
+The reconstruction FIDs in Sec.~\ref{sec:headtohead} provide a separate
+reference for the code representation; they are not bounds on a
+generator's FID.
 
 % Draw analysis: 10_draw_analysis.py; schedules: 20_draw_ablations.py;
 % prefix reteach: 09_prefix_schedule.py.
-The control draw's failure has a measured signature. Its per-book
+The earlier fixed-gain control has a measured failure signature.
+The following probes concern that control, not the selected
+comparator-driven generator. Its per-book
 symbol marginals deviate from the training marginals by 0.21 total
 variation against a 0.05 real-sampling bar (0.33 at the worst book),
 and in the earliest books the over-picked symbols are near-zero-contrast
@@ -790,15 +765,13 @@ diagnosis. A linear schedule falling across the chain moves tone,
 contrast, and diversity onto the reconstruction arm's values at a small
 critic cost (0.8200), and a flat noise at the control's median is a
 wash on the critic (0.8393 against 0.8273, inside the seed spread) and
-costs diversity. Neither closes the
-gap, because both stay at the lanes' own scale. The operating point of
+costs diversity. Neither closes the critic gap in that control. The operating point of
 Sec.~\ref{sec:comparator} supplies a flat read seven to nine times
 hotter (0.20 against the control's median of 0.023--0.030), and that is
 what moves contrast onto the reconstruction arm's
 value (std-ratio 1.14 against 1.13), narrows tone past it (1.59
 against 2.00), and lifts the critic above it
-(Table~\ref{tab:headline}). The contrast alarm is not fully closed:
-end-to-end std-ratio is 1.14 against a 1.10 margin.
+(Table~\ref{tab:headline}). 
 
 \subsection{Design studies}\label{sec:studies}
 
@@ -807,22 +780,18 @@ pipeline this paper describes.
 
 \emph{(a) Capacity and alphabet scaling.} Generation improves with the
 number of books at fixed alphabet (64 to 128 books moved the
-backbone-only critic from 0.813 to 0.834 at keep-$p$ 0.5) and degrades
-with alphabet depth at matched bits ($64\times32$ at 320 bits reaches
-0.7875 against 0.8344 for $128\times16$ at 512 bits). A global code
+backbone-only critic from 0.813 to 0.834 at keep-$p$ 0.5) and is lower in the tested larger-alphabet configuration ($64\times32$ at 320 bits reaches
+0.7875 against 0.8344 for $128\times16$ at 512 bits). Since
+both alphabet and bit count differ, this comparison does not isolate
+the effect of alphabet size. A global code
 removes tile seams by construction: the mean pixel step across tile
 boundaries, relative to elsewhere, is 0.93--1.07 for the global code
-against 1.768 for a
-per-patch code measured on a predecessor of this pipeline, with real
-images at 1.100 (Fig.~\ref{fig:backbone}).
+with real images at 1.100 (Fig.~\ref{fig:backbone}).
 
 \emph{(b) Codec rate--distortion.} At rate parity (512 bits) the
 global dropout-AQ code at its compression frontier, keep-$p$ 0.75,
-reconstructs better than a per-patch codec (relMSE 0.0500 against
-0.0576 for a per-patch codec measured on that same predecessor), so
-positional locality does not help compression here; the deployed
-keep-$p$ 0.5 code gives that floor back (0.0612) for the coherence
-below, and the two-level residual construction reaches 0.0382
+has relMSE 0.0500; the deployed keep-$p$ 0.5 code has relMSE
+0.0612, trading reconstruction accuracy for the coherence below, and the two-level residual construction reaches 0.0382
 (Fig.~\ref{fig:codec}). Plain additive quantization ($p = 1$)
 degrades with scale through dead atoms and stalled search, while
 keep-$p$ is a clean dial: $p = 0.75$ is the compression frontier, and
@@ -835,9 +804,8 @@ at 128 books.
 \caption{\textbf{A single additive code over the whole canvas has no
 patch seams and improves with the number of books at fixed alphabet.}
 (a) Backbone-only samples at 16, 32, 64, and 128 books. (b) Critic
-agreement against the number of books and the alphabet size: deepening
-the alphabet at matched bits
-measured worse for generation, and plain additive quantization
+agreement against the number of books and the alphabet size: the measured larger-alphabet configuration
+performed worse despite using fewer total code bits, and plain additive quantization
 ($p = 1$) underperforms the dropout code.}
 \label{fig:backbone}
 \end{figure}
@@ -882,8 +850,8 @@ free-running, $\tau_0 \approx 100$\,ns & one comparator per lane, its
 input-referred noise settable; the pooled weights' own
 read noise is the minor term \\
 temperature control & $\tau_0$ fixed by circuit design & the read
-voltage and the comparator's noise setting, over a range that reaches
-zero \\
+voltage and the comparator's noise setting; cold reads are
+modeled as noiseless \\
 noise character & bias-programmable Bernoulli source & a flat settable
 term from the comparator, plus a state-dependent device term that
 pooling quenches \\
@@ -897,8 +865,8 @@ rendered output & binary spins; grayscale via a multi-spin embedding;
 color via a GAN-tuned neural decoder & float grayscale via a fixed
 linear decode \\
 learning & Monte Carlo gradient estimates from equilibrium samples
-(host optimizer) & in-situ lane instructions (perceptron-class local
-rules) \\
+(host optimizer) & local lane instructions for banks; host-fitted
+codebooks \\
 failure mode confronted & mixing--expressivity tradeoff &
 the label$\to$code draw \\
 \end{tabular}
@@ -952,7 +920,7 @@ the comparison in joules is not won per random bit. It is won on
 count: the accounting below charges about 3600 noisy reads per image,
 where the chain charges $T K L^2 \approx 10^{7}$ conditional updates.
 
-The per-image energy is a physical estimate from the stated geometry
+The per-image energy is a conditional estimate from the stated geometry
 of Appendix~\ref{app:energy}: the neural lane of
 Ref.~\cite{knowm2026blog}, one $4 \times 4$ unit-crossbar pair per
 address space on a 50\,nm pitch, the address of a read broadcast on
@@ -968,9 +936,7 @@ below $10^{-11}$\,J. It is applied to the exact operation count of the
 deployed system, 10\,064 lane reads and $1.78\times10^{6}$ address
 assertions over five banks totalling about $2.9\times10^{7}$ synapse
 pairs, with constants that are each a stated dimension or a textbook
-value (Table~\ref{tab:app-constants}). The decode is in the count. It
-is the fixed linear map of Eq.~(\ref{eq:decode}), and a lane read
-computes a linear map: with the codebook atoms stored as differential
+value (Table~\ref{tab:app-constants}).  The decoder is the fixed linear map of Eq.~(\ref{eq:decode}): with the codebook atoms stored as differential
 pairs, one output lane per pixel, and every code address present at
 the end of a generation, the pooled read of Eq.~(\ref{eq:pool})
 returns the sum of the selected atoms at a fixed scale. It is about
@@ -1004,7 +970,7 @@ against the 8-step DTM chain's $1.57\times10^{-8}$\,J
 \begin{tabular}{lcc}
 operating point & J/image & ratio \\
 \colrule
-nominal: 20\,nm via, $4 \times 4$, 0.8\,V select & $2.0\times10^{-9}$ &
+nominal: $4 \times 4$, 0.8\,V select & $2.0\times10^{-9}$ &
   $7.9\times$ less \\
 low-swing select, 0.5\,V & $8.8\times10^{-10}$ & $17.7\times$ less \\
 7\,nm-class periphery & $8.2\times10^{-10}$ & $19.0\times$ less \\
@@ -1015,13 +981,16 @@ pessimistic corner\footnote{$16 \times 16$ arrays, separate $a$- and
 \end{tabular}
 \end{ruledtabular}
 \end{table}
-The two 7\,nm-class rows are carried because
-Ref.~\cite{jelincic2025dtm} draws its cell energies from foundry models
-of an advanced node it does not name; they show where such a node takes
-this design and are not the claim. The claim is
-the nominal row read with its range: about $2\times10^{-9}$\,J per
-image, eight times below the DTM chain, with the stated sensitivities
-running from two to eighteen times below. The chain's
+The two 7\,nm-class rows illustrate sensitivity to an advanced process node, as used in Ref.~\cite{jelincic2025dtm}, whose node is unspecified. For that nominal geometry and those circuit assumptions, the estimate is about $2\times10^{-9}$\,J per
+image, eight times below the DTM chain, with the non-7\,nm sensitivity rows
+running from about two to eighteen times below. These are scenario
+calculations, not uncertainty bounds on a working implementation. The
+floating-line nominal crossbar does not implement the isolated reads
+used for the quality results. Table~\ref{tab:sneak} separately prices
+a selector-column geometry without that sneak path at 1.6\,nJ,
+using the same assumed readout and decoder costs. Thus the modeled
+advantage persists in an array geometry consistent with isolated
+reads; the peripheral assumptions still apply. The chain's
 $1.57\times10^{-8}$\,J is read from their Fig.~1; their text states
 about $1.6\,T$\,nJ, which at $T = 8$ is $1.28\times10^{-8}$\,J and a
 nominal ratio of 6.4 (Appendix~\ref{app:energy}). The single-knob
@@ -1030,7 +999,7 @@ and 7.9. Because the model charges counts only, the binary-trained
 arms of Sec.~\ref{sec:headtohead}, whose banks and operation count are those of
 their grayscale twins, carry the same energies.
 
-\subsection{A head-to-head on binarized Fashion-MNIST}\label{sec:headtohead}
+\subsection{Binarized Fashion-MNIST and the published DTM reference}\label{sec:headtohead}
 
 Reference~\cite{jelincic2025dtm} reports quality as FID
 \cite{heusel2017fid} on binarized Fashion-MNIST. Comparing against it
@@ -1038,16 +1007,15 @@ means binarizing our renders and scoring them the same way, which
 requires knowing what the same way is. Their paper states the metric
 and nothing else: no sample size, no feature extractor, no
 binarization threshold, and their released library
-\cite{extropic2025thrml} contains no FID code. The protocol is
-nevertheless fully determined by a DTM replication code base linked
+\cite{extropic2025thrml} contains no FID code. A reproducible scoring protocol is
+available in a DTM replication code base linked
 from that library \cite{dtmreplication}, whose author credits a DTM
 author for guidance and whose own logged 8-step runs score FID 25--27,
 and which ships both the evaluation code and the precomputed reference
 statistics (Table~\ref{tab:protocol}).
 
 \begin{table}
-\caption{The evaluation protocol of Ref.~\cite{jelincic2025dtm},
-recovered from the replication code \cite{dtmreplication} linked from
+\caption{The evaluation protocol used here, from the replication code \cite{dtmreplication} linked from
 Ref.~\cite{extropic2025thrml}.
 \label{tab:protocol}}
 \begin{ruledtabular}
@@ -1080,14 +1048,15 @@ $\Sigma$. Agreement at that level across a $2048\times2048$ covariance
 fixes every element of the protocol at once. It establishes that our
 scoring path is identical to the replication's; it does not establish
 that Ref.~\cite{jelincic2025dtm} computed its published figures through
-this pipeline, which we cannot check. The held-out test split scores
-2.142 at $n = 5120$, the small-sample floor that every generated row
-below, and the DTM rows scored at the same $n$, carry.
+this pipeline, which we cannot check. The canonical test split scores
+2.142 at $n=5120$. This is a finite-sample real-data reference, not a
+universal FID floor or a held-out test of CHILL ZEN, whose fitting
+partition includes most canonical test images. The number of samples used for the published DTM scores is unknown.
 
 The grayscale-trained rows are the frozen systems of
 Sec.~\ref{sec:results}, rendering grayscale in $[0,1]$ with the
-threshold as the only host-side step; nothing was trained, tuned, or
-refit for the measurement. The binary-trained banks were retaught once,
+threshold as the only host-side step; their weights were not refitted for this measurement, but their
+comparator levels were selected by the reported FID. The binary-trained banks were retaught once,
 on the physical fill read of Sec.~\ref{sec:setup}, after a first
 head-to-head on the dial-taught banks trailed the fixed-gain control
 (11.10 against 9.82); the rows report the retaught banks. The
@@ -1101,8 +1070,11 @@ them.
 
 \begin{table}
 \caption{Binarized Fashion-MNIST under the protocol of
-Table~\ref{tab:protocol}: their evaluation code, reference
-statistics, threshold, and sample count. Diversity is the within-class
+Table~\ref{tab:protocol}: the replication
+evaluation code, reference statistics, threshold, and sample count.
+DTM rows are published values, not reruns through this pipeline.
+Reconstruction rows use real codes from our 68\,000-image fitting
+partition, which differs from the canonical reference split. Diversity is the within-class
 mean pairwise pixel disagreement of the scored images. Energies are
 the nominal point of the model of Sec.~\ref{sec:energy}; DTM
 energies are from Fig.~1 of Ref.~\cite{jelincic2025dtm}. Each grayscale
@@ -1118,9 +1090,10 @@ in the companion repository.
 \begin{tabular}{lccc}
 system & FID & div & J/image \\
 \colrule
-real train images (control) & 1.91 & 0.181 & --- \\
-128-book codec ceiling, grayscale & 14.21 & 0.163 & --- \\
-128-book codec ceiling, binary & 9.57 & 0.167 & --- \\
+real fitting images (control) & 1.91 & 0.181 & --- \\
+128-book reconstruction, grayscale & 14.21 & 0.163 & --- \\
+128-book reconstruction, binary & 9.57 & 0.167 & --- \\
+binary two-level reconstruction & 2.83 & 0.176 & --- \\
 \colrule
 CHILL ZEN two-level & \textbf{18.09} & 0.156 & $2.0\times10^{-9}$ \\
 CHILL ZEN one-level, 128 books & 22.11 & 0.152 & $7.5\times10^{-10}$ \\
@@ -1141,18 +1114,25 @@ DTM, 2 steps \cite{jelincic2025dtm} & 32.60 & --- & $3.92\times10^{-9}$ \\
 % Head-to-head: head_to_head/25_comparator_headtohead.py,
 % 07_comparator_score.py; binary arms: 24_binary_comparator_sweep.py,
 % 27_binary_comparator_headtohead.py.
-The two-level system scores FID 18.09 against 24.90
-for the deepest DTM chain, at a modeled $2.0\times10^{-9}$\,J per image
-against $1.57\times10^{-8}$, a factor of about eight in energy at better
-quality; the
-energy claim should be read at whichever of the operating points of
-Sec.~\ref{sec:energy} the reader is willing to grant, and the quality
-result does not depend on it. The codec ceiling, the render of
-\emph{real} codes, bounds every arm that passes through it: at 14.21 it
-puts the cost of the 512-bit code alone at about 12 FID points, and the
-two-level draw sits 3.9 points above its own ceiling. Diversity is 86\% of real and not
-collapsed, and the codec's own render of real codes sits at 90\%, so
-most of the shortfall is the codec. The one-level frontier was swept
+Under the stated energy models, the two-level system uses about
+7.9 times less energy per image than the published eight-step DTM
+($2.0$ versus $15.7$\,nJ), while scoring FID 18.09 against its
+reported 24.90. Direct binary training lowers our FID to 9.69 at the
+same modeled energy. This compares emulated generation quality and
+estimated hardware energy with the published DTM results. The
+energy ratio follows from the two accountings; it is not a
+measurement of either complete machine. Our scoring path is verified
+against the replication, and the quality comparison retains the
+protocol and training-split qualifications stated above.
+
+The grayscale 128-book reconstruction reference scores 14.21. It uses
+only the backbone, so it is not a reference for reconstruction through
+the full two-level codec. Nor does reconstruction FID bound generation
+FID: FID compares feature distributions and does not decompose into
+additive codec and draw errors. End-to-end pixel disagreement is 86\%
+of the real fitting-image reference; that statistic alone does not
+establish mode coverage or locate the cause of its shortfall.
+The one-level frontier was swept
 on the same six-level grid, and each arm has its own optimum: the
 128- and 64-book systems at $v_n / V = 0.05$, the 32-book system with
 no comparator noise at all, the 16-book system at 0.10. Smaller codes
@@ -1170,28 +1150,28 @@ and both judges' scores at every level are recorded.
 \emph{The binary-trained arms.} Training directly on the binarized
 data measures better under this protocol. The binary-trained two-level
 stack scores FID 9.69, against 18.09 for the grayscale-and-threshold
-path and 24.90 for the DTM, and sits 0.1 above its own codec ceiling
-of 9.57. The training-information asymmetry therefore does not favor
-the grayscale path; measured, it runs the other way. Every
+path and 24.90 for the DTM, while the full binary two-level reconstruction reference scores
+2.83. The 9.57 row is the backbone-only reconstruction. Neither
+reference is a lower bound on generator FID. Thus binary fitting works better for this architecture under the
+chosen protocol; this does not remove the training-split asymmetry
+with the DTM. Every
 binary-trained arm below $v_n / V = 0.20$ fails the diversity screen,
 which is the hardware finding of Sec.~\ref{sec:comparator} stated on
 this metric: on this substrate the draw's noise has to be supplied by
 the comparator, and a single read's own physics does not supply enough.
 
 \emph{Comparison with their baselines.} The DTM rows of
-Table~\ref{tab:headtohead} are protocol-verified. The GAN, VAE, MEBM,
+Table~\ref{tab:headtohead} are transcribed from the published paper;
+their scoring path has not been independently verified. The GAN, VAE, MEBM,
 and DDPM numbers of Fig.~\ref{fig:energy}a are decoded from the vector
 source of their Fig.~1, cross-checked for the VAE series against their
 Appendix~F, and were trained and scored by them under details we cannot
-inspect. At 18.09 the two-level system is better than every
-probabilistic-computer point they report (DTM best 24.9, MEBM best
-33.5) and better than their GAN series (best 26.3). It is not better
-than their two strongest GPU baselines, a VAE at 17.9 and a DDPM whose
-best decoded point is 12.2 (their axis clips it; the best visible point
-is 16.4), which sit seven to eleven orders of magnitude to the right in
-energy. The binary-trained 9.69 sits 8.2 below the VAE and 2.5 below
-the DDPM's best decoded point; given how that point was obtained, we
-read it as parity with the DDPM.
+inspect. The published best values are 24.9 for DTM, 33.5 for MEBM, 26.3
+for GAN, and 17.9 for VAE. The best DDPM point decoded from the vector
+figure is 12.2, below the plotted axis range; the best visible point
+is 16.4. These provide context for CHILL ZEN's 18.09 and 9.69, but
+unverified evaluation details prevent a controlled ranking or a claim
+of parity with the DDPM.
 
 % Audits: head_to_head/30_bernoulli_baseline.py, 31_free_draw.py,
 % 32_audit_score.py, 33_binary_memorization.py.
@@ -1207,11 +1187,14 @@ label prior enters by construction
 and nothing has to learn the class balance. Second, the metric is not
 soft for trivial models of this data: a per-class independent-Bernoulli
 sampler scores FID 180.5 through the identical path, and 258.1 without
-class information. Third, the binary-trained renders are not memorized:
-all 5120 are distinct, none is a copy of a training image where
-held-out real images copy training images at 13 per 10\,000, and their
-nearest-training-neighbour Hamming distribution matches that of
-held-out real images (median 25 bits against 23).
+class information. Third, an exact-copy and nearest-neighbor audit of the binary-trained
+renders against the actual 68\,000-image fitting partition finds
+all 5120 distinct and no training-image copies. The 2000 images
+excluded from fitting include five exact training-image duplicates;
+the nearest-training-neighbor Hamming medians are 25 bits for
+generated images and 23 for that reference. These checks found no
+exact-copy signature; they do not rule out all forms of memorization.
+The reference images were used for model selection.
 
 \emph{The threshold moves FID more than the model does.} The
 binarization threshold is a property of the data, and changing it moves
@@ -1228,7 +1211,7 @@ included.
 \includegraphics[width=\textwidth]{figures/fig-binarization.png}
 \caption{\textbf{The binarization threshold changes every image, and
 it is not a model choice.} The same renders, one sample per class,
-thresholded at the 0.1 of Ref.~\cite{jelincic2025dtm} (left) and at
+thresholded at the replication's 0.1 (left) and at
 the midpoint (right). Real Fashion-MNIST scored against their own
 reference gives FID 0.000039 at 0.1 and 29.75 at 0.5, so the
 convention alone spans more than the gap between any two systems in
@@ -1239,9 +1222,9 @@ Table~\ref{tab:headtohead}.}
 \begin{figure*}
 \includegraphics[width=\textwidth]{figures/fig-energy.png}
 \caption{\textbf{CHILL ZEN's performance versus energy.}
-Every FID here is produced by the evaluation code, reference
-statistics, threshold, and sample count of
-Ref.~\cite{jelincic2025dtm} (Table~\ref{tab:protocol}). The CHILL ZEN
+CHILL ZEN FIDs use the replication protocol of
+Table~\ref{tab:protocol}; the other series are published values
+whose scoring path we could not verify. The CHILL ZEN
 frontier spans one-level systems of 16, 32, 64, and 128 books and the
 two-level system (star) at the nominal point of the energy model; the
 shaded band extends each point to the model's pessimistic corner
@@ -1249,8 +1232,8 @@ shaded band extends each point to the model's pessimistic corner
 plotted at their computed energies. (a) The axes of Fig.~1 of
 Ref.~\cite{jelincic2025dtm}, with their five reported series
 re-plotted from their data. (b) The same frontier against the DTM
-chain alone, drawn as FID so the margin is readable, with the codec
-ceiling and the real-data floor. Each CHILL ZEN point is at its own
+chain alone, drawn as FID so the margin is readable, with the backbone
+reconstruction and real-data references. Each CHILL ZEN point is at its own
 best comparator level; the two-level system and the 128- and 64-book
 one-level systems clear the DTM chain, the 32-book system meets it,
 and the 16-book system does not. The energy values for this work are
@@ -1267,8 +1250,8 @@ estimates from the model of Appendix~\ref{app:energy}.}
   geometry, not measured, and are reported with their sensitivities for
   that reason. The dominant term, delivery of each read's address to
   the arrays at logic voltage, scales with the periphery's transistor
-  pitch and the select supply, and at the model's pessimistic corner
-  the advantage over the DTM chain falls to a factor of two. The model
+  pitch and the select supply, and the scenario called the pessimistic corner gives an energy ratio
+  of about two. These scenarios do not bound omitted circuit costs. The model
   covers address delivery, read, and readout energy per image and not
   die area, leakage beyond the bound of Appendix~\ref{app:energy}, or
   the one-time energy of programming the roughly $5.7\times10^{7}$
@@ -1280,10 +1263,9 @@ estimates from the model of Appendix~\ref{app:energy}.}
   Sec.~\ref{app:sneak}), and a feedback pulse divides the same way.
   The emulator's crossbar fidelity is ideal, every read returns the
   selected pair alone, and every result of this paper is at that
-  fidelity. Teaching closes its loop on the same read that inference
-  uses, so the bias part of this crosstalk is the static non-ideality
-  that in-the-loop learning absorbs; the loss of address resolution
-  and the write disturb are not, and neither has been measured.
+  fidelity. Teaching through nonideal reads might compensate some static bias,
+  but that has not been tested here. Neither the loss of address
+  resolution nor write disturb has been measured.
   Table~\ref{tab:sneak} prices the ways out; the $16 \times 1$
   selector column, which has no sneak path, is the geometry we would
   build and not the one this paper prices.
@@ -1308,10 +1290,13 @@ estimates from the model of Appendix~\ref{app:energy}.}
   Sec.~\ref{sec:headtohead} are over the 60\,000-image train split
   that Ref.~\cite{jelincic2025dtm} trains on; the training sets are
   neither identical nor the same size.
-\item Every grayscale row of Table~\ref{tab:headtohead} is reported
+\item The 2000-image evaluation partition was used for epoch and
+  hyperparameter selection, so the grayscale results are validation
+  measurements. Every grayscale row of Table~\ref{tab:headtohead} is reported
   at its best level on a six-level comparator grid, selected by the
   same FID it reports; no finer grid and no held-out selection was
-  run. We report no gradient-trained control on this code and
+  run. The binary comparator grid was extended during development and
+  its best FID is also selected on the reported scores. We report no gradient-trained control on this code and
   connectivity, so the contribution of the local lane rule is not
   separated from that of the code and the recipe; the paper does not
   claim the local rule outperforms gradient training. Conditioning is
@@ -1323,22 +1308,20 @@ estimates from the model of Appendix~\ref{app:energy}.}
 
 \section{Conclusion}\label{sec:conclusion}
 
-CHILL ZEN generates by reading stored weights hot and reconciling them
-cold, with the sampling temperature an argument of the read
-instruction and zero in its range. The pooled devices cannot supply a
-generative draw's temperature, because a pooled read's thermal noise
-is the kT/C noise of its output node, so the comparator that resolves
-the read supplies it, and its input-referred noise referred to the
-read voltage is the draw's temperature. A comparator for this
-architecture therefore has a requirement a comparator for a memory
-does not: noise that can be set, from near zero for a verdict to a few
-tenths of the read voltage for a draw, on top of an offset trimmed per
-lane to below a tenth of the read voltage. The residual error is in
-one bank, the label$\to$code draw, and its signature is
-distributional. The level that maximizes the critic is not the level
-that minimizes the FID for the same stack, and each arm is reported at
-the level its own metric selected. The lane-scale hardware, and the
-comparator it needs, have not been fabricated.
+CHILL ZEN combines a host-fitted additive code with locally taught
+lane banks and a fixed generation procedure. The emulator generates
+without waiting for an equilibrium distribution, using about 3600
+noisy lane reads per image. Pooling leaves too little device noise
+at the assumed read voltage, so the comparator must supply most of
+the draw variance. On binarized Fashion-MNIST the two-level system
+scores FID 18.09, or 9.69 when trained directly on binary data,
+against the eight-step DTM's published 24.90. The nominal energy
+estimate is 7.9 times lower than that chain's, and the separately
+priced selector-column geometry retains the advantage while removing
+the nominal array's sneak paths. These comparisons rest on the stated
+scoring protocol and circuit assumptions. The architecture's principal
+saving is the amount of sampling work: it generates a code in a fixed
+sequence of reads without an equilibrium mixing phase.
 
 \appendix
 
@@ -1382,9 +1365,9 @@ is named in Sec.~\ref{app:code}.
 
 The model charges three terms per generated image: the delivery of
 each read's address to the memristor arrays, the divider reads
-themselves, and the per-lane readout. It excludes, and
-Sec.~\ref{app:excluded} bounds, the rail
-supplies, leakage, and comparator kickback. It excludes without a bound
+themselves, and the per-lane readout. It excludes rail supplies and leakage, estimated in
+Sec.~\ref{app:excluded}, and comparator kickback, which remains
+unverified. It excludes without a bound
 the one-time programming of the weights and the die area, on the same
 grounds as the comparison point of Ref.~\cite{jelincic2025dtm}, which
 excludes its own weight flash and counts per-sample energy only. The
@@ -1394,8 +1377,8 @@ basis of comparison is stated in Sec.~\ref{app:basis}.
 
 The lane is the neural lane of Ref.~\cite{knowm2026blog}, Chapter~4. Its
 element is the \emph{unit crossbar}: a small memristor crossbar with a
-row multiplexer and a column multiplexer, which together couple exactly
-one device between a source line and a drain line. There is no selector
+row multiplexer and a column multiplexer, which address one device between a source line and a drain line;
+other devices also conduct when unselected lines float. There is no selector
 transistor at the memristor; unselected rows and columns float. A synapse
 is a pair of unit crossbars, the $a$-side between rail $V_a$ and the
 output node and the $b$-side between the node and rail $V_b$. A lane is
@@ -1438,7 +1421,7 @@ Three consequences of that layout fix the capacitances
 
 \begin{figure}
 \centering
-\begin{tikzpicture}[font=\scriptsize, x=1cm, y=1cm]
+\begin{tikzpicture}[font=\scriptsize, x=1cm, y=1cm, scale=0.97, transform shape]
   % lanes: vertical Vy lines
   \foreach \i in {0,1,2,3} {
     \draw[thick] (\i*1.4, -0.3) -- (\i*1.4, 3.9);
@@ -1614,21 +1597,22 @@ thermal noise is $4 \kB T \gamma B / g_m$ with $g_m = I / (n V_T)$,
 which is the starved-preamplifier mechanism of
 Sec.~\ref{sec:comparator}; at a fixed bandwidth-time product the
 energy a read needs to reach a noise $v_n$ is $4 \kB T \gamma\, n V_T
-V_{dd}\, (BT) / v_n^2$, with $\gamma = 1$, $n V_T = 35$\,mV and $BT =
+V_{dd}\, (BT) / v_n^2$, with $\gamma = 1$, $n V_T = 35$\,mV and an illustrative $BT =
 3$: 0.35\,fJ at the 2\,mV hot read, 1.4\,fJ at 1\,mV (register code
 45), 15\,fJ at 300\,$\mu$V (code 10) and 139\,fJ at 100\,$\mu$V
-(code 0). The cold reads are 64\% of the reads, so a cold read at code
-45 costs what is priced and one at code 0 costs ten times more; the
-control of Sec.~\ref{sec:comparator} found code 45 moves no judge.
+(code 0). These noise-energy examples use $BT=3$, whereas 500\,MHz over the
+priced 62.5\,ns window gives $BT=31.25$ and energies 10.4 times
+larger. They therefore do not establish that the priced comparator
+meets both the hot-read ramp condition and the cold-noise requirement.
+The cold-noise control measures grayscale sensitivity, not circuit
+feasibility or FID at that circuit's noise level.
 Table~\ref{tab:readout} prices the alternatives, printed by
-\texttt{experiments/38\_readout\_options.py}. The choice is one of
-generality against specificity: a falling reference read by a clocked
-comparator returns the rank of every lane but pays a strobe, and a
-fresh noise sample, per reference step; a pairwise tournament of
-clocked decisions returns the winner alone, which is all a generation
-uses, at one decision per lane; the continuous-time comparator returns
-both for a standing bias whose cost is set by the noise demanded of
-it.
+\texttt{experiments/38\_readout\_options.py}. A clocked comparator with a falling reference returns every lane's
+rank, with one strobe and fresh noise sample per reference step.
+A clocked pairwise tournament returns only the winner, which is all
+generation uses, at one decision per lane. A continuous-time comparator
+returns both winner and rank; its standing bias cost depends on the
+required noise level.
 
 \begin{table*}
 \caption{The readout priced five ways on the deployed census with the
@@ -1833,11 +1817,13 @@ below $10^{-4}$ of the total. Had the rails been held across an assumed
 pulsed. The image time itself depends on the device's conductance,
 which the model does not need and the paper does not claim.
 
-\emph{Comparator kickback.} A strobe injects about 0.5\,fC through the
-input pair; on a node of at least 131\,fF that is 4\,mV, repeatable
-strobe to strobe and so removed by the same per-lane trim as the
-comparator's offset, and 25 times below the device's
-0.1\,V erase threshold.
+\emph{Comparator kickback.} An illustrative 0.5\,fC input charge
+would move a 131\,fF node by about 4\,mV, but the first backbone
+read has only about 12\,fF including comparator input capacitance,
+which gives about 42\,mV. A fixed trim cannot be assumed to cancel
+state-dependent kickback across these loads. Kickback is absent from
+the emulator and remains a readout-design requirement, not a verified
+negligible term.
 
 \emph{Read disturb.} The cold read at 50\,mV is two times below the
 erase threshold and five times below the 0.25\,V write threshold; the
@@ -1889,9 +1875,9 @@ number of this appendix beside the script that produces it.
 
 \subsection*{Data and Code Availability}
 
-The code that reproduces every number in this paper, the paper
-source, and the map from each stated quantity to the script that
-produces it are at \url{https://github.com/knowm/CHILL-ZEN}, with the
+The companion repository contains the final experimental recipe,
+paper source, saved numerical evidence, and a map from reported
+quantities to scripts. It is prepared for release at \url{https://github.com/knowm/CHILL-ZEN}, with the
 lane emulator at \url{https://github.com/knowm/ktram-neural-core}.
 The evaluation of Sec.~\ref{sec:headtohead} imports the released
 feature extractor and distance code of Ref.~\cite{dtmreplication} and
@@ -1923,6 +1909,8 @@ every hole, inconsistency, and misattribution it could find, ranked by
 the damage a reviewer could do with it, and we worked through the list
 together. The fixes that needed a measurement rather than a sentence
 are in the repository as experiments 35 through 38.
+
+I also used OpenAI Astra-6 to review and edit the paper.
 
 \subsection*{Competing Interests}
 

@@ -3,7 +3,7 @@
 # The grayscale main sequence, experiments 00-14:
 #
 #   make artifacts   fit the codecs and teach the banks (the long part)
-#   make verdict     the two-level verdict behind the paper's Table II
+#   make verdict     historical fixed-gain controls (Table II: make reporting)
 #   make analysis    the prefix schedule and the draw's signature
 #   make energy      the energy model and the frontier
 #   make figures     every figure that does not need the head-to-head
@@ -48,7 +48,7 @@ all: artifacts verdict analysis energy figures
 
 paper: main.pdf
 
-main.pdf: main.tex refs.bib
+main.pdf: main.tex refs.bib $(wildcard figures/*.png)
 	$(TECTONIC) main.tex
 
 artifacts:

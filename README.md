@@ -26,10 +26,9 @@ draw here is device-only by design, the call site says so with
 The teaching path runs on the same read. The G fills that the R banks
 and the joint bank teach against are drawn through `chill_zen.physical`
 at the emulator's device noise, the 10 mV read, and the
-comparator register at code 245 (`levels.FILL_V_CMP`). That level was
-chosen by sweeping the teaching read (codes 45, 95, 145, 245) and
-re-measuring everything downstream of each; NUMBERS.md Sec. III B has
-the table. Every bank's config records its fill read, so banks taught at
+comparator register at code 245 (`levels.FILL_V_CMP`). That setting was chosen during development. The intermediate fill-sweep
+logs were not retained and generation-noise settings differed between
+runs; the archived summary does not isolate the effect of fill noise. Every bank's config records its fill read, so banks taught at
 another level are refitted rather than reused.
 
 ---
@@ -47,7 +46,7 @@ cd CHILL-ZEN
 
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/pip install "ktram-neural-core @ git+https://github.com/knowm/ktram-neural-core@main#subdirectory=python"
+.venv/bin/pip install "ktram-neural-core @ git+https://github.com/knowm/ktram-neural-core@6899ca6717377a952782724c33c85b0c4e580e56#subdirectory=python"
 
 # only for experiments/head_to_head
 python3 -m venv .venv-dtm
@@ -74,6 +73,26 @@ Fashion-MNIST, in two orders, and they must not be mixed.
   against were computed over the canonical 60,000-image train split.
   `experiments/head_to_head/fetch_vendor.sh` downloads them into
   `data/` and checks their sha256.
+
+## Scope of the evidence
+
+The 2,000-image partition is used for bank-epoch and hyperparameter
+selection. It is a validation partition, not an untouched test set.
+Generation seeds measure sampling variation of selected banks. FID noise
+levels were chosen using the same scores that are reported.
+
+The replication gate verifies our implementation of that replication's
+metric. It does not establish the scoring path used for the published
+DTM numbers. Our fitting split also differs from DTM's canonical 60k.
+Reconstruction FIDs are references, not bounds, and the 9.57 binary
+backbone reference must not be substituted for the full two-level 2.83.
+
+`evidence/` preserves existing logs and the corrected split audit.
+Its manifest records the current local artifacts and saved renders;
+these hashes were taken after the experiments and cannot establish
+which historical bank produced a render. A clean rebuild is the way to
+establish that dependency afresh. Cached filenames or matching recipe
+fields alone are not proof of identical upstream contents.
 
 ## Artifacts
 
@@ -110,7 +129,7 @@ Costs are wall-clock on eight CPU threads.
 | `04_teach_patch_banks.py` | G2 and R2 | 23 min |
 | `05_teach_joint_bank.py` | the joint repair bank, pool included | 25 min |
 | `06_backbone_sweep.py` | one-level generation across book count, alphabet size and keep-p | minutes |
-| `07_verdict.py` | the two-level verdict at n = 1000 (single seed; Table II is the three-seed version from 21 and 23) | 1 min |
+| `07_verdict.py` | the two-level verdict at n = 1000 (single seed; Table II is the three-seed version from 21) | 1 min |
 | `08_stack_arms.py` | what each component of the stack contributes | 1 min |
 | `09_prefix_schedule.py` | the draw's one targeted ablation | 14 min |
 | `10_draw_analysis.py` | where the draw deviates from real codes | 2 min |
@@ -126,7 +145,7 @@ Costs are wall-clock on eight CPU threads.
 | `20_draw_ablations.py` | flat sigma and the temperature schedules, three seeds | 10 min |
 | `21_reporting.py` | Table II's seed spread; memorization; the sweep's flip rate | 10 min |
 | `22_binary_energy.py` | the energy model on the binary census | minutes |
-| `23_comparator_sweep.py` | the comparator-noise sweep, grayscale (Fig. 4a; Table II's end-to-end row) | 15 min |
+| `23_comparator_sweep.py` | the comparator-noise sweep, grayscale (Fig. 4a; separate seeds from Table II) | 15 min |
 | `24_binary_comparator_sweep.py` | the same sweep on the binary-trained stack (`--extend` for the last two points) | 20 min + scoring |
 | `27_binary_comparator_headtohead.py` | binary one-level rows of Table VII at the operating point | 5 min |
 | `28_physical_energy.py` | the energy model restated at the operating point (nothing moves) | 1 min |
@@ -188,8 +207,8 @@ hot reads at the operating point (10 mV, comparator 2 mV), from
 ```
 arm               critic            div             tone   stdr
 real              0.8860            0.4866          2.362  1.00
-reconstruction    0.8963 ± 0.0110   0.5184 ± 0.0015 2.004  1.13
-end-to-end        0.9007 ± 0.0310   0.5487 ± 0.0052 1.590  1.14
+reconstruction    0.8963 (0.0110)   0.5184 (0.0015) 2.004  1.13
+end-to-end        0.9007 (0.0310)   0.5487 (0.0052) 1.590  1.14
 ```
 
 and from the head-to-head (Table VII), scored by the DTM replication
@@ -211,14 +230,12 @@ machine reproduce byte-identical bank weights, codes and generated
 states; the verdict table above was checked that way against the run
 the paper reports.
 
-Across machines the picture is weaker in one place. Codec fitting goes
-through BLAS matrix products and an fp64 linear solve, whose last bits
-depend on the BLAS build, and an encode is an argmax over scores, so a
-last-bit difference can flip a symbol. Expect the reported metrics to
-agree to three or four decimals rather than exactly, and expect
-codebook files not to be byte-identical. Everything downstream of a
-fixed codebook is integer or seeded and does reproduce exactly:
-teaching, generation, judging, energy.
+Across machines, floating-point codec fitting, encoding, judging and
+FID can differ with the library build and hardware. Small score changes
+can change an argmax and propagate through later computation. The seed
+ranges in the paper do not establish cross-machine tolerances. Use the
+saved evidence to inspect differences; byte identity is expected only
+where it has actually been checked under the recorded environment.
 
 ## Layout
 
@@ -264,11 +281,9 @@ are cached, so a second run is minutes. Their evaluation code, their
 reference statistics and the canonical Fashion-MNIST files are fetched
 and checksum-verified rather than redistributed.
 
-**5. Sec. IV D of the paper quotes the retaught draw.** The
-distributional probes in that section are measured on the draw of
-experiment 09, not on the fixed-gain control of `07_verdict.py`.
-`experiments/10_draw_analysis.py` prints both columns side by side and
-`NUMBERS.md` marks which is which.
+**5. Sec. IV D diagnoses the earlier fixed-gain control.** Experiment
+10 prints that control beside the prefix-retaught draw. Neither column
+is a measurement of the selected comparator-driven generator.
 
 ## What is not here
 
@@ -284,9 +299,8 @@ experiment 09, not on the fixed-gain control of `07_verdict.py`.
 
 ## Citing
 
-If you use this, cite the paper. The evaluation protocol of the
-head-to-head belongs to Jelinčić et al. (arXiv:2510.23972) and the
-`dtm-replication` code base; cite them for anything scored with it.
+If you use this, cite the paper. The evaluation pipeline is from `dtm-replication`; the published DTM
+reference is Jelinčić et al. (arXiv:2510.23972v2); cite them for anything scored with it.
 
 ## License
 

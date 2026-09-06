@@ -1,0 +1,72 @@
+{
+ "split": {
+  "seed": 0,
+  "n_train": 68000,
+  "n_reference": 2000,
+  "threshold": 0.1,
+  "reference_used_for_selection": true
+ },
+ "held-out-real": {
+  "distinct": 2000,
+  "n": 2000,
+  "largest_dup": 1,
+  "exact_copies": 5,
+  "nn_quantiles": {
+   "q00": 0.0,
+   "q01": 3.0,
+   "q05": 7.0,
+   "q25": 15.0,
+   "q50": 23.0,
+   "q75": 39.0,
+   "q100": 216.0
+  }
+ },
+ "comparator-two-level-P6": {
+  "distinct": 5120,
+  "n": 5120,
+  "largest_dup": 1,
+  "exact_copies": 0,
+  "nn_quantiles": {
+   "q00": 2.0,
+   "q01": 4.189999999999998,
+   "q05": 8.0,
+   "q25": 16.0,
+   "q50": 25.0,
+   "q75": 41.0,
+   "q100": 202.0
+  },
+  "render_sha256": "8a0ab8e2bc0b16b54ec342997e65fb87b30130efdfda76fc07f617c85ddee13b"
+ },
+ "comparator-binary-one-level-128": {
+  "distinct": 5120,
+  "n": 5120,
+  "largest_dup": 1,
+  "exact_copies": 0,
+  "nn_quantiles": {
+   "q00": 1.0,
+   "q01": 6.0,
+   "q05": 10.0,
+   "q25": 20.0,
+   "q50": 31.0,
+   "q75": 51.0,
+   "q100": 166.0
+  },
+  "render_sha256": "b469dfbb0ebc77515ae6fc762145a76e325e1e89118abe275d1e8ea489f16f75"
+ },
+ "comparator-binary-one-level-64": {
+  "distinct": 5120,
+  "n": 5120,
+  "largest_dup": 1,
+  "exact_copies": 0,
+  "nn_quantiles": {
+   "q00": 1.0,
+   "q01": 4.0,
+   "q05": 8.0,
+   "q25": 17.0,
+   "q50": 27.0,
+   "q75": 47.0,
+   "q100": 155.0
+  },
+  "render_sha256": "e156a8198eea1f9562a4786c925ddd9266c0da6ec1a160c066c9c0a2cc707096"
+ }
+}

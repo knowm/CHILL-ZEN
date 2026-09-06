@@ -1,0 +1,48 @@
+
+=== binary memorization battery (2026-09-02 10:52) ===
+
+held-out real calibration (test split, n = 10000):
+  distinct renders 9998/10000  largest duplicate group 2
+  exact train copies 13  (3s)
+  NN-to-train Hamming: q00 0  q01 3  q05 7  q25 14  q50 23  q75 38  q100 271
+
+comparator-two-level-P6 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 1  (1s)
+  NN-to-train Hamming: q00 0  q01 4  q05 8  q25 16  q50 24  q75 41  q100 179
+
+comparator-binary-one-level-128 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (2s)
+  NN-to-train Hamming: q00 1  q01 5  q05 10  q25 19  q50 30  q75 47  q100 138
+
+comparator-binary-one-level-64 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (1s)
+  NN-to-train Hamming: q00 2  q01 5  q05 8  q25 15  q50 24  q75 40  q100 160
+
+saved: audit-memorization.json
+
+=== binary memorization battery (2026-09-04 03:03) ===
+
+held-out real calibration (test split, n = 10000):
+  distinct renders 9998/10000  largest duplicate group 2
+  exact train copies 13  (3s)
+  NN-to-train Hamming: q00 0  q01 3  q05 7  q25 14  q50 23  q75 38  q100 271
+
+comparator-two-level-P6 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (1s)
+  NN-to-train Hamming: q00 2  q01 5  q05 8  q25 16  q50 25  q75 41  q100 202
+
+comparator-binary-one-level-128 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (1s)
+  NN-to-train Hamming: q00 1  q01 6  q05 10  q25 20  q50 31  q75 51  q100 166
+
+comparator-binary-one-level-64 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (1s)
+  NN-to-train Hamming: q00 1  q01 4  q05 8  q25 17  q50 27  q75 47  q100 155
+
+saved: audit-memorization.json

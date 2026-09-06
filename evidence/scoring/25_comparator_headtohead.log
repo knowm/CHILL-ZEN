@@ -1,0 +1,49 @@
+
+=== physical-point head-to-head render (2026-09-02 08:50) — P3 V=10mV v_n=1000uV ===
+[gen] comparator-one-level-16: 5120 codes drawn (2s)
+[gen] comparator-one-level-16: (5120, 28, 28) mean 0.2881  on-fraction at 0.1 0.5649
+[gen] comparator-one-level-32: 5120 codes drawn (10s)
+[gen] comparator-one-level-32: (5120, 28, 28) mean 0.2832  on-fraction at 0.1 0.5532
+[gen] comparator-one-level-64: 5120 codes drawn (47s)
+[gen] comparator-one-level-64: (5120, 28, 28) mean 0.2930  on-fraction at 0.1 0.5585
+[gen] comparator-one-level-128: 5120 codes drawn (192s)
+[gen] comparator-one-level-128: (5120, 28, 28) mean 0.2898  on-fraction at 0.1 0.5489
+[gen] comparator-two-level: backbone codes drawn (142s)
+[gen] comparator-two-level: joint sweep done (146s)
+[gen] comparator-two-level: (5120, 28, 28) mean 0.3016  on-fraction at 0.1 0.5101
+[gen] done
+
+=== physical-point head-to-head render (2026-09-04 00:19) — P3 V=10mV v_n=1000uV ===
+[gen] comparator-one-level-16: cached
+[gen] comparator-one-level-32: cached
+[gen] comparator-one-level-64: cached
+[gen] comparator-one-level-128: cached
+[gen] done
+
+=== physical-point head-to-head render (2026-09-04 06:56) — P3 V=10mV v_n=1000uV ===
+[gen] comparator-one-level-16: 5120 codes drawn (1s)
+[gen] comparator-one-level-16: (5120, 28, 28) mean 0.2872  on-fraction at 0.1 0.5602
+[gen] comparator-one-level-32: 5120 codes drawn (8s)
+[gen] comparator-one-level-32: (5120, 28, 28) mean 0.2805  on-fraction at 0.1 0.5474
+[gen] comparator-one-level-64: 5120 codes drawn (33s)
+[gen] comparator-one-level-64: (5120, 28, 28) mean 0.2932  on-fraction at 0.1 0.5584
+[gen] comparator-one-level-128: 5120 codes drawn (136s)
+[gen] comparator-one-level-128: (5120, 28, 28) mean 0.2965  on-fraction at 0.1 0.5540
+[gen] comparator-two-level: backbone codes drawn (136s)
+[gen] comparator-two-level: joint sweep done (138s)
+[gen] comparator-two-level: (5120, 28, 28) mean 0.3177  on-fraction at 0.1 0.5153
+[gen] done
+
+=== physical-point head-to-head render (2026-09-04 07:57) — P4 V=10mV v_n=2000uV ===
+[gen] comparator-one-level-16: 5120 codes drawn (2s)
+[gen] comparator-one-level-16: (5120, 28, 28) mean 0.2862  on-fraction at 0.1 0.5694
+[gen] comparator-one-level-32: 5120 codes drawn (14s)
+[gen] comparator-one-level-32: (5120, 28, 28) mean 0.2886  on-fraction at 0.1 0.5650
+[gen] comparator-one-level-64: 5120 codes drawn (84s)
+[gen] comparator-one-level-64: (5120, 28, 28) mean 0.3013  on-fraction at 0.1 0.5848
+[gen] comparator-one-level-128: 5120 codes drawn (304s)
+[gen] comparator-one-level-128: (5120, 28, 28) mean 0.3034  on-fraction at 0.1 0.5909
+[gen] comparator-two-level: backbone codes drawn (279s)
+[gen] comparator-two-level: joint sweep done (284s)
+[gen] comparator-two-level: (5120, 28, 28) mean 0.3292  on-fraction at 0.1 0.5416
+[gen] done

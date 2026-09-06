@@ -1,0 +1,134 @@
+[fit] 128x16@p0.5 (512 bits)
+  [128x16@p0.5] iter 1  train relMSE(4k) 0.1207  (174s)
+  [128x16@p0.5] iter 2  train relMSE(4k) 0.0741  (270s)
+  [128x16@p0.5] iter 3  train relMSE(4k) 0.0642  (369s)
+  [128x16@p0.5] iter 4  train relMSE(4k) 0.0606  (464s)
+  [128x16@p0.5] iter 5  train relMSE(4k) 0.0586  (561s)
+[128x16@p0.5] 512 bits  floor 0.0612  coh 0.194 (bar 0.137, over +0.057)  dead 0
+
+       point  bits   floor  coh-over-bar  dead
+ 128x16@p0.5   512  0.0612        +0.057     0
+anchor: a per-patch code at 512 bits reaches 0.0576
+[fit] 16x16@p0.5 (64 bits)
+  [16x16@p0.5] iter 1  train relMSE(4k) 0.1914  (22s)
+  [16x16@p0.5] iter 2  train relMSE(4k) 0.1642  (33s)
+  [16x16@p0.5] iter 3  train relMSE(4k) 0.1545  (44s)
+  [16x16@p0.5] iter 4  train relMSE(4k) 0.1509  (55s)
+  [16x16@p0.5] iter 5  train relMSE(4k) 0.1494  (68s)
+[16x16@p0.5] 64 bits  floor 0.1509  coh 0.336 (bar 0.173, over +0.163)  dead 0
+[fit] 32x16@p0.5 (128 bits)
+  [32x16@p0.5] iter 1  train relMSE(4k) 0.1709  (51s)
+  [32x16@p0.5] iter 2  train relMSE(4k) 0.1338  (72s)
+  [32x16@p0.5] iter 3  train relMSE(4k) 0.1217  (93s)
+  [32x16@p0.5] iter 4  train relMSE(4k) 0.1168  (113s)
+  [32x16@p0.5] iter 5  train relMSE(4k) 0.1142  (133s)
+[32x16@p0.5] 128 bits  floor 0.1167  coh 0.287 (bar 0.170, over +0.116)  dead 0
+[fit] 64x16@p0.5 (256 bits)
+  [64x16@p0.5] iter 1  train relMSE(4k) 0.1490  (99s)
+  [64x16@p0.5] iter 2  train relMSE(4k) 0.1032  (155s)
+  [64x16@p0.5] iter 3  train relMSE(4k) 0.0917  (242s)
+  [64x16@p0.5] iter 4  train relMSE(4k) 0.0873  (344s)
+  [64x16@p0.5] iter 5  train relMSE(4k) 0.0848  (455s)
+[64x16@p0.5] 256 bits  floor 0.0873  coh 0.242 (bar 0.156, over +0.087)  dead 0
+
+       point  bits   floor  coh-over-bar  dead
+  16x16@p0.5    64  0.1509        +0.163     0
+  32x16@p0.5   128  0.1167        +0.116     0
+  64x16@p0.5   256  0.0873        +0.087     0
+ 128x16@p0.5   512  0.0612        +0.057     0
+anchor: a per-patch code at 512 bits reaches 0.0576
+[fit] 16x16@p0.75 (64 bits)
+  [16x16@p0.75] iter 1  train relMSE(4k) 0.1781  (30s)
+  [16x16@p0.75] iter 2  train relMSE(4k) 0.1480  (45s)
+  [16x16@p0.75] iter 3  train relMSE(4k) 0.1382  (60s)
+  [16x16@p0.75] iter 4  train relMSE(4k) 0.1344  (75s)
+  [16x16@p0.75] iter 5  train relMSE(4k) 0.1323  (90s)
+[16x16@p0.75] 64 bits  floor 0.1342  coh 0.221 (bar 0.146, over +0.075)  dead 0
+[fit] 16x16@p1.0 (64 bits)
+  [16x16@p1.0] iter 1  train relMSE(4k) 0.2354  (36s)
+  [16x16@p1.0] iter 2  train relMSE(4k) 0.1992  (51s)
+  [16x16@p1.0] iter 3  train relMSE(4k) 0.1777  (66s)
+  [16x16@p1.0] iter 4  train relMSE(4k) 0.1591  (80s)
+  [16x16@p1.0] iter 5  train relMSE(4k) 0.1477  (94s)
+[16x16@p1.0] 64 bits  floor 0.1496  coh 0.186 (bar 0.173, over +0.013)  dead 0
+[fit] 32x16@p0.75 (128 bits)
+  [32x16@p0.75] iter 1  train relMSE(4k) 0.1551  (72s)
+  [32x16@p0.75] iter 2  train relMSE(4k) 0.1143  (102s)
+  [32x16@p0.75] iter 3  train relMSE(4k) 0.1056  (133s)
+  [32x16@p0.75] iter 4  train relMSE(4k) 0.1023  (163s)
+  [32x16@p0.75] iter 5  train relMSE(4k) 0.1002  (192s)
+[32x16@p0.75] 128 bits  floor 0.1026  coh 0.178 (bar 0.129, over +0.050)  dead 0
+[fit] 32x16@p1.0 (128 bits)
+  [32x16@p1.0] iter 1  train relMSE(4k) 0.2337  (73s)
+  [32x16@p1.0] iter 2  train relMSE(4k) 0.1929  (103s)
+  [32x16@p1.0] iter 3  train relMSE(4k) 0.1670  (132s)
+  [32x16@p1.0] iter 4  train relMSE(4k) 0.1406  (162s)
+  [32x16@p1.0] iter 5  train relMSE(4k) 0.1238  (193s)
+[32x16@p1.0] 128 bits  floor 0.1260  coh 0.218 (bar 0.214, over +0.005)  dead 4
+[fit] 64x16@p0.75 (256 bits)
+  [64x16@p0.75] iter 1  train relMSE(4k) 0.1298  (179s)
+  [64x16@p0.75] iter 2  train relMSE(4k) 0.0840  (296s)
+  [64x16@p0.75] iter 3  train relMSE(4k) 0.0765  (397s)
+  [64x16@p0.75] iter 4  train relMSE(4k) 0.0739  (508s)
+  [64x16@p0.75] iter 5  train relMSE(4k) 0.0723  (616s)
+[64x16@p0.75] 256 bits  floor 0.0746  coh 0.138 (bar 0.108, over +0.030)  dead 0
+[fit] 64x16@p1.0 (256 bits)
+  [64x16@p1.0] iter 1  train relMSE(4k) 0.2366  (201s)
+  [64x16@p1.0] iter 2  train relMSE(4k) 0.1872  (308s)
+  [64x16@p1.0] iter 3  train relMSE(4k) 0.1540  (413s)
+  [64x16@p1.0] iter 4  train relMSE(4k) 0.1274  (521s)
+  [64x16@p1.0] iter 5  train relMSE(4k) 0.1076  (609s)
+[64x16@p1.0] 256 bits  floor 0.1095  coh 0.279 (bar 0.276, over +0.003)  dead 22
+[fit] 128x16@p0.75 (512 bits)
+  [128x16@p0.75] iter 1  train relMSE(4k) 0.0999  (374s)
+  [128x16@p0.75] iter 2  train relMSE(4k) 0.0574  (574s)
+  [128x16@p0.75] iter 3  train relMSE(4k) 0.0505  (864s)
+  [128x16@p0.75] iter 4  train relMSE(4k) 0.0483  (1061s)
+  [128x16@p0.75] iter 5  train relMSE(4k) 0.0471  (1250s)
+[128x16@p0.75] 512 bits  floor 0.0500  coh 0.119 (bar 0.103, over +0.016)  dead 2
+[fit] 128x16@p1.0 (512 bits)
+  [128x16@p1.0] iter 1  train relMSE(4k) 0.2539  (356s)
+  [128x16@p1.0] iter 2  train relMSE(4k) 0.1814  (556s)
+  [128x16@p1.0] iter 3  train relMSE(4k) 0.1411  (748s)
+  [128x16@p1.0] iter 4  train relMSE(4k) 0.1101  (972s)
+  [128x16@p1.0] iter 5  train relMSE(4k) 0.0883  (1193s)
+[128x16@p1.0] 512 bits  floor 0.0902  coh 0.312 (bar 0.310, over +0.001)  dead 56
+[fit] 16x32@p0.5 (80 bits)
+  [16x32@p0.5] iter 1  train relMSE(4k) 0.1719  (53s)
+  [16x32@p0.5] iter 2  train relMSE(4k) 0.1460  (80s)
+  [16x32@p0.5] iter 3  train relMSE(4k) 0.1352  (107s)
+  [16x32@p0.5] iter 4  train relMSE(4k) 0.1305  (133s)
+  [16x32@p0.5] iter 5  train relMSE(4k) 0.1281  (159s)
+[16x32@p0.5] 80 bits  floor 0.1304  coh 0.271 (bar 0.100, over +0.171)  dead 22
+[fit] 32x32@p0.5 (160 bits)
+  [32x32@p0.5] iter 1  train relMSE(4k) 0.1503  (96s)
+  [32x32@p0.5] iter 2  train relMSE(4k) 0.1175  (135s)
+  [32x32@p0.5] iter 3  train relMSE(4k) 0.1060  (176s)
+  [32x32@p0.5] iter 4  train relMSE(4k) 0.1011  (216s)
+  [32x32@p0.5] iter 5  train relMSE(4k) 0.0982  (254s)
+[32x32@p0.5] 160 bits  floor 0.1004  coh 0.235 (bar 0.103, over +0.132)  dead 84
+[fit] 64x32@p0.5 (320 bits)
+  [64x32@p0.5] iter 1  train relMSE(4k) 0.1280  (184s)
+  [64x32@p0.5] iter 2  train relMSE(4k) 0.0899  (286s)
+  [64x32@p0.5] iter 3  train relMSE(4k) 0.0796  (383s)
+  [64x32@p0.5] iter 4  train relMSE(4k) 0.0747  (482s)
+  [64x32@p0.5] iter 5  train relMSE(4k) 0.0719  (588s)
+[64x32@p0.5] 320 bits  floor 0.0745  coh 0.199 (bar 0.095, over +0.103)  dead 189
+
+       point  bits   floor  coh-over-bar  dead
+  16x16@p0.5    64  0.1509        +0.163     0
+ 16x16@p0.75    64  0.1342        +0.075     0
+  16x16@p1.0    64  0.1496        +0.013     0
+  16x32@p0.5    80  0.1304        +0.171    22
+  32x16@p0.5   128  0.1167        +0.116     0
+ 32x16@p0.75   128  0.1026        +0.050     0
+  32x16@p1.0   128  0.1260        +0.005     4
+  32x32@p0.5   160  0.1004        +0.132    84
+  64x16@p0.5   256  0.0873        +0.087     0
+ 64x16@p0.75   256  0.0746        +0.030     0
+  64x16@p1.0   256  0.1095        +0.003    22
+  64x32@p0.5   320  0.0745        +0.103   189
+ 128x16@p0.5   512  0.0612        +0.057     0
+128x16@p0.75   512  0.0500        +0.016     2
+ 128x16@p1.0   512  0.0902        +0.001    56
+anchor: a per-patch code at 512 bits reaches 0.0576

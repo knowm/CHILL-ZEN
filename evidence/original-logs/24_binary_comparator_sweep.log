@@ -1,0 +1,263 @@
+
+=== 24_binary_comparator_sweep.py (2026-09-02 08:31) ===
+real bar (0.1-binarized eval, n = 1000): critic 0.8680  div 0.1811  seam 1.061
+
+--- screen, n = 1000, three seeds ---
+point                 seed  critic     div   seam
+deployed T=0.3/0.1     950  0.7990  0.1544  1.060   (17s)
+deployed T=0.3/0.1     951  0.7700  0.1577  1.034   (19s)
+deployed T=0.3/0.1     952  0.8060  0.1564  1.037   (17s)
+deployed T=0.3/0.1    mean  0.7917  0.1562  1.044   spread critic 0.0360   div screen PASS
+P0 10mV/0              950  0.7970  0.1135  0.943   (19s)
+P0 10mV/0              951  0.7860  0.1154  0.909   (20s)
+P0 10mV/0              952  0.7980  0.1084  0.925   (20s)
+P0 10mV/0             mean  0.7937  0.1124  0.925   spread critic 0.0120   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4509   26.02uS   19.2ns  0.0177   93    7    0
+P1 10mV/150uV          950  0.7850  0.1135  0.909   (20s)
+P1 10mV/150uV          951  0.7980  0.1180  0.928   (19s)
+P1 10mV/150uV          952  0.7800  0.1133  0.917   (23s)
+P1 10mV/150uV         mean  0.7877  0.1149  0.918   spread critic 0.0180   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4508   26.01uS   19.2ns  0.0232   54    4   42
+P2 10mV/500uV          950  0.8140  0.1190  0.999   (20s)
+P2 10mV/500uV          951  0.8170  0.1229  0.989   (20s)
+P2 10mV/500uV          952  0.8260  0.1170  1.043   (20s)
+P2 10mV/500uV         mean  0.8190  0.1196  1.010   spread critic 0.0120   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4523   26.07uS   19.2ns  0.0531   10    1   89
+P3 10mV/1mV            950  0.8400  0.1274  1.033   (20s)
+P3 10mV/1mV            951  0.8480  0.1292  0.998   (19s)
+P3 10mV/1mV            952  0.8270  0.1276  1.016   (20s)
+P3 10mV/1mV           mean  0.8383  0.1281  1.015   spread critic 0.0210   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4544   26.15uS   19.1ns  0.1016    3    0   97
+P4 10mV/2mV            950  0.8530  0.1365  1.019   (20s)
+P4 10mV/2mV            951  0.8490  0.1387  1.003   (20s)
+P4 10mV/2mV            952  0.8490  0.1385  1.007   (21s)
+P4 10mV/2mV           mean  0.8503  0.1379  1.010   spread critic 0.0040   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4565   26.23uS   19.1ns  0.2008    1    0   99
+P5 50mV/5mV            950  0.8380  0.1274  1.040   (20s)
+P5 50mV/5mV            951  0.8510  0.1288  0.987   (20s)
+P5 50mV/5mV            952  0.8460  0.1271  0.993   (21s)
+P5 50mV/5mV           mean  0.8450  0.1278  1.007   spread critic 0.0130   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4542   26.14uS   19.1ns  0.1002    0    0  100
+
+--- render, n = 5120, for 07_comparator_score.py ---
+[gen] comparator-two-level-deployed: (5120, 28, 28)  on-fraction 0.4393  (103s)
+[gen] comparator-two-level-P0: (5120, 28, 28)  on-fraction 0.4594  (107s)
+[gen] comparator-two-level-P1: (5120, 28, 28)  on-fraction 0.4590  (105s)
+[gen] comparator-two-level-P2: (5120, 28, 28)  on-fraction 0.4590  (107s)
+[gen] comparator-two-level-P3: (5120, 28, 28)  on-fraction 0.4564  (107s)
+[gen] comparator-two-level-P4: (5120, 28, 28)  on-fraction 0.4558  (105s)
+[gen] comparator-two-level-P5: (5120, 28, 28)  on-fraction 0.4548  (108s)
+saved; renders in head_to_head/gen/
+
+=== 24_binary_comparator_sweep.py (2026-09-02 08:50) ===
+real bar (0.1-binarized eval, n = 1000): critic 0.8680  div 0.1811  seam 1.061
+[extend] P6-P8, grid extension to find the turnover
+
+--- screen, n = 1000, three seeds ---
+point                 seed  critic     div   seam
+P6 10mV/3mV            950  0.8430  0.1408  1.008   (23s)
+P6 10mV/3mV            951  0.8670  0.1405  1.004   (29s)
+P6 10mV/3mV            952  0.8600  0.1435  1.007   (29s)
+P6 10mV/3mV           mean  0.8567  0.1416  1.006   spread critic 0.0240   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4571   26.25uS   19.0ns  0.3005    0    0  100
+P7 10mV/5mV            950  0.8520  0.1460  1.064   (29s)
+P7 10mV/5mV            951  0.8610  0.1448  1.056   (30s)
+P7 10mV/5mV            952  0.8470  0.1453  1.047   (31s)
+P7 10mV/5mV           mean  0.8533  0.1454  1.056   spread critic 0.0140   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4576   26.27uS   19.0ns  0.5003    0    0  100
+P8 10mV/7.5mV          950  0.8630  0.1440  1.092   (30s)
+P8 10mV/7.5mV          951  0.8560  0.1433  1.082   (31s)
+P8 10mV/7.5mV          952  0.8510  0.1434  1.064   (29s)
+P8 10mV/7.5mV         mean  0.8567  0.1435  1.079   spread critic 0.0120   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4574   26.26uS   19.0ns  0.7502    0    0  100
+
+--- render, n = 5120, for 07_comparator_score.py ---
+[gen] comparator-two-level-P6: (5120, 28, 28)  on-fraction 0.4576  (134s)
+[gen] comparator-two-level-P7: (5120, 28, 28)  on-fraction 0.4624  (112s)
+[gen] comparator-two-level-P8: (5120, 28, 28)  on-fraction 0.4668  (98s)
+saved; renders in head_to_head/gen/
+
+=== 24_binary_comparator_sweep.py (2026-09-03 14:54) ===
+real bar (0.1-binarized eval, n = 1000): critic 0.8680  div 0.1811  seam 1.061
+
+--- screen, n = 1000, three seeds ---
+point                 seed  critic     div   seam
+deployed T=0.3/0.1     950  0.7990  0.1544  1.060   (18s)
+deployed T=0.3/0.1     951  0.7700  0.1577  1.034   (18s)
+deployed T=0.3/0.1     952  0.8060  0.1564  1.037   (19s)
+deployed T=0.3/0.1    mean  0.7917  0.1562  1.044   spread critic 0.0360   div screen PASS
+P0 10mV/0: V = 10 mV, v_n = 0 uV (code -- (not modeled)), v_n/V = 0.000
+P0 10mV/0              950  0.7970  0.1135  0.943   (25s)
+P0 10mV/0              951  0.7860  0.1154  0.909   (26s)
+P0 10mV/0              952  0.7980  0.1084  0.925   (27s)
+P0 10mV/0             mean  0.7937  0.1124  0.925   spread critic 0.0120   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4509   26.02uS   19.2ns  0.0177   93    7    0
+P1 10mV/160uV: V = 10 mV, v_n = 160 uV (code 3), v_n/V = 0.016
+P1 10mV/160uV          950  0.7960  0.1153  0.942   (32s)
+P1 10mV/160uV          951  0.8050  0.1193  0.945   (30s)
+P1 10mV/160uV          952  0.7880  0.1123  0.915   (31s)
+P1 10mV/160uV         mean  0.7963  0.1156  0.934   spread critic 0.0170   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4508   26.01uS   19.2ns  0.0239   52    4   45
+P2 10mV/500uV: V = 10 mV, v_n = 500 uV (code 20), v_n/V = 0.050
+P2 10mV/500uV          950  0.8140  0.1190  0.999   (31s)
+P2 10mV/500uV          951  0.8170  0.1229  0.989   (29s)
+P2 10mV/500uV          952  0.8260  0.1170  1.043   (29s)
+P2 10mV/500uV         mean  0.8190  0.1196  1.010   spread critic 0.0120   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4523   26.07uS   19.2ns  0.0531   10    1   89
+P3 10mV/1mV: V = 10 mV, v_n = 1000 uV (code 45), v_n/V = 0.100
+P3 10mV/1mV            950  0.8400  0.1274  1.033   (29s)
+P3 10mV/1mV            951  0.8480  0.1292  0.998   (28s)
+P3 10mV/1mV            952  0.8270  0.1276  1.016   (27s)
+P3 10mV/1mV           mean  0.8383  0.1281  1.015   spread critic 0.0210   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4544   26.15uS   19.1ns  0.1016    3    0   97
+P4 10mV/2mV: V = 10 mV, v_n = 2000 uV (code 95), v_n/V = 0.200
+P4 10mV/2mV            950  0.8530  0.1365  1.019   (27s)
+P4 10mV/2mV            951  0.8490  0.1387  1.003   (27s)
+P4 10mV/2mV            952  0.8490  0.1385  1.007   (27s)
+P4 10mV/2mV           mean  0.8503  0.1379  1.010   spread critic 0.0040   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4565   26.23uS   19.1ns  0.2008    1    0   99
+P5 50mV/5mV: V = 50 mV, v_n = 5000 uV (code 245), v_n/V = 0.100
+P5 50mV/5mV            950  0.8380  0.1274  1.040   (27s)
+P5 50mV/5mV            951  0.8510  0.1288  0.987   (27s)
+P5 50mV/5mV            952  0.8460  0.1271  0.993   (27s)
+P5 50mV/5mV           mean  0.8450  0.1278  1.007   spread critic 0.0130   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4542   26.14uS   19.1ns  0.1002    0    0  100
+
+--- render, n = 5120, for 07_comparator_score.py ---
+[gen] comparator-two-level-deployed: (5120, 28, 28)  on-fraction 0.4393  (109s)
+[gen] comparator-two-level-P0: (5120, 28, 28)  on-fraction 0.4594  (152s)
+[gen] comparator-two-level-P1: (5120, 28, 28)  on-fraction 0.4592  (169s)
+[gen] comparator-two-level-P2: (5120, 28, 28)  on-fraction 0.4590  (170s)
+[gen] comparator-two-level-P3: (5120, 28, 28)  on-fraction 0.4564  (163s)
+[gen] comparator-two-level-P4: (5120, 28, 28)  on-fraction 0.4558  (162s)
+[gen] comparator-two-level-P5: (5120, 28, 28)  on-fraction 0.4548  (172s)
+saved; renders in head_to_head/gen/
+
+=== 24_binary_comparator_sweep.py (2026-09-03 15:22) ===
+real bar (0.1-binarized eval, n = 1000): critic 0.8680  div 0.1811  seam 1.061
+[extend] P6-P7, grid extension to find the turnover
+
+--- screen, n = 1000, three seeds ---
+point                 seed  critic     div   seam
+P6 10mV/3mV: V = 10 mV, v_n = 3000 uV (code 145), v_n/V = 0.300
+P6 10mV/3mV            950  0.8430  0.1408  1.008   (25s)
+P6 10mV/3mV            951  0.8670  0.1405  1.004   (27s)
+P6 10mV/3mV            952  0.8600  0.1435  1.007   (27s)
+P6 10mV/3mV           mean  0.8567  0.1416  1.006   spread critic 0.0240   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4571   26.25uS   19.0ns  0.3005    0    0  100
+P7 10mV/5mV: V = 10 mV, v_n = 5000 uV (code 245), v_n/V = 0.500
+P7 10mV/5mV            950  0.8520  0.1460  1.064   (26s)
+P7 10mV/5mV            951  0.8610  0.1448  1.056   (27s)
+P7 10mV/5mV            952  0.8470  0.1453  1.047   (26s)
+P7 10mV/5mV           mean  0.8533  0.1454  1.056   spread critic 0.0140   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4576   26.27uS   19.0ns  0.5003    0    0  100
+
+--- render, n = 5120, for 07_comparator_score.py ---
+[gen] comparator-two-level-P6: (5120, 28, 28)  on-fraction 0.4576  (159s)
+[gen] comparator-two-level-P7: (5120, 28, 28)  on-fraction 0.4624  (157s)
+saved; renders in head_to_head/gen/
+
+=== 24_binary_comparator_sweep.py (2026-09-03 23:40) ===
+real bar (0.1-binarized eval, n = 1000): critic 0.8680  div 0.1811  seam 1.061
+
+--- screen, n = 1000, three seeds ---
+point                 seed  critic     div   seam
+deployed T=0.3/0.1     950  0.7670  0.1868  0.996   (15s)
+deployed T=0.3/0.1     951  0.7570  0.1849  0.980   (15s)
+deployed T=0.3/0.1     952  0.7800  0.1886  0.991   (15s)
+deployed T=0.3/0.1    mean  0.7680  0.1867  0.989   spread critic 0.0230   div screen PASS
+P0 10mV/0: V = 10 mV, v_n = 0 uV (code -- (not modeled)), v_n/V = 0.000
+P0 10mV/0              950  0.7920  0.1168  0.915   (22s)
+P0 10mV/0              951  0.8080  0.1180  0.895   (23s)
+P0 10mV/0              952  0.7940  0.1105  0.897   (23s)
+P0 10mV/0             mean  0.7980  0.1151  0.902   spread critic 0.0160   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4514   26.04uS   19.2ns  0.0177   93    7    0
+P1 10mV/160uV: V = 10 mV, v_n = 160 uV (code 3), v_n/V = 0.016
+P1 10mV/160uV          950  0.7950  0.1194  0.937   (25s)
+P1 10mV/160uV          951  0.7980  0.1224  0.930   (25s)
+P1 10mV/160uV          952  0.8060  0.1148  0.907   (25s)
+P1 10mV/160uV         mean  0.7997  0.1189  0.925   spread critic 0.0110   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4513   26.03uS   19.2ns  0.0239   52    4   45
+P2 10mV/500uV: V = 10 mV, v_n = 500 uV (code 20), v_n/V = 0.050
+P2 10mV/500uV          950  0.8260  0.1233  0.972   (25s)
+P2 10mV/500uV          951  0.8270  0.1274  0.983   (25s)
+P2 10mV/500uV          952  0.8320  0.1216  1.011   (25s)
+P2 10mV/500uV         mean  0.8283  0.1241  0.989   spread critic 0.0060   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4528   26.09uS   19.2ns  0.0531   10    1   89
+P3 10mV/1mV: V = 10 mV, v_n = 1000 uV (code 45), v_n/V = 0.100
+P3 10mV/1mV            950  0.8460  0.1324  0.982   (25s)
+P3 10mV/1mV            951  0.8400  0.1341  0.978   (25s)
+P3 10mV/1mV            952  0.8220  0.1346  1.001   (25s)
+P3 10mV/1mV           mean  0.8360  0.1337  0.987   spread critic 0.0240   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4546   26.16uS   19.1ns  0.1016    3    0   97
+P4 10mV/2mV: V = 10 mV, v_n = 2000 uV (code 95), v_n/V = 0.200
+P4 10mV/2mV            950  0.8570  0.1434  1.014   (25s)
+P4 10mV/2mV            951  0.8500  0.1446  0.993   (25s)
+P4 10mV/2mV            952  0.8410  0.1459  0.959   (25s)
+P4 10mV/2mV           mean  0.8493  0.1446  0.989   spread critic 0.0160   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4568   26.24uS   19.1ns  0.2008    1    0   99
+P5 50mV/5mV: V = 50 mV, v_n = 5000 uV (code 245), v_n/V = 0.100
+P5 50mV/5mV            950  0.8470  0.1318  0.994   (25s)
+P5 50mV/5mV            951  0.8470  0.1336  0.977   (25s)
+P5 50mV/5mV            952  0.8230  0.1332  0.984   (25s)
+P5 50mV/5mV           mean  0.8390  0.1329  0.985   spread critic 0.0240   div screen FAIL
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4545   26.15uS   19.1ns  0.1002    0    0  100
+
+--- render, n = 5120, for 07_comparator_score.py ---
+[gen] comparator-two-level-deployed: (5120, 28, 28)  on-fraction 0.4218  (92s)
+[gen] comparator-two-level-P0: (5120, 28, 28)  on-fraction 0.4587  (132s)
+[gen] comparator-two-level-P1: (5120, 28, 28)  on-fraction 0.4584  (143s)
+[gen] comparator-two-level-P2: (5120, 28, 28)  on-fraction 0.4565  (144s)
+[gen] comparator-two-level-P3: (5120, 28, 28)  on-fraction 0.4496  (144s)
+[gen] comparator-two-level-P4: (5120, 28, 28)  on-fraction 0.4443  (144s)
+[gen] comparator-two-level-P5: (5120, 28, 28)  on-fraction 0.4485  (144s)
+saved; renders in head_to_head/gen/
+
+=== 24_binary_comparator_sweep.py (2026-09-04 00:04) ===
+real bar (0.1-binarized eval, n = 1000): critic 0.8680  div 0.1811  seam 1.061
+[extend] P6-P7, grid extension to find the turnover
+
+--- screen, n = 1000, three seeds ---
+point                 seed  critic     div   seam
+P6 10mV/3mV: V = 10 mV, v_n = 3000 uV (code 145), v_n/V = 0.300
+P6 10mV/3mV            950  0.8600  0.1464  1.016   (23s)
+P6 10mV/3mV            951  0.8560  0.1458  0.968   (24s)
+P6 10mV/3mV            952  0.8560  0.1489  0.996   (25s)
+P6 10mV/3mV           mean  0.8573  0.1470  0.993   spread critic 0.0040   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4572   26.26uS   19.0ns  0.3005    0    0  100
+P7 10mV/5mV: V = 10 mV, v_n = 5000 uV (code 245), v_n/V = 0.500
+P7 10mV/5mV            950  0.8700  0.1360  1.031   (25s)
+P7 10mV/5mV            951  0.8450  0.1375  1.057   (25s)
+P7 10mV/5mV            952  0.8590  0.1361  1.029   (25s)
+P7 10mV/5mV           mean  0.8580  0.1365  1.039   spread critic 0.0250   div screen PASS
+    read      m_med    G_sum      t_b   sigma  th%  fl%  cm%
+    patch      4570   26.25uS   19.0ns  0.5003    0    0  100
+
+--- render, n = 5120, for 07_comparator_score.py ---
+[gen] comparator-two-level-P6: (5120, 28, 28)  on-fraction 0.4436  (144s)
+[gen] comparator-two-level-P7: (5120, 28, 28)  on-fraction 0.4500  (143s)
+saved; renders in head_to_head/gen/

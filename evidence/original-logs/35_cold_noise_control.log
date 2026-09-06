@@ -1,0 +1,146 @@
+
+=== 35_cold_noise_control.py (2026-09-06 10:15) ===
+hot reads at (10 mV, 2 mV), code 95; cold sweeps at 50 mV, device terms on, settling-limited pulse, comparator at code 0 (100uV), code 10 (300uV), code 45 (1mV); floor 3.0e-03
+real bar: critic 0.8860  div 0.4866  n = 1000
+
+seed 990: hot pass 27s
+
+=== 35_cold_noise_control.py (2026-09-06 10:16) ===
+hot reads at (10 mV, 2 mV), code 95; cold sweeps at 50 mV, device terms on, settling-limited pulse, comparator at code 0 (100uV), code 10 (300uV), code 45 (1mV); floor 3.0e-03
+real bar: critic 0.8860  div 0.4866  n = 1000
+
+seed 990: hot pass 31s
+  R1 sweep margins   median 0.0268  p5 0.0020  p1 0.0004  < 1x floor 0.0726  < 3x 0.2054
+  joint sweep marginsmedian 0.0322  p5 0.0023  p1 0.0005  < 1x floor 0.0648  < 3x 0.1830
+  arm         cold read           seed  critic     div   tone   stdr
+  end-to-end  reported             990  0.8890  0.5516  1.565   1.15
+  recon       reported             990  0.9010  0.5180  2.007   1.13
+  end-to-end  code 0 (100uV)       990  0.8900  0.5517  1.568   1.15
+  recon       code 0 (100uV)       990  0.8990  0.5185  1.997   1.13
+  end-to-end  code 10 (300uV)      990  0.8940  0.5523  1.564   1.15
+  recon       code 10 (300uV)      990  0.8950  0.5187  1.996   1.13
+  end-to-end  code 45 (1mV)        990  0.8860  0.5556  1.560   1.14
+  recon       code 45 (1mV)        990  0.8970  0.5223  1.989   1.13
+
+seed 991: hot pass 30s
+  R1 sweep margins   median 0.0266  p5 0.0020  p1 0.0004  < 1x floor 0.0744  < 3x 0.2082
+  joint sweep marginsmedian 0.0324  p5 0.0023  p1 0.0004  < 1x floor 0.0648  < 3x 0.1810
+  arm         cold read           seed  critic     div   tone   stdr
+  end-to-end  reported             991  0.8850  0.5460  1.541   1.15
+  recon       reported             991  0.8930  0.5194  2.015   1.13
+  end-to-end  code 0 (100uV)       991  0.8800  0.5459  1.534   1.14
+  recon       code 0 (100uV)       991  0.8950  0.5196  2.014   1.13
+  end-to-end  code 10 (300uV)      991  0.8810  0.5462  1.534   1.14
+  recon       code 10 (300uV)      991  0.8990  0.5199  2.020   1.13
+  end-to-end  code 45 (1mV)        991  0.8840  0.5503  1.525   1.14
+  recon       code 45 (1mV)        991  0.9030  0.5241  2.016   1.13
+
+seed 992: hot pass 28s
+  R1 sweep margins   median 0.0268  p5 0.0020  p1 0.0004  < 1x floor 0.0743  < 3x 0.2082
+  joint sweep marginsmedian 0.0325  p5 0.0023  p1 0.0005  < 1x floor 0.0647  < 3x 0.1807
+  arm         cold read           seed  critic     div   tone   stdr
+  end-to-end  reported             992  0.8970  0.5493  1.554   1.14
+  recon       reported             992  0.8960  0.5168  2.029   1.13
+  end-to-end  code 0 (100uV)       992  0.8930  0.5491  1.550   1.14
+  recon       code 0 (100uV)       992  0.8930  0.5171  2.024   1.13
+  end-to-end  code 10 (300uV)      992  0.8900  0.5492  1.545   1.14
+  recon       code 10 (300uV)      992  0.8980  0.5182  2.021   1.13
+  end-to-end  code 45 (1mV)        992  0.8950  0.5528  1.543   1.13
+  recon       code 45 (1mV)        992  0.9070  0.5222  2.024   1.13
+
+summary over seeds (mean +- max-min):
+arm         cold read                     critic               div    tone  stdr
+end-to-end  reported             0.8903 +-0.0120   0.5490 +-0.0056   1.553  1.14
+end-to-end  code 0 (100uV)       0.8877 +-0.0130   0.5489 +-0.0058   1.551  1.14
+end-to-end  code 10 (300uV)      0.8883 +-0.0130   0.5492 +-0.0061   1.548  1.14
+end-to-end  code 45 (1mV)        0.8883 +-0.0110   0.5529 +-0.0054   1.543  1.14
+recon       reported             0.8967 +-0.0080   0.5180 +-0.0026   2.017  1.13
+recon       code 0 (100uV)       0.8957 +-0.0060   0.5184 +-0.0025   2.012  1.13
+recon       code 10 (300uV)      0.8973 +-0.0040   0.5189 +-0.0017   2.012  1.13
+recon       code 45 (1mV)        0.9023 +-0.0100   0.5229 +-0.0019   2.010  1.13
+
+addresses whose verdict changes on the SAME input when the sweep runs with noise (mean over seeds):
+cold read            R1 (of 128)  joint e2e (of 226)   joint recon
+code 0 (100uV)      0.0740 ( 9.5)    0.0550 ( 12.4)  0.0415 (  9.4)
+code 10 (300uV)     0.1069 (13.7)    0.0878 ( 19.8)  0.0673 ( 15.2)
+code 45 (1mV)       0.2635 (33.7)    0.2289 ( 51.7)  0.1801 ( 40.7)
+
+saved: cold-noise-control.pt
+
+=== 35_cold_noise_control.py (2026-09-06 10:20) ===
+hot reads at (10 mV, 2 mV), code 95; cold sweeps at 50 mV, device terms on, settling-limited pulse, comparator at code 0 (100uV), code 10 (300uV), code 45 (1mV); floor 3.0e-03
+real bar: critic 0.8860  div 0.4866  n = 1000
+
+seed 990: hot pass 30s
+  R1 sweep margins   median 0.0268  p5 0.0020  p1 0.0004  < 1x floor 0.0726  < 3x 0.2054
+  joint sweep marginsmedian 0.0322  p5 0.0023  p1 0.0005  < 1x floor 0.0648  < 3x 0.1830
+  arm         cold read           seed  critic     div   tone   stdr
+  end-to-end  reported             990  0.8890  0.5516  1.565   1.15
+  recon       reported             990  0.9010  0.5180  2.007   1.13
+  chain       reported             990  0.8890  0.5516  1.565   1.15
+  end-to-end  code 0 (100uV)       990  0.8900  0.5517  1.568   1.15
+  recon       code 0 (100uV)       990  0.8990  0.5185  1.997   1.13
+  chain       code 0 (100uV)       990  0.8800  0.5517  1.567   1.15
+  end-to-end  code 10 (300uV)      990  0.8940  0.5523  1.564   1.15
+  recon       code 10 (300uV)      990  0.8950  0.5187  1.996   1.13
+  chain       code 10 (300uV)      990  0.8850  0.5521  1.565   1.14
+  end-to-end  code 45 (1mV)        990  0.8860  0.5556  1.560   1.14
+  recon       code 45 (1mV)        990  0.8970  0.5223  1.989   1.13
+  chain       code 45 (1mV)        990  0.8800  0.5559  1.564   1.13
+
+seed 991: hot pass 29s
+  R1 sweep margins   median 0.0266  p5 0.0020  p1 0.0004  < 1x floor 0.0744  < 3x 0.2082
+  joint sweep marginsmedian 0.0324  p5 0.0023  p1 0.0004  < 1x floor 0.0648  < 3x 0.1810
+  arm         cold read           seed  critic     div   tone   stdr
+  end-to-end  reported             991  0.8850  0.5460  1.541   1.15
+  recon       reported             991  0.8930  0.5194  2.015   1.13
+  chain       reported             991  0.8850  0.5460  1.541   1.15
+  end-to-end  code 0 (100uV)       991  0.8800  0.5459  1.534   1.14
+  recon       code 0 (100uV)       991  0.8950  0.5196  2.014   1.13
+  chain       code 0 (100uV)       991  0.8960  0.5478  1.547   1.14
+  end-to-end  code 10 (300uV)      991  0.8810  0.5462  1.534   1.14
+  recon       code 10 (300uV)      991  0.8990  0.5199  2.020   1.13
+  chain       code 10 (300uV)      991  0.8930  0.5477  1.549   1.14
+  end-to-end  code 45 (1mV)        991  0.8840  0.5503  1.525   1.14
+  recon       code 45 (1mV)        991  0.9030  0.5241  2.016   1.13
+  chain       code 45 (1mV)        991  0.9040  0.5532  1.510   1.13
+
+seed 992: hot pass 30s
+  R1 sweep margins   median 0.0268  p5 0.0020  p1 0.0004  < 1x floor 0.0743  < 3x 0.2082
+  joint sweep marginsmedian 0.0325  p5 0.0023  p1 0.0005  < 1x floor 0.0647  < 3x 0.1807
+  arm         cold read           seed  critic     div   tone   stdr
+  end-to-end  reported             992  0.8970  0.5493  1.554   1.14
+  recon       reported             992  0.8960  0.5168  2.029   1.13
+  chain       reported             992  0.8970  0.5493  1.554   1.14
+  end-to-end  code 0 (100uV)       992  0.8930  0.5491  1.550   1.14
+  recon       code 0 (100uV)       992  0.8930  0.5171  2.024   1.13
+  chain       code 0 (100uV)       992  0.8930  0.5496  1.550   1.14
+  end-to-end  code 10 (300uV)      992  0.8900  0.5492  1.545   1.14
+  recon       code 10 (300uV)      992  0.8980  0.5182  2.021   1.13
+  chain       code 10 (300uV)      992  0.8950  0.5491  1.545   1.14
+  end-to-end  code 45 (1mV)        992  0.8950  0.5528  1.543   1.13
+  recon       code 45 (1mV)        992  0.9070  0.5222  2.024   1.13
+  chain       code 45 (1mV)        992  0.8940  0.5541  1.514   1.13
+
+summary over seeds (mean +- max-min):
+arm         cold read                     critic               div    tone  stdr
+end-to-end  reported             0.8903 +-0.0120   0.5490 +-0.0056   1.553  1.14
+end-to-end  code 0 (100uV)       0.8877 +-0.0130   0.5489 +-0.0058   1.551  1.14
+end-to-end  code 10 (300uV)      0.8883 +-0.0130   0.5492 +-0.0061   1.548  1.14
+end-to-end  code 45 (1mV)        0.8883 +-0.0110   0.5529 +-0.0054   1.543  1.14
+recon       reported             0.8967 +-0.0080   0.5180 +-0.0026   2.017  1.13
+recon       code 0 (100uV)       0.8957 +-0.0060   0.5184 +-0.0025   2.012  1.13
+recon       code 10 (300uV)      0.8973 +-0.0040   0.5189 +-0.0017   2.012  1.13
+recon       code 45 (1mV)        0.9023 +-0.0100   0.5229 +-0.0019   2.010  1.13
+chain       reported             0.8903 +-0.0120   0.5490 +-0.0056   1.553  1.14
+chain       code 0 (100uV)       0.8897 +-0.0160   0.5497 +-0.0039   1.555  1.14
+chain       code 10 (300uV)      0.8910 +-0.0100   0.5496 +-0.0044   1.553  1.14
+chain       code 45 (1mV)        0.8927 +-0.0240   0.5544 +-0.0027   1.529  1.13
+
+addresses whose verdict changes on the SAME input when the sweep runs with noise (mean over seeds):
+cold read            R1 (of 128)  joint e2e (of 226)   joint recon
+code 0 (100uV)      0.0740 ( 9.5)    0.0550 ( 12.4)  0.0415 (  9.4)
+code 10 (300uV)     0.1069 (13.7)    0.0878 ( 19.8)  0.0673 ( 15.2)
+code 45 (1mV)       0.2635 (33.7)    0.2289 ( 51.7)  0.1801 ( 40.7)
+
+saved: cold-noise-control.pt

@@ -1,0 +1,46 @@
+operating point — assumptions A1-A4 are in chill_zen/energy.py
+anchor: at gain 0.02 (substrate default), sigma_thermal at the reference read = 0.0020 -> implied Johnson source R = 1.215e+06 Ohm at V = 0.05 V, t = 1e-06 s, m = 255
+anchor: at gain 0.1 (draw), sigma_thermal at the reference read = 0.0100 -> implied Johnson source R = 3.038e+07 Ohm at V = 0.05 V, t = 1e-06 s, m = 255
+
+read classes, measured on the contexts the deployed system runs:
+  draw step   0: n_sel=  6  magnitude median 100  delivered sigma median 1.47e-01
+  draw step  16: n_sel= 22  magnitude median 949  delivered sigma median 4.95e-02
+  draw step  48: n_sel= 54  magnitude median 2203  delivered sigma median 2.77e-02
+  draw step  96: n_sel=102  magnitude median 4609  delivered sigma median 1.87e-02
+  draw step 127: n_sel=133  magnitude median 6167  delivered sigma median 1.61e-02
+backbone draw (hot)  n_sel= 70  pooled magnitude median 2073 [106..6583]  |y| median 0.4326
+                     sigma(thermal/flicker/total) = 3.51e-02 / 2.91e-01 / 2.93e-01   delivered = 2.93e-02   thermodynamic floor 2kBT/sigma^2 = 9.60e-18 J = 2.3e+03 kBT
+backbone sweep (cold) n_sel=134  pooled magnitude median 9543 [7976..17891]  |y| median 0.1232
+                     sigma(thermal/flicker/total) = 1.63e-02 / 1.61e-01 / 1.62e-01   (cold: the verdict read sits at the flicker floor)
+patch draw (hot)     n_sel=134  pooled magnitude median 6497 [4363..16904]  |y| median 0.4109
+                     sigma(thermal/flicker/total) = 1.98e-02 / 1.64e-01 / 1.65e-01   delivered = 1.65e-02   thermodynamic floor 2kBT/sigma^2 = 3.03e-17 J = 7.4e+03 kBT
+joint sweep (cold)   n_sel=232  pooled magnitude median 21195 [17850..34885]  |y| median 0.1105
+                     sigma(thermal/flicker/total) = 1.10e-02 / 1.08e-01 / 1.08e-01   (cold: the verdict read sits at the flicker floor)
+
+cold verdict margins: winner margin median 0.0913 against a physical flicker floor of 2.16e-03 (gain 0.02) -> 42.3x
+
+per-lane-read energy E = V^2 G_sum t at V = 0.05 V, conductance from A1 (tungsten band):
+class                        t   E(G_lo) J   E(G_hi) J  E(measured) J
+backbone draw (hot)      1e-09    3.50e-16    7.00e-15       7.36e-16
+backbone draw (hot)      1e-08    3.50e-15    7.00e-14       7.36e-15
+backbone draw (hot)      1e-07    3.50e-14    7.00e-13       7.36e-14
+backbone draw (hot)      1e-06    3.50e-13    7.00e-12       7.36e-13
+backbone sweep (cold)    1e-09    6.70e-16    1.34e-14       2.45e-15
+backbone sweep (cold)    1e-08    6.70e-15    1.34e-13       2.45e-14
+backbone sweep (cold)    1e-07    6.70e-14    1.34e-12       2.45e-13
+backbone sweep (cold)    1e-06    6.70e-13    1.34e-11       2.45e-12
+patch draw (hot)         1e-09    6.70e-16    1.34e-14       1.88e-15
+patch draw (hot)         1e-08    6.70e-15    1.34e-13       1.88e-14
+patch draw (hot)         1e-07    6.70e-14    1.34e-12       1.88e-13
+patch draw (hot)         1e-06    6.70e-13    1.34e-11       1.88e-12
+joint sweep (cold)       1e-09    1.16e-15    2.32e-14       5.11e-15
+joint sweep (cold)       1e-08    1.16e-14    2.32e-13       5.11e-14
+joint sweep (cold)       1e-07    1.16e-13    2.32e-12       5.11e-13
+joint sweep (cold)       1e-06    1.16e-12    2.32e-11       5.11e-12
+settling floor (C = 1e-13 F, 134-pair lane, G_lo): 5RC = 1.87e-09 s
+settling floor (C = 1e-13 F, 134-pair lane, G_hi): 5RC = 9.33e-11 s
+
+reading for the paper: the draw delivers sigma of order 2.9e-02, so the thermodynamically limited energy at that noise is 2.3e+03 kBT per read.
+census: the joint bank is 128 + 98 = 226 target addresses = 3616 lanes.
+
+saved: operating-point.pt

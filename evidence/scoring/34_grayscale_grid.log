@@ -1,0 +1,63 @@
+
+=== grayscale register-grid render (2026-09-04 08:40) — V = 10 mV, points P0 0uV, P1 160uV, P2 500uV, P3 1000uV, P4 2000uV, P6 3000uV ===
+[gen] comparator-gray-one-level-16-P0: 5120 codes drawn (3s)
+[gen] comparator-gray-one-level-16-P0: (5120, 28, 28) mean 0.3162  on-fraction at 0.1 0.5488
+[gen] comparator-gray-one-level-32-P0: 5120 codes drawn (15s)
+[gen] comparator-gray-one-level-32-P0: (5120, 28, 28) mean 0.2558  on-fraction at 0.1 0.4725
+[gen] comparator-gray-one-level-64-P0: 5120 codes drawn (75s)
+[gen] comparator-gray-one-level-64-P0: (5120, 28, 28) mean 0.3037  on-fraction at 0.1 0.5028
+[gen] comparator-gray-one-level-128-P0: 5120 codes drawn (282s)
+[gen] comparator-gray-one-level-128-P0: (5120, 28, 28) mean 0.2709  on-fraction at 0.1 0.4635
+[gen] comparator-gray-two-level-P0: drawn and swept (234s)
+[gen] comparator-gray-two-level-P0: (5120, 28, 28) mean 0.2771  on-fraction at 0.1 0.4381
+[gen] comparator-gray-one-level-16-P1: 5120 codes drawn (3s)
+[gen] comparator-gray-one-level-16-P1: (5120, 28, 28) mean 0.3129  on-fraction at 0.1 0.5495
+[gen] comparator-gray-one-level-32-P1: 5120 codes drawn (14s)
+[gen] comparator-gray-one-level-32-P1: (5120, 28, 28) mean 0.2622  on-fraction at 0.1 0.4885
+[gen] comparator-gray-one-level-64-P1: 5120 codes drawn (62s)
+[gen] comparator-gray-one-level-64-P1: (5120, 28, 28) mean 0.2969  on-fraction at 0.1 0.5029
+[gen] comparator-gray-one-level-128-P1: 5120 codes drawn (229s)
+[gen] comparator-gray-one-level-128-P1: (5120, 28, 28) mean 0.2782  on-fraction at 0.1 0.4759
+[gen] comparator-gray-two-level-P1: drawn and swept (249s)
+[gen] comparator-gray-two-level-P1: (5120, 28, 28) mean 0.2873  on-fraction at 0.1 0.4507
+[gen] comparator-gray-one-level-16-P2: 5120 codes drawn (4s)
+[gen] comparator-gray-one-level-16-P2: (5120, 28, 28) mean 0.2958  on-fraction at 0.1 0.5518
+[gen] comparator-gray-one-level-32-P2: 5120 codes drawn (13s)
+[gen] comparator-gray-one-level-32-P2: (5120, 28, 28) mean 0.2730  on-fraction at 0.1 0.5238
+[gen] comparator-gray-one-level-64-P2: 5120 codes drawn (66s)
+[gen] comparator-gray-one-level-64-P2: (5120, 28, 28) mean 0.2878  on-fraction at 0.1 0.5291
+[gen] comparator-gray-one-level-128-P2: 5120 codes drawn (253s)
+[gen] comparator-gray-one-level-128-P2: (5120, 28, 28) mean 0.2892  on-fraction at 0.1 0.5174
+[gen] comparator-gray-two-level-P2: drawn and swept (260s)
+[gen] comparator-gray-two-level-P2: (5120, 28, 28) mean 0.3067  on-fraction at 0.1 0.4866
+[gen] comparator-gray-one-level-16-P3: 5120 codes drawn (5s)
+[gen] comparator-gray-one-level-16-P3: (5120, 28, 28) mean 0.2872  on-fraction at 0.1 0.5602
+[gen] comparator-gray-one-level-32-P3: 5120 codes drawn (15s)
+[gen] comparator-gray-one-level-32-P3: (5120, 28, 28) mean 0.2805  on-fraction at 0.1 0.5474
+[gen] comparator-gray-one-level-64-P3: 5120 codes drawn (74s)
+[gen] comparator-gray-one-level-64-P3: (5120, 28, 28) mean 0.2932  on-fraction at 0.1 0.5584
+[gen] comparator-gray-one-level-128-P3: 5120 codes drawn (278s)
+[gen] comparator-gray-one-level-128-P3: (5120, 28, 28) mean 0.2965  on-fraction at 0.1 0.5540
+[gen] comparator-gray-two-level-P3: drawn and swept (274s)
+[gen] comparator-gray-two-level-P3: (5120, 28, 28) mean 0.3177  on-fraction at 0.1 0.5153
+[gen] comparator-gray-one-level-16-P4: 5120 codes drawn (4s)
+[gen] comparator-gray-one-level-16-P4: (5120, 28, 28) mean 0.2862  on-fraction at 0.1 0.5694
+[gen] comparator-gray-one-level-32-P4: 5120 codes drawn (14s)
+[gen] comparator-gray-one-level-32-P4: (5120, 28, 28) mean 0.2886  on-fraction at 0.1 0.5650
+[gen] comparator-gray-one-level-64-P4: 5120 codes drawn (72s)
+[gen] comparator-gray-one-level-64-P4: (5120, 28, 28) mean 0.3013  on-fraction at 0.1 0.5848
+[gen] comparator-gray-one-level-128-P4: 5120 codes drawn (266s)
+[gen] comparator-gray-one-level-128-P4: (5120, 28, 28) mean 0.3034  on-fraction at 0.1 0.5909
+[gen] comparator-gray-two-level-P4: drawn and swept (251s)
+[gen] comparator-gray-two-level-P4: (5120, 28, 28) mean 0.3292  on-fraction at 0.1 0.5416
+[gen] comparator-gray-one-level-16-P6: 5120 codes drawn (4s)
+[gen] comparator-gray-one-level-16-P6: (5120, 28, 28) mean 0.2867  on-fraction at 0.1 0.5748
+[gen] comparator-gray-one-level-32-P6: 5120 codes drawn (14s)
+[gen] comparator-gray-one-level-32-P6: (5120, 28, 28) mean 0.2903  on-fraction at 0.1 0.5724
+[gen] comparator-gray-one-level-64-P6: 5120 codes drawn (70s)
+[gen] comparator-gray-one-level-64-P6: (5120, 28, 28) mean 0.3053  on-fraction at 0.1 0.5955
+[gen] comparator-gray-one-level-128-P6: 5120 codes drawn (250s)
+[gen] comparator-gray-one-level-128-P6: (5120, 28, 28) mean 0.3069  on-fraction at 0.1 0.6060
+[gen] comparator-gray-two-level-P6: drawn and swept (221s)
+[gen] comparator-gray-two-level-P6: (5120, 28, 28) mean 0.3314  on-fraction at 0.1 0.5499
+[gen] done

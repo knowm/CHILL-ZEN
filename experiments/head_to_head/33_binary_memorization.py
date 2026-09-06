@@ -14,8 +14,8 @@ VII's binary-trained two-level row; `comparator-binary-one-level-{128,64}`):
   duplicate group;
 * exact copies of 0.1-binarized train images;
 * the nearest-train-neighbour Hamming-distance distribution, against
-  the same distribution for held-out real images (the 0.1-binarized
-  canonical test split) as the calibration.
+  the same distribution for real images excluded from fitting (the 0.1-binarized
+  2,000 images excluded from fitting; these were used for model selection) as the calibration.
 
 Pure analysis on saved renders; no draw, no lanes.
 
@@ -23,6 +23,9 @@ Cost: a few minutes.
 
     .venv-dtm/bin/python experiments/head_to_head/33_binary_memorization.py
 """
+import argparse
+import gzip
+import hashlib
 import json
 import pathlib
 import sys
@@ -30,10 +33,28 @@ import time
 
 import numpy as np
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import dtm_fid as ev                                        # noqa: E402
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+THRESHOLD = 0.1
+N_TRAIN = 68000
+SPLIT_SEED = 0
 
-GEN = ev.HERE / "gen"
+
+def load_split(root):
+    """Reconstruct load_fashion(seed=0)'s 68k/2k split from canonical IDX."""
+    images = []
+    for name in ("train-images-idx3-ubyte.gz", "t10k-images-idx3-ubyte.gz"):
+        with gzip.open(root / "data" / name, "rb") as fh:
+            raw = fh.read()
+        header = np.frombuffer(raw[:16], dtype=">u4")
+        assert header[0] == 2051 and tuple(header[2:]) == (28, 28)
+        images.append(np.frombuffer(raw[16:], np.uint8).reshape(int(header[1]), 784))
+    x = np.concatenate(images)
+    assert len(x) == 70000
+    order = np.random.default_rng(SPLIT_SEED).permutation(len(x))
+    binary = x.astype(np.float32) / 255.0 > THRESHOLD
+    return binary[order[:N_TRAIN]], binary[order[N_TRAIN:]]
+
+
 ARMS = ["comparator-two-level-P6", "comparator-binary-one-level-128",
         "comparator-binary-one-level-64"]
 QS = [0, 1, 5, 25, 50, 75, 100]
@@ -70,31 +91,35 @@ def battery(b, train, log):
 
 
 def main():
-    log, fh = ev.make_log("33_binary_memorization")
-    log(f"\n=== binary memorization battery "
-        f"({time.strftime('%Y-%m-%d %H:%M')}) ===")
-    x_tr, _ = ev.fashion("train")
-    train = ev.binarize(x_tr, ev.THEIR_THRESH).reshape(len(x_tr), -1)
-    x_te, _ = ev.fashion("test")
-    test = ev.binarize(x_te, ev.THEIR_THRESH).reshape(len(x_te), -1)
-
-    log(f"\nheld-out real calibration (test split, n = {len(test)}):")
-    res = {"held-out-real": battery(test, train, log)}
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", type=pathlib.Path, default=ROOT)
+    ap.add_argument("--output", type=pathlib.Path,
+                    default=ROOT / "experiments/head_to_head/audit-memorization.json")
+    args = ap.parse_args()
+    log = lambda message: print(message, flush=True)
+    train, test = load_split(args.root)
+    log(f"training reference n={len(train)}; excluded-from-fit reference n={len(test)}")
+    log("The 2,000 reference images were used for model selection, not weight fitting.")
+    res = {"split": {"seed": SPLIT_SEED, "n_train": len(train),
+                      "n_reference": len(test), "threshold": THRESHOLD,
+                      "reference_used_for_selection": True},
+           "held-out-real": battery(test, train, log)}
+    gen = args.root / "experiments/head_to_head/gen"
 
     for name in ARMS:
-        p = GEN / f"{name}.npy"
+        p = gen / f"{name}.npy"
         if not p.exists():
-            log(f"\n{name}: MISSING render, skipped")
-            continue
-        b = (np.load(p) > ev.THEIR_THRESH).astype(np.float32)
+            raise FileNotFoundError(f"Required audit render missing: {p}")
+        b = (np.load(p) > THRESHOLD).astype(np.float32)
         b = b.reshape(len(b), -1)
         log(f"\n{name} (n = {len(b)}):")
         res[name] = battery(b, train, log)
+        res[name]["render_sha256"] = hashlib.sha256(p.read_bytes()).hexdigest()
 
-    with open(ev.HERE / "audit-memorization.json", "w") as fh2:
+    with open(args.output, "w") as fh2:
         json.dump(res, fh2, indent=1)
     log("\nsaved: audit-memorization.json")
-    fh.close()
+
 
 
 if __name__ == "__main__":

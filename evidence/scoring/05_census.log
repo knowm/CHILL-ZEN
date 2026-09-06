@@ -1,0 +1,43 @@
+
+=== census and head-to-head table (2026-09-06 08:07) ===
+counts read from the deployed levels: 128 backbone addresses, 98 patch addresses, 226 joint targets
+
+  stage                       lane reads   what
+  backbone draw (hot)               2048   128 sequential steps x 16 lanes of the group being placed
+  patch read (hot)                  1568   98 patch addresses x 16 lanes, one parallel read
+  backbone sweep (cold)             2048   128 addresses x 16 lanes, one cold parallel pass
+  joint sweep (cold)                3616   226 addresses x 16 lanes, one cold parallel pass
+  TOTAL                             9280
+  addresses swept: 128 backbone + 98 patch = 226
+
+  MISMATCH against the energy model's census (10064 reads). The energy rows do NOT describe the scored arm; stop here and recount before reporting any energy number.
+
+=== census and head-to-head table (2026-09-06 08:07) ===
+counts read from the deployed levels: 128 backbone addresses, 98 patch addresses, 226 joint targets
+
+  stage                       lane reads   what
+  backbone draw (hot)               2048   128 sequential steps x 16 lanes of the group being placed
+  patch read (hot)                  1568   98 patch addresses x 16 lanes, one parallel read
+  backbone sweep (cold)             2048   128 addresses x 16 lanes, one cold parallel pass
+  joint sweep (cold)                3616   226 addresses x 16 lanes, one cold parallel pass
+  decode (cold)                      784   784 output lanes, one cold parallel read (charged as a lane operation; runs host-side today)
+  TOTAL                            10064
+  addresses swept: 128 backbone + 98 patch = 226
+
+  matches the energy model's census (10064 reads over 226 addresses), so the modeled energy describes the scored arm unchanged.
+
+-- the frontier, their protocol (their code, their reference, their 0.1 binarization, n = 5120) --
+  arm                  FID     div   nominal J    low-swing pessimistic   vs 24.9
+  one-level-16       45.30  0.1288    4.93e-11     3.13e-11    1.48e-10    +20.40
+  one-level-32       30.30  0.1397    9.88e-11     5.56e-11    3.35e-10     +5.40
+  one-level-64       23.81  0.1597    2.49e-10     1.24e-10    9.27e-10     -1.09
+  one-level-128      21.98  0.1640    7.51e-10     3.41e-10    2.98e-09     -2.92
+  two-level          19.43  0.1643    2.00e-09     8.83e-10    8.07e-09     -5.47
+  their DTM, 8       24.90       —    1.57e-08            —           —
+  real train images    1.91  0.1806   (not a generator)
+  codec ceiling      14.20  0.1634   (not a generator)
+
+-- the result --
+  two-level: FID 19.43 against their 24.9 (5.47 better), at 2.00e-09 J per image at the nominal point against their 1.568e-08 — a factor of 8.
+  low-swing select 8.83e-10 J (18x); pessimistic corner 8.07e-09 J (1.9x).
+  All three belong in the report.

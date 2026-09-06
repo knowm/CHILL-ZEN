@@ -1,0 +1,22 @@
+training reference n=68000; excluded-from-fit reference n=2000
+The 2,000 reference images were used for model selection, not weight fitting.
+  distinct renders 2000/2000  largest duplicate group 1
+  exact train copies 5  (1s)
+  NN-to-train Hamming: q00 0  q01 3  q05 7  q25 15  q50 23  q75 39  q100 216
+
+comparator-two-level-P6 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (2s)
+  NN-to-train Hamming: q00 2  q01 4  q05 8  q25 16  q50 25  q75 41  q100 202
+
+comparator-binary-one-level-128 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (2s)
+  NN-to-train Hamming: q00 1  q01 6  q05 10  q25 20  q50 31  q75 51  q100 166
+
+comparator-binary-one-level-64 (n = 5120):
+  distinct renders 5120/5120  largest duplicate group 1
+  exact train copies 0  (2s)
+  NN-to-train Hamming: q00 1  q01 4  q05 8  q25 17  q50 27  q75 47  q100 155
+
+saved: audit-memorization.json

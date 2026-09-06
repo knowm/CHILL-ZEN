@@ -1,0 +1,136 @@
+
+=== physical-point energy reconciliation (grayscale) (2026-09-02 08:33) ===
+GAIN_DEV 0.02 (device), V_FLOOR 10 mV, band SnCr; v_n grayscale 1.0 mV (P3), binary 3.0 mV (P6), reference 5.0 mV at 50 mV (P5)
+
+-- backbone draw (ctx 0, 16, 64, 127) --
+backbone ctx0        old target 0.1467  v_want 0.87mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0360  sigma_cmp 0.1000  sigma_composite 0.1063  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx16       old target 0.0495  v_want 2.59mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0196  sigma_cmp 0.1000  sigma_composite 0.1019  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx64       old target 0.0232  v_want 5.53mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0173  sigma_cmp 0.1000  sigma_composite 0.1015  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx127      old target 0.0161  v_want 7.99mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0167  sigma_cmp 0.1000  sigma_composite 0.1014  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- patch draw --
+patch                old target 0.0165  v_want 7.78mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0166  sigma_cmp 0.1000  sigma_composite 0.1014  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- reference-read row (P5 twin: V=50mV, v_n=5mV, settling t_b unchanged) --
+patch @ 50mV        sigma_lane 0.0050  sigma_cmp 0.1000  sigma_composite 0.1001  (P5 measured 97-100% comparator, matches P3 on every judge)
+
+comparator energy: E_CMP = 1 fJ per lane per read (P2), already charged in the periphery total (12_energy_model.py); a raw-latch class starved to v_n = 1-3 mV rms prices the same as one held at full bias -- the noise setting is a bias schedule, not an extra component.
+
+=== physical-point energy reconciliation (binary) (2026-09-02 08:33) ===
+
+-- binary backbone draw (ctx 0, 16, 64, 127) --
+bin backbone ctx0    old target 0.1153  v_want 1.11mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0292  sigma_cmp 0.3000  sigma_composite 0.3014  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx16   old target 0.0569  v_want 2.26mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0215  sigma_cmp 0.3000  sigma_composite 0.3008  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx64   old target 0.0265  v_want 4.84mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0181  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx127   old target 0.0179  v_want 7.16mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0173  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+
+=== physical-point energy reconciliation (grayscale) (2026-09-03 14:34) ===
+GAIN_DEV 0.02 (device), V_FLOOR 10 mV, band SnCr; v_n grayscale 1.0 mV (P3), binary 3.0 mV (P6), reference 5.0 mV at 50 mV (P5)
+
+-- backbone draw (ctx 0, 16, 64, 127) --
+backbone ctx0        old target 0.1467  v_want 0.87mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0360  sigma_cmp 0.1000  sigma_composite 0.1063  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx16       old target 0.0495  v_want 2.59mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0196  sigma_cmp 0.1000  sigma_composite 0.1019  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx64       old target 0.0232  v_want 5.53mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0173  sigma_cmp 0.1000  sigma_composite 0.1015  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx127      old target 0.0161  v_want 7.99mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0167  sigma_cmp 0.1000  sigma_composite 0.1014  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- patch draw --
+patch                old target 0.0165  v_want 7.78mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0166  sigma_cmp 0.1000  sigma_composite 0.1014  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- reference-read row (P5 twin: V=50mV, v_n=5mV, settling t_b unchanged) --
+patch @ 50mV        sigma_lane 0.0050  sigma_cmp 0.1000  sigma_composite 0.1001  (P5 measured 97-100% comparator, matches P3 on every judge)
+
+comparator energy: E_CMP = 1 fJ per lane per read (P2), already charged in the periphery total (12_energy_model.py); a raw-latch class starved to v_n = 1-3 mV rms prices the same as one held at full bias -- the noise setting is a bias schedule, not an extra component.
+
+=== physical-point energy reconciliation (binary) (2026-09-03 14:34) ===
+
+-- binary backbone draw (ctx 0, 16, 64, 127) --
+bin backbone ctx0    old target 0.1153  v_want 1.11mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0292  sigma_cmp 0.3000  sigma_composite 0.3014  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx16   old target 0.0569  v_want 2.26mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0215  sigma_cmp 0.3000  sigma_composite 0.3008  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx64   old target 0.0265  v_want 4.84mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0181  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx127   old target 0.0179  v_want 7.16mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0173  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+
+=== physical-point energy reconciliation (grayscale) (2026-09-04 00:15) ===
+GAIN_DEV 0.02 (device), V_FLOOR 10 mV, band SnCr; v_n grayscale 1.0 mV (P3), binary 3.0 mV (P6), reference 5.0 mV at 50 mV (P5)
+
+-- backbone draw (ctx 0, 16, 64, 127) --
+backbone ctx0        old target 0.1467  v_want 0.87mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0360  sigma_cmp 0.1000  sigma_composite 0.1063  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx16       old target 0.0495  v_want 2.59mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0196  sigma_cmp 0.1000  sigma_composite 0.1019  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx64       old target 0.0231  v_want 5.55mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0173  sigma_cmp 0.1000  sigma_composite 0.1015  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx127      old target 0.0161  v_want 7.96mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0167  sigma_cmp 0.1000  sigma_composite 0.1014  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- patch draw --
+patch                old target 0.0165  v_want 7.79mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0167  sigma_cmp 0.1000  sigma_composite 0.1014  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- reference-read row (P5 twin: V=50mV, v_n=5mV, settling t_b unchanged) --
+patch @ 50mV        sigma_lane 0.0050  sigma_cmp 0.1000  sigma_composite 0.1001  (P5 measured 97-100% comparator, matches P3 on every judge)
+
+comparator energy: E_CMP = 1 fJ per lane per read (P2), already charged in the periphery total (12_energy_model.py); a raw-latch class starved to v_n = 1-3 mV rms prices the same as one held at full bias -- the noise setting is a bias schedule, not an extra component.
+
+=== physical-point energy reconciliation (binary) (2026-09-04 00:15) ===
+
+-- binary backbone draw (ctx 0, 16, 64, 127) --
+bin backbone ctx0    old target 0.1153  v_want 1.11mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0292  sigma_cmp 0.3000  sigma_composite 0.3014  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx16   old target 0.0567  v_want 2.26mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0216  sigma_cmp 0.3000  sigma_composite 0.3008  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx64   old target 0.0266  v_want 4.82mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0181  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx127   old target 0.0180  v_want 7.12mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0174  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+
+=== physical-point energy reconciliation (grayscale) (2026-09-04 08:47) ===
+GAIN_DEV 0.02 (device), V_FLOOR 10 mV, band SnCr; v_n grayscale 2.0 mV (P4), binary 3.0 mV (P6), reference 5.0 mV at 50 mV (P5)
+
+-- backbone draw (ctx 0, 16, 64, 127) --
+backbone ctx0        old target 0.1467  v_want 0.87mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0360  sigma_cmp 0.2000  sigma_composite 0.2032  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx16       old target 0.0495  v_want 2.59mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0196  sigma_cmp 0.2000  sigma_composite 0.2010  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx64       old target 0.0231  v_want 5.55mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0173  sigma_cmp 0.2000  sigma_composite 0.2007  e_bound 5.000e-17  (ratio to old 1.0000)
+backbone ctx127      old target 0.0161  v_want 7.96mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0167  sigma_cmp 0.2000  sigma_composite 0.2007  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- patch draw --
+patch                old target 0.0165  v_want 7.79mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0167  sigma_cmp 0.2000  sigma_composite 0.2007  e_bound 5.000e-17  (ratio to old 1.0000)
+
+-- reference-read row (P5 twin: V=50mV, v_n=5mV, settling t_b unchanged) --
+patch @ 50mV        sigma_lane 0.0050  sigma_cmp 0.1000  sigma_composite 0.1001  (P5 measured 97-100% comparator, matches P3 on every judge)
+
+comparator energy: E_CMP = 1 fJ per lane per read (P2), already charged in the periphery total (12_energy_model.py); a raw-latch class starved to v_n = 2-3 mV rms prices the same as one held at full bias -- the noise setting is a bias schedule, not an extra component.
+
+=== physical-point energy reconciliation (binary) (2026-09-04 08:47) ===
+
+-- binary backbone draw (ctx 0, 16, 64, 127) --
+bin backbone ctx0    old target 0.1153  v_want 1.11mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0292  sigma_cmp 0.3000  sigma_composite 0.3014  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx16   old target 0.0567  v_want 2.26mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0216  sigma_cmp 0.3000  sigma_composite 0.3008  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx64   old target 0.0266  v_want 4.82mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0181  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)
+bin backbone ctx127   old target 0.0180  v_want 7.12mV  e_bound 5.000e-17  sigma_del(B) 0.0128
+                     new sigma_lane(E) 0.0174  sigma_cmp 0.3000  sigma_composite 0.3005  e_bound 5.000e-17  (ratio to old 1.0000)

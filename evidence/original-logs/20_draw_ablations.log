@@ -1,0 +1,111 @@
+draw ablations (2026-09-01 16:35)
+real bar: critic 0.8860  div 0.4866
+[sigma] per-step unit-sigma medians: min 0.1568 q25 0.1817 median 0.2284 q75 0.3528 max 1.5462
+[sigma] sigma_eff at T=0.1: step0 0.1546 ... step127 0.0157
+[S-eff] schedule: step0 0.020 ... step127 0.184 (median 0.127)
+
+arm               seed  critic     div   tone   seam   stdr
+  [deployed] seed 950: drawn+rendered (17s)
+deployed           950  0.8290  0.4713  2.552  1.064   1.24
+  [deployed] seed 951: drawn+rendered (17s)
+deployed           951  0.8340  0.4653  2.507  1.045   1.25
+  [deployed] seed 952: drawn+rendered (18s)
+deployed           952  0.8420  0.4647  2.436  1.078   1.24
+deployed          mean  0.8350  0.4671  2.498  1.062   1.25   spread(max-min) critic 0.0130
+  [flat-sigma] seed 950: drawn+rendered (10s)
+flat-sigma         950  0.8370  0.4410  2.577  1.013   1.29
+  [flat-sigma] seed 951: drawn+rendered (10s)
+flat-sigma         951  0.8460  0.4354  2.290  1.032   1.28
+  [flat-sigma] seed 952: drawn+rendered (10s)
+flat-sigma         952  0.8420  0.4389  2.343  1.033   1.28
+flat-sigma        mean  0.8417  0.4384  2.403  1.026   1.28   spread(max-min) critic 0.0090
+  [S-lin] seed 950: drawn+rendered (17s)
+S-lin              950  0.8330  0.5003  1.899  1.030   1.14
+  [S-lin] seed 951: drawn+rendered (17s)
+S-lin              951  0.8320  0.4994  2.029  1.041   1.15
+  [S-lin] seed 952: drawn+rendered (17s)
+S-lin              952  0.8110  0.5004  2.021  1.045   1.15
+S-lin             mean  0.8253  0.5000  1.983  1.038   1.15   spread(max-min) critic 0.0220
+  [S-eff] seed 950: drawn+rendered (17s)
+S-eff              950  0.8280  0.4186  2.221  0.956   1.33
+  [S-eff] seed 951: drawn+rendered (16s)
+S-eff              951  0.8470  0.4187  2.171  0.955   1.32
+  [S-eff] seed 952: drawn+rendered (16s)
+S-eff              952  0.8240  0.4219  2.234  0.990   1.31
+S-eff             mean  0.8330  0.4197  2.209  0.967   1.32   spread(max-min) critic 0.0230
+
+saved: draw-ablations-results.pt
+draw ablations (2026-09-03 15:59)
+real bar: critic 0.8860  div 0.4866
+[sigma] per-step unit-sigma medians: min 0.1568 q25 0.1817 median 0.2284 q75 0.3528 max 1.5462
+[sigma] sigma_eff at T=0.1: step0 0.1546 ... step127 0.0157
+[S-eff] schedule: step0 0.020 ... step127 0.184 (median 0.127)
+
+arm               seed  critic     div   tone   seam   stdr
+  [deployed] seed 950: drawn+rendered (16s)
+deployed           950  0.8290  0.4713  2.552  1.064   1.24
+  [deployed] seed 951: drawn+rendered (16s)
+deployed           951  0.8340  0.4653  2.507  1.045   1.25
+  [deployed] seed 952: drawn+rendered (16s)
+deployed           952  0.8420  0.4647  2.436  1.078   1.24
+deployed          mean  0.8350  0.4671  2.498  1.062   1.25   spread(max-min) critic 0.0130
+  [flat-sigma] seed 950: drawn+rendered (10s)
+flat-sigma         950  0.8370  0.4410  2.577  1.013   1.29
+  [flat-sigma] seed 951: drawn+rendered (10s)
+flat-sigma         951  0.8460  0.4354  2.290  1.032   1.28
+  [flat-sigma] seed 952: drawn+rendered (10s)
+flat-sigma         952  0.8420  0.4389  2.343  1.033   1.28
+flat-sigma        mean  0.8417  0.4384  2.403  1.026   1.28   spread(max-min) critic 0.0090
+  [S-lin] seed 950: drawn+rendered (16s)
+S-lin              950  0.8330  0.5003  1.899  1.030   1.14
+  [S-lin] seed 951: drawn+rendered (17s)
+S-lin              951  0.8320  0.4994  2.029  1.041   1.15
+  [S-lin] seed 952: drawn+rendered (16s)
+S-lin              952  0.8110  0.5004  2.021  1.045   1.15
+S-lin             mean  0.8253  0.5000  1.983  1.038   1.15   spread(max-min) critic 0.0220
+  [S-eff] seed 950: drawn+rendered (16s)
+S-eff              950  0.8280  0.4186  2.221  0.956   1.33
+  [S-eff] seed 951: drawn+rendered (16s)
+S-eff              951  0.8470  0.4187  2.171  0.955   1.32
+  [S-eff] seed 952: drawn+rendered (17s)
+S-eff              952  0.8240  0.4219  2.234  0.990   1.31
+S-eff             mean  0.8330  0.4197  2.209  0.967   1.32   spread(max-min) critic 0.0230
+
+saved: draw-ablations-results.pt
+draw ablations (2026-09-03 23:18)
+real bar: critic 0.8860  div 0.4866
+[sigma] per-step unit-sigma medians: min 0.1568 q25 0.1817 median 0.2284 q75 0.3528 max 1.5462
+[sigma] sigma_eff at T=0.1: step0 0.1546 ... step127 0.0157
+[S-eff] schedule: step0 0.020 ... step127 0.184 (median 0.127)
+
+arm               seed  critic     div   tone   seam   stdr
+  [deployed] seed 950: drawn+rendered (15s)
+deployed           950  0.8230  0.4852  2.558  1.099   1.25
+  [deployed] seed 951: drawn+rendered (15s)
+deployed           951  0.8350  0.4788  2.472  1.062   1.26
+  [deployed] seed 952: drawn+rendered (15s)
+deployed           952  0.8240  0.4769  2.432  1.104   1.25
+deployed          mean  0.8273  0.4803  2.487  1.089   1.26   spread(max-min) critic 0.0120
+  [flat-sigma] seed 950: drawn+rendered (9s)
+flat-sigma         950  0.8370  0.4555  2.610  1.042   1.30
+  [flat-sigma] seed 951: drawn+rendered (10s)
+flat-sigma         951  0.8400  0.4498  2.304  1.064   1.29
+  [flat-sigma] seed 952: drawn+rendered (10s)
+flat-sigma         952  0.8410  0.4506  2.357  1.065   1.29
+flat-sigma        mean  0.8393  0.4520  2.424  1.057   1.30   spread(max-min) critic 0.0040
+  [S-lin] seed 950: drawn+rendered (15s)
+S-lin              950  0.8130  0.5145  1.845  1.061   1.16
+  [S-lin] seed 951: drawn+rendered (15s)
+S-lin              951  0.8310  0.5168  1.949  1.060   1.17
+  [S-lin] seed 952: drawn+rendered (15s)
+S-lin              952  0.8160  0.5148  1.966  1.081   1.17
+S-lin             mean  0.8200  0.5154  1.920  1.067   1.17   spread(max-min) critic 0.0180
+  [S-eff] seed 950: drawn+rendered (15s)
+S-eff              950  0.8200  0.4365  2.217  0.992   1.34
+  [S-eff] seed 951: drawn+rendered (15s)
+S-eff              951  0.8390  0.4363  2.159  0.993   1.33
+  [S-eff] seed 952: drawn+rendered (14s)
+S-eff              952  0.8200  0.4383  2.221  1.027   1.33
+S-eff             mean  0.8263  0.4370  2.199  1.004   1.33   spread(max-min) critic 0.0190
+
+saved: draw-ablations-results.pt

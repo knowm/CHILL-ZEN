@@ -1,0 +1,45 @@
+[verdict] 1000 backbone codes drawn (14s)
+
+n = 1000 on a fresh seed:
+arm               critic     div   tone   seam   stdr
+real              0.8860  0.4866  2.362  1.067   1.00
+reconstruction    0.8860  0.5016  2.070  1.035   1.11
+end-to-end        0.8340  0.4621  2.390  1.064   1.24
+
+the gap between the two arms is the draw: -0.0520 critic
+[verdict] states cached
+
+n = 1000 on a fresh seed:
+arm               critic     div   tone   seam   stdr
+real              0.8860  0.4866  2.362  1.067   1.00
+reconstruction    0.8860  0.5016  2.070  1.035   1.11
+end-to-end        0.8340  0.4621  2.390  1.064   1.24
+
+the gap between the two arms is the draw: -0.0520 critic
+[verdict] 1000 backbone codes drawn (20s)
+
+n = 1000 on a fresh seed:
+arm               critic     div   tone   seam   stdr
+real              0.8860  0.4866  2.362  1.067   1.00
+reconstruction    0.8860  0.5016  2.070  1.035   1.11
+end-to-end        0.8340  0.4621  2.390  1.064   1.24
+
+the gap between the two arms is the draw: -0.0520 critic
+[verdict] states cached
+
+n = 1000 on a fresh seed:
+arm               critic     div   tone   seam   stdr
+real              0.8860  0.4866  2.362  1.067   1.00
+reconstruction    0.8860  0.5016  2.070  1.035   1.11
+end-to-end        0.8340  0.4621  2.390  1.064   1.24
+
+the gap between the two arms is the draw: -0.0520 critic
+[verdict] 1000 backbone codes drawn (14s)
+
+n = 1000 on a fresh seed:
+arm               critic     div   tone   seam   stdr
+real              0.8860  0.4866  2.362  1.067   1.00
+reconstruction    0.8820  0.5025  2.052  1.044   1.11
+end-to-end        0.8170  0.4707  2.457  1.067   1.25
+
+the gap between the two arms is the draw: -0.0650 critic

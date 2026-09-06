@@ -1,0 +1,46 @@
+
+=== scoring the binary arms (2026-09-01 16:51) ===
+arms: ['binary-codec-ceiling-128', 'binary-one-level-128-T0.1', 'binary-one-level-128-T0.2', 'binary-one-level-128-T0.3', 'binary-one-level-128-T0.5', 'binary-one-level-64-T0.1', 'binary-one-level-64-T0.2', 'binary-one-level-64-T0.3', 'binary-one-level-64-T0.5', 'binary-real-train', 'binary-stack-ceiling', 'binary-two-level-T0.1', 'binary-two-level-T0.2', 'binary-two-level-T0.3', 'binary-two-level-T0.5']
+arm                               FID  on-frac     div
+binary-codec-ceiling-128         9.57   0.4539  0.1675
+binary-one-level-128-T0.1       18.31   0.4577  0.1243
+binary-one-level-128-T0.2       12.47   0.4426  0.1407
+binary-one-level-128-T0.3       14.94   0.4403  0.1495
+binary-one-level-128-T0.5       18.26   0.4450  0.1518
+binary-one-level-64-T0.1        18.17   0.4506  0.1349
+binary-one-level-64-T0.2        13.62   0.4419  0.1395
+binary-one-level-64-T0.3        14.62   0.4434  0.1324
+binary-one-level-64-T0.5        15.33   0.4458  0.1271
+binary-real-train                1.91   0.4492  0.1806
+binary-stack-ceiling             2.83   0.4513  0.1757
+binary-two-level-T0.1           16.81   0.4590  0.1298
+binary-two-level-T0.2           10.88   0.4446  0.1477
+binary-two-level-T0.3            9.82   0.4417  0.1577
+binary-two-level-T0.5            9.93   0.4445  0.1581
+
+saved: binary-score-results.json
+binary codec ceiling 9.57 <= 14.21: OK
+best two-level arm: binary-two-level-T0.3 at 9.82 (grayscale two-level 18.93, DTM bar 24.9)
+
+=== scoring the binary arms (2026-09-04 01:34) ===
+arms: ['binary-codec-ceiling-128', 'binary-one-level-128-T0.1', 'binary-one-level-128-T0.2', 'binary-one-level-128-T0.3', 'binary-one-level-128-T0.5', 'binary-one-level-64-T0.1', 'binary-one-level-64-T0.2', 'binary-one-level-64-T0.3', 'binary-one-level-64-T0.5', 'binary-real-train', 'binary-stack-ceiling', 'binary-two-level-T0.1', 'binary-two-level-T0.2', 'binary-two-level-T0.3', 'binary-two-level-T0.5']
+arm                               FID  on-frac     div
+binary-codec-ceiling-128         9.57   0.4539  0.1675
+binary-one-level-128-T0.1       17.76   0.4559  0.1284
+binary-one-level-128-T0.2       12.28   0.4339  0.1541
+binary-one-level-128-T0.3       17.16   0.4269  0.1686
+binary-one-level-128-T0.5       22.79   0.4283  0.1704
+binary-one-level-64-T0.1        17.34   0.4482  0.1444
+binary-one-level-64-T0.2        12.67   0.4321  0.1640
+binary-one-level-64-T0.3        14.14   0.4315  0.1623
+binary-one-level-64-T0.5        15.19   0.4355  0.1582
+binary-real-train                1.91   0.4492  0.1806
+binary-stack-ceiling             2.83   0.4513  0.1757
+binary-two-level-T0.1           15.07   0.4571  0.1363
+binary-two-level-T0.2            8.97   0.4337  0.1676
+binary-two-level-T0.3           10.89   0.4244  0.1891
+binary-two-level-T0.5           13.19   0.4234  0.1921
+
+saved: binary-score-results.json
+binary codec ceiling 9.57 <= 14.21: OK
+best two-level arm: binary-two-level-T0.2 at 8.97 (grayscale two-level 18.93, DTM bar 24.9)

@@ -1,0 +1,32 @@
+/Users/alexnugent/.matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /var/folders/5m/jdhp640s4pv73dwkskdc7vtw0000gn/T/matplotlib-l3q2yhgq because there was an issue with the default path ({configdir}); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+
+Fontconfig error: No writable cache directories
+	/usr/local/var/cache/fontconfig
+	/Users/alexnugent/.cache/fontconfig
+	/Users/alexnugent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/usr/local/var/cache/fontconfig
+	/Users/alexnugent/.cache/fontconfig
+	/Users/alexnugent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/usr/local/var/cache/fontconfig
+	/Users/alexnugent/.cache/fontconfig
+	/Users/alexnugent/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/usr/local/var/cache/fontconfig
+	/Users/alexnugent/.cache/fontconfig
+	/Users/alexnugent/.fontconfig
+Matplotlib is building the font cache; this may take a moment.
+sample figure, seed 960 critic end-to-end/reconstruction: 0.9210000038146973 0.8909999132156372
+fig-samples.png
+fig-codec.png
+fig-backbone.png
+fig-teach.png
+fig-noise: K=6    C_node  12.2 fF  sigma at 10 mV: thermal 0.0581  flicker 0.0287
+fig-noise: K=134  C_node 165.8 fF  sigma at 10 mV: thermal 0.0158  flicker 0.0063
+fig-noise: K=232  C_node 283.4 fF  sigma at 10 mV: thermal 0.0120  flicker 0.0020
+fig-noise.png

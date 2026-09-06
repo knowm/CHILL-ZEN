@@ -1,0 +1,61 @@
+ 16 books [W]: bounded 8.651e-13 J  anchor 1.199e-10 J
+ 16 books [SnCr]: bounded 8.651e-13 J  anchor 5.807e-12 J
+ 32 books [W]: bounded 1.733e-12 J  anchor 4.494e-10 J
+ 32 books [SnCr]: bounded 1.731e-12 J  anchor 2.120e-11 J
+ 64 books [W]: bounded 4.677e-12 J  anchor 1.716e-09 J
+ 64 books [SnCr]: bounded 3.469e-12 J  anchor 7.968e-11 J
+128 books [W]: bounded 1.470e-11 J  anchor 7.077e-09 J
+128 books [SnCr]: bounded 6.967e-12 J  anchor 3.275e-10 J
+deployed two-level: bounded 1.871e-11 J  anchor (tin/chromium) 1.581e-09 J  anchor (tungsten) 3.372e-08 J
+saved: energy-frontier.pt
+ 16 books [W]: bounded 8.651e-13 J  anchor 1.233e-10 J
+ 16 books [SnCr]: bounded 8.651e-13 J  anchor 5.979e-12 J
+ 32 books [W]: bounded 1.731e-12 J  anchor 4.309e-10 J
+ 32 books [SnCr]: bounded 1.731e-12 J  anchor 2.026e-11 J
+ 64 books [W]: bounded 4.831e-12 J  anchor 1.794e-09 J
+ 64 books [SnCr]: bounded 3.469e-12 J  anchor 8.361e-11 J
+128 books [W]: bounded 1.449e-11 J  anchor 6.973e-09 J
+128 books [SnCr]: bounded 6.967e-12 J  anchor 3.223e-10 J
+deployed two-level: bounded 1.871e-11 J  anchor (tin/chromium) 1.513e-09 J  anchor (tungsten) 3.239e-08 J
+saved: energy-frontier.pt
+ 16 books [W]: bounded 8.651e-13 J  anchor 1.233e-10 J
+ 16 books [SnCr]: bounded 8.651e-13 J  anchor 5.978e-12 J
+ 32 books [W]: bounded 1.731e-12 J  anchor 4.321e-10 J
+ 32 books [SnCr]: bounded 1.731e-12 J  anchor 2.032e-11 J
+ 64 books [W]: bounded 4.828e-12 J  anchor 1.792e-09 J
+ 64 books [SnCr]: bounded 3.469e-12 J  anchor 8.350e-11 J
+128 books [W]: bounded 1.446e-11 J  anchor 6.954e-09 J
+128 books [SnCr]: bounded 6.967e-12 J  anchor 3.213e-10 J
+deployed two-level: bounded 1.871e-11 J  anchor (tin/chromium) 1.513e-09 J  anchor (tungsten) 3.239e-08 J
+saved: energy-frontier.pt
+
+16 books:
+  nominal                      sel 2.96e-11  read 3.47e-13  readout 1.94e-11  total 4.93e-11  DTM/ours 317.8x
+  low-swing 0.5 V              sel 1.15e-11  read 3.47e-13  readout 1.94e-11  total 3.13e-11  DTM/ours 500.4x
+  7 nm-class periphery         sel 1.06e-11  read 2.82e-13  readout 1.94e-11  total 3.04e-11  DTM/ours 516.4x
+  7 nm-class, 0.5 V            sel 4.16e-12  read 2.82e-13  readout 1.94e-11  total 2.39e-11  DTM/ours 656.7x
+  pessimistic corner           sel 1.27e-10  read 1.39e-12  readout 1.94e-11  total 1.48e-10  DTM/ours 106.1x
+
+32 books:
+  nominal                      sel 7.10e-11  read 7.50e-13  readout 2.71e-11  total 9.88e-11  DTM/ours 158.6x
+  low-swing 0.5 V              sel 2.77e-11  read 7.50e-13  readout 2.71e-11  total 5.56e-11  DTM/ours 282.0x
+  7 nm-class periphery         sel 2.56e-11  read 6.10e-13  readout 2.71e-11  total 5.33e-11  DTM/ours 294.3x
+  7 nm-class, 0.5 V            sel 9.98e-12  read 6.10e-13  readout 2.71e-11  total 3.77e-11  DTM/ours 415.8x
+  pessimistic corner           sel 3.05e-10  read 3.00e-12  readout 2.71e-11  total 3.35e-10  DTM/ours  46.8x
+
+64 books:
+  nominal                      sel 2.04e-10  read 1.94e-12  readout 4.25e-11  total 2.49e-10  DTM/ours  63.1x
+  low-swing 0.5 V              sel 7.97e-11  read 1.94e-12  readout 4.25e-11  total 1.24e-10  DTM/ours 126.3x
+  7 nm-class periphery         sel 7.35e-11  read 1.58e-12  readout 4.25e-11  total 1.18e-10  DTM/ours 133.4x
+  7 nm-class, 0.5 V            sel 2.87e-11  read 1.58e-12  readout 4.25e-11  total 7.28e-11  DTM/ours 215.5x
+  pessimistic corner           sel 8.77e-10  read 7.77e-12  readout 4.25e-11  total 9.27e-10  DTM/ours  16.9x
+
+128 books:
+  nominal                      sel 6.72e-10  read 5.86e-12  readout 7.32e-11  total 7.51e-10  DTM/ours  20.9x
+  low-swing 0.5 V              sel 2.62e-10  read 5.86e-12  readout 7.32e-11  total 3.41e-10  DTM/ours  45.9x
+  7 nm-class periphery         sel 2.42e-10  read 4.76e-12  readout 7.32e-11  total 3.20e-10  DTM/ours  49.0x
+  7 nm-class, 0.5 V            sel 9.45e-11  read 4.76e-12  readout 7.32e-11  total 1.72e-10  DTM/ours  90.9x
+  pessimistic corner           sel 2.89e-09  read 2.34e-11  readout 7.32e-11  total 2.98e-09  DTM/ours   5.3x
+
+deployed two-level: nominal 1.995e-09 J  pessimistic 8.070e-09 J  low-swing 8.834e-10 J
+saved: energy-frontier.pt

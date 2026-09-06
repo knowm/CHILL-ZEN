@@ -1,0 +1,37 @@
+[joint] building the pool (fills at T = 0.3, both levels corrupted, patches under the corrupted backbone)
+  [train] pool: 68000 states, wrong globals 0.551 / patches 0.507 (18s)
+  [eval] pool: 2000 states, wrong globals 0.547 / patches 0.504 (1s)
+[joint] 3616 lanes x 232 spaces x 16 ch (sharp); wrong in the eval pool 0.528
+  ep  1  repair 0.2821 (backbone 0.2909 / patch 0.2696)  preserve 0.5211 (maj 0.7778 / min 0.4398 / backbone 0.5330)  (102s)  *best
+  ep  2  repair 0.2883 (backbone 0.3013 / patch 0.2699)  preserve 0.5312 (maj 0.7550 / min 0.4603 / backbone 0.5495)  (199s)  *best
+  ep  3  repair 0.2942 (backbone 0.3070 / patch 0.2762)  preserve 0.5346 (maj 0.7634 / min 0.4620 / backbone 0.5543)  (306s)  *best
+  ep  4  repair 0.2945 (backbone 0.3089 / patch 0.2741)  preserve 0.5323 (maj 0.7449 / min 0.4649 / backbone 0.5505)  (407s)  *best
+  ep  5  repair 0.2969 (backbone 0.3112 / patch 0.2766)  preserve 0.5313 (maj 0.7562 / min 0.4600 / backbone 0.5498)  (508s)  *best
+  ep  6  repair 0.2967 (backbone 0.3117 / patch 0.2755)  preserve 0.5295 (maj 0.7477 / min 0.4604 / backbone 0.5479)  (603s)
+  ep  7  repair 0.2982 (backbone 0.3127 / patch 0.2776)  preserve 0.5264 (maj 0.7598 / min 0.4524 / backbone 0.5451)  (697s)  *best
+  ep  8  repair 0.2978 (backbone 0.3118 / patch 0.2779)  preserve 0.5250 (maj 0.7460 / min 0.4549 / backbone 0.5432)  (796s)
+  ep  9  repair 0.2972 (backbone 0.3123 / patch 0.2758)  preserve 0.5243 (maj 0.7500 / min 0.4527 / backbone 0.5427)  (900s)
+  ep 10  repair 0.2985 (backbone 0.3139 / patch 0.2768)  preserve 0.5226 (maj 0.7577 / min 0.4481 / backbone 0.5409)  (1006s)  *best
+  ep 11  repair 0.2977 (backbone 0.3125 / patch 0.2768)  preserve 0.5196 (maj 0.7489 / min 0.4470 / backbone 0.5382)  (1109s)
+  ep 12  repair 0.2982 (backbone 0.3133 / patch 0.2769)  preserve 0.5192 (maj 0.7449 / min 0.4477 / backbone 0.5385)  (1214s)
+  ep 13  repair 0.2982 (backbone 0.3127 / patch 0.2777)  preserve 0.5175 (maj 0.7437 / min 0.4458 / backbone 0.5356)  (1317s)
+  patience — freezing epoch 10
+[joint] FROZEN  repair 0.2985 (backbone 0.3139 / patch 0.2768)  preserve 0.5226 (maj 0.7577 / min 0.4481 / backbone 0.5409)
+[joint] repair 0.2985 (backbone 0.3139 / patch 0.2768)
+[joint] building the pool (fills at T = 0.3, both levels corrupted, patches under the corrupted backbone)
+  [train] pool: 68000 states, wrong globals 0.541 / patches 0.535 (88s)
+  [eval] pool: 2000 states, wrong globals 0.537 / patches 0.529 (3s)
+[joint] 3616 lanes x 232 spaces x 16 ch (sharp); wrong in the eval pool 0.533
+  ep  1  repair 0.2862 (backbone 0.2833 / patch 0.2902)  preserve 0.5056 (maj 0.7487 / min 0.4322 / backbone 0.5258)  (103s)  *best
+  ep  2  repair 0.2962 (backbone 0.2968 / patch 0.2955)  preserve 0.5133 (maj 0.7310 / min 0.4476 / backbone 0.5376)  (198s)  *best
+  ep  3  repair 0.3006 (backbone 0.3025 / patch 0.2980)  preserve 0.5177 (maj 0.7447 / min 0.4493 / backbone 0.5431)  (296s)  *best
+  ep  4  repair 0.3018 (backbone 0.3040 / patch 0.2989)  preserve 0.5141 (maj 0.7199 / min 0.4521 / backbone 0.5361)  (390s)  *best
+  ep  5  repair 0.3043 (backbone 0.3058 / patch 0.3021)  preserve 0.5133 (maj 0.7292 / min 0.4482 / backbone 0.5358)  (486s)  *best
+  ep  6  repair 0.3044 (backbone 0.3081 / patch 0.2997)  preserve 0.5111 (maj 0.7207 / min 0.4479 / backbone 0.5321)  (581s)  *best
+  ep  7  repair 0.3057 (backbone 0.3084 / patch 0.3022)  preserve 0.5082 (maj 0.7363 / min 0.4394 / backbone 0.5298)  (679s)  *best
+  ep  8  repair 0.3047 (backbone 0.3080 / patch 0.3003)  preserve 0.5058 (maj 0.7300 / min 0.4382 / backbone 0.5261)  (773s)
+  ep  9  repair 0.3039 (backbone 0.3066 / patch 0.3002)  preserve 0.5058 (maj 0.7191 / min 0.4415 / backbone 0.5263)  (870s)
+  ep 10  repair 0.3056 (backbone 0.3091 / patch 0.3009)  preserve 0.5037 (maj 0.7326 / min 0.4347 / backbone 0.5255)  (965s)
+  patience — freezing epoch 7
+[joint] FROZEN  repair 0.3057 (backbone 0.3084 / patch 0.3022)  preserve 0.5082 (maj 0.7363 / min 0.4394 / backbone 0.5298)
+[joint] repair 0.3057 (backbone 0.3084 / patch 0.3022)

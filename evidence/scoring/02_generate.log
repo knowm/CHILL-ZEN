@@ -1,0 +1,16 @@
+
+=== generate (2026-09-04 00:15) — 512/class = 5120 per arm ===
+[gen] real-train: (5120, 28, 28) mean 0.2822  on-fraction at 0.1 0.4492, at 0.5 0.3080
+[gen] codec-ceiling: (5120, 28, 28) mean 0.2866  on-fraction at 0.1 0.4949, at 0.5 0.2990
+[gen] one-level-16: 5120 codes drawn (1s)
+[gen] one-level-16: (5120, 28, 28) mean 0.2946  on-fraction at 0.1 0.5574, at 0.5 0.3038
+[gen] one-level-32: 5120 codes drawn (5s)
+[gen] one-level-32: (5120, 28, 28) mean 0.2750  on-fraction at 0.1 0.5300, at 0.5 0.2731
+[gen] one-level-64: 5120 codes drawn (20s)
+[gen] one-level-64: (5120, 28, 28) mean 0.2998  on-fraction at 0.1 0.5350, at 0.5 0.3078
+[gen] one-level-128: 5120 codes drawn (85s)
+[gen] one-level-128: (5120, 28, 28) mean 0.3064  on-fraction at 0.1 0.5098, at 0.5 0.3023
+[gen] two-level: backbone codes drawn (85s)
+[gen] two-level: joint sweep done (87s)
+[gen] two-level: (5120, 28, 28) mean 0.3190  on-fraction at 0.1 0.4802, at 0.5 0.3218
+[gen] done

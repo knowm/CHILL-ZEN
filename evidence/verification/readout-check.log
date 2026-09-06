@@ -1,0 +1,21 @@
+readout options on the deployed census (Appendix B):
+  continuous-time, 200 nA for 62.5 ns (as priced) sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+       15.0 fJ per lane read; readout 8% of the total; returns winner and rank; noise samples per lane: one, if the ramp is fast
+  continuous-time, 1 uA for 62.5 ns sel 1.82e-09  read 1.97e-11  readout 5.54e-10  total 2.40e-09  DTM/ours   6.5x
+       55.0 fJ per lane read; readout 23% of the total; returns winner and rank; noise samples per lane: one; noise / sqrt(5)
+  clocked, binary search on the winner, 5 strobes sel 1.82e-09  read 1.97e-11  readout 5.54e-10  total 2.40e-09  DTM/ours   6.5x
+       55.0 fJ per lane read; readout 23% of the total; returns winner only; noise samples per lane: five, first crossing
+  clocked, full ramp, 16 strobes sel 1.82e-09  read 1.97e-11  readout 1.66e-09  total 3.50e-09  DTM/ours   4.5x
+      165.0 fJ per lane read; readout 47% of the total; returns winner and 4-bit rank; noise samples per lane: sixteen, first crossing
+  clocked tournament, 15 decisions per group sel 1.82e-09  read 1.97e-11  readout 1.45e-10  total 1.99e-09  DTM/ours   7.9x
+       14.4 fJ per lane read; readout 7% of the total; returns winner only; noise samples per lane: one per pairwise comparison
+
+continuous-time noise-energy bound, E = 4kT gamma (n V_T) V_dd (BT) / v_n^2 (gamma 1, n V_T 35 mV, V_dd 0.8 V, BT 3):
+  2 mV (code 95, the hot read)       0.35 fJ per lane read
+  1 mV (code 45)                     1.39 fJ per lane read
+  300 uV (code 10)                  15.46 fJ per lane read
+  100 uV (code 0)                  139.17 fJ per lane read
+
+ramp condition at v_n = 2 mV, B = 500 MHz: slope >= 38 mV/ns; the 20 mV range in 0.53 ns
+
+saved: readout-options.pt

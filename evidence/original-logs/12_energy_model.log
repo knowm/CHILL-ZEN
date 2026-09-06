@@ -1,0 +1,237 @@
+energy model — A1-A4 and P1-P3 are in chill_zen/energy.py
+
+per-class device-level energies (per lane read, medians):
+band  class                  floor   bounded    anchor  sigma tgt  sigma del
+W     backbone draw       1.63e-17  8.40e-17  9.52e-13    3.0e-02    1.1e-02
+W     backbone sweep      5.02e-15  5.02e-15  2.51e-12    0.0e+00    1.3e-03
+W     patch draw          3.02e-17  1.51e-16  1.89e-12    1.6e-02    7.4e-03
+W     joint sweep         1.08e-14  1.08e-14  5.38e-12    0.0e+00    8.7e-04
+SnCr  backbone draw       1.63e-17  5.00e-17  4.23e-14    3.0e-02    1.3e-02
+SnCr  backbone sweep      1.25e-15  1.25e-15  1.16e-13    0.0e+00    2.6e-03
+SnCr  patch draw          3.02e-17  5.00e-17  8.41e-14    1.6e-02    1.3e-02
+SnCr  joint sweep         1.25e-15  1.25e-15  2.53e-13    0.0e+00    2.6e-03
+
+census: 9280 lane reads per image (hot 3616, cold 5664) over 226 addresses, in 131 sequential steps
+  [W] floor 4.926e-11  bounded 4.959e-11  anchor 2.950e-08 J
+  [SnCr] floor 7.161e-12  bounded 7.261e-12  anchor 1.372e-09 J
+
+periphery per image: line charging 1.11e-13 + comparators 9.28e-12 + address/clock 2.90e-13 = 9.68e-12 J
+
+WITH PERIPHERY, per image: 1.69e-11 .. 1.38e-09 J (anchor on the tin/chromium band)
+  anchor on the tungsten band: 2.95e-08 J
+  devices alone: 7.26e-12 .. 1.37e-09 J
+
+comparisons:
+  their deepest DTM chain: 1.568e-08 J/sample -> bounded 926x less, tin/chromium anchor 11.3x less, tungsten anchor 1.9x MORE
+  per drawn bit (16 lanes carry 4 bits): bounded 4.52e-16 J = 1.1e+05 kBT; at the thermodynamic floor 8.93e-17 J = 2.2e+04 kBT
+  their RNG cell: 2e-15 J = 4.9e+05 kBT per Bernoulli sample
+
+saved: energy-model.pt
+energy model — A1-A4 and P1-P3 are in chill_zen/energy.py
+
+per-class device-level energies (per lane read, medians):
+band  class                  floor   bounded    anchor  sigma tgt  sigma del
+W     backbone draw       1.63e-17  8.40e-17  9.52e-13    3.0e-02    1.1e-02
+W     backbone sweep      5.02e-15  5.02e-15  2.51e-12    0.0e+00    1.3e-03
+W     patch draw          3.02e-17  1.51e-16  1.89e-12    1.6e-02    7.4e-03
+W     joint sweep         1.08e-14  1.08e-14  5.38e-12    0.0e+00    8.7e-04
+W     decode              1.08e-14  1.08e-14  5.38e-12    0.0e+00    8.7e-04
+SnCr  backbone draw       1.63e-17  5.00e-17  4.23e-14    3.0e-02    1.3e-02
+SnCr  backbone sweep      1.25e-15  1.25e-15  1.16e-13    0.0e+00    2.6e-03
+SnCr  patch draw          3.02e-17  5.00e-17  8.41e-14    1.6e-02    1.3e-02
+SnCr  joint sweep         1.25e-15  1.25e-15  2.53e-13    0.0e+00    2.6e-03
+SnCr  decode              1.25e-15  1.25e-15  2.53e-13    0.0e+00    2.6e-03
+
+census: 10064 lane reads per image (hot 3616, cold 6448) over 226 addresses, in 132 sequential steps
+  of which decode: 784 cold lane reads, one parallel group read (magnitudes proxied by the joint sweep's pooled read; runs host-side today, Limitation 7)
+  [W] floor 5.770e-11  bounded 5.803e-11  anchor 3.371e-08 J
+  [SnCr] floor 8.141e-12  bounded 8.241e-12  anchor 1.571e-09 J
+
+periphery per image: line charging 1.11e-13 + comparators 1.01e-11 + address/clock 2.91e-13 = 1.05e-11 J
+
+WITH PERIPHERY, per image (tin/chromium band): 1.87e-11 .. 1.58e-09 J
+  tungsten band: bounded 6.85e-11 .. anchor 3.37e-08 J
+  devices alone: bounded SnCr 8.24e-12 / W 5.80e-11; anchor SnCr 1.57e-09 / W 3.37e-08
+
+comparisons:
+  their deepest DTM chain: 1.568e-08 J/sample -> bounded 838x less, tin/chromium anchor 9.9x less, tungsten anchor 2.2x MORE
+  at the tungsten band's bounded point: 229x less
+  per drawn bit (16 lanes carry 4 bits): bounded 4.52e-16 J = 1.1e+05 kBT; at the thermodynamic floor 8.93e-17 J = 2.2e+04 kBT
+  their RNG cell: 2e-15 J = 4.9e+05 kBT per Bernoulli sample
+
+saved: energy-model.pt
+energy model — A1-A4 and P1-P3 are in chill_zen/energy.py
+
+per-class device-level energies (per lane read, medians):
+band  class                  floor   bounded    anchor  sigma tgt  sigma del
+W     backbone draw       1.62e-17  8.36e-17  9.47e-13    3.0e-02    1.1e-02
+W     backbone sweep      4.90e-15  4.90e-15  2.45e-12    0.0e+00    1.3e-03
+W     patch draw          3.03e-17  1.50e-16  1.88e-12    1.6e-02    7.4e-03
+W     joint sweep         1.02e-14  1.02e-14  5.11e-12    0.0e+00    9.0e-04
+W     decode              1.02e-14  1.02e-14  5.11e-12    0.0e+00    9.0e-04
+SnCr  backbone draw       1.62e-17  5.00e-17  4.21e-14    3.0e-02    1.3e-02
+SnCr  backbone sweep      1.25e-15  1.25e-15  1.13e-13    0.0e+00    2.6e-03
+SnCr  patch draw          3.03e-17  5.00e-17  8.39e-14    1.6e-02    1.3e-02
+SnCr  joint sweep         1.25e-15  1.25e-15  2.40e-13    0.0e+00    2.6e-03
+SnCr  decode              1.25e-15  1.25e-15  2.40e-13    0.0e+00    2.6e-03
+
+census: 10064 lane reads per image (hot 3616, cold 6448) over 226 addresses, in 132 sequential steps
+  of which decode: 784 cold lane reads, one parallel group read (magnitudes proxied by the joint sweep's pooled read; runs host-side today, Limitation 7)
+  [W] floor 5.506e-11  bounded 5.538e-11  anchor 3.238e-08 J
+  [SnCr] floor 8.141e-12  bounded 8.241e-12  anchor 1.502e-09 J
+
+periphery per image: line charging 1.11e-13 + comparators 1.01e-11 + address/clock 2.91e-13 = 1.05e-11 J
+
+WITH PERIPHERY, per image (tin/chromium band): 1.87e-11 .. 1.51e-09 J
+  tungsten band: bounded 6.58e-11 .. anchor 3.24e-08 J
+  devices alone: bounded SnCr 8.24e-12 / W 5.54e-11; anchor SnCr 1.50e-09 / W 3.24e-08
+
+comparisons:
+  their deepest DTM chain: 1.568e-08 J/sample -> bounded 838x less, tin/chromium anchor 10.4x less, tungsten anchor 2.1x MORE
+  at the tungsten band's bounded point: 238x less
+  per drawn bit (16 lanes carry 4 bits): bounded 4.50e-16 J = 1.1e+05 kBT; at the thermodynamic floor 8.92e-17 J = 2.2e+04 kBT
+  their RNG cell: 2e-15 J = 4.9e+05 kBT per Bernoulli sample
+
+saved: energy-model.pt
+energy model — geometry and constants in chill_zen/energy_geom.py
+nominal geometry: 4x4 unit crossbar, crossbar pitch 50 nm, transistor pitch 0.20 um, lane pitch 1.00 um, C_seg 0.80 fF, C_node 161 fF (K=134) / 278 fF (K=232), V_sel 0.8 V, readout 15 fJ
+
+per-bank census and nominal contributions:
+bank                  lanes  spaces        LK  reads      V     E_sel    E_read   E_rdout
+backbone draw (g)      2064     134    276576   2048   10mV  2.83e-10  1.65e-13  3.07e-11
+backbone sweep (r)     2048     134    274432   2048   50mV  2.81e-10  4.12e-12  3.07e-11
+patch draw             1568     134    210112   1568   10mV  2.15e-10  1.26e-13  2.35e-11
+joint sweep            3616     232    838912   3616   50mV  8.59e-10  1.26e-11  5.42e-11
+decode                  784     232    181888    784   50mV  1.86e-10  2.73e-12  1.18e-11
+total                                 1781920  10064         1.82e-09  1.97e-11  1.51e-10
+
+shares at the nominal point: sel 91.4%, readout 7.6%, read 1.0%
+
+operating points (Table V):
+  nominal                      sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+  low-swing 0.5 V              sel 7.13e-10  read 1.97e-11  readout 1.51e-10  total 8.83e-10  DTM/ours  17.7x
+  7 nm-class periphery         sel 6.57e-10  read 1.60e-11  readout 1.51e-10  total 8.24e-10  DTM/ours  19.0x
+  7 nm-class, 0.5 V            sel 2.57e-10  read 1.60e-11  readout 1.51e-10  total 4.24e-10  DTM/ours  37.0x
+  pessimistic corner           sel 7.84e-09  read 7.89e-11  readout 1.51e-10  total 8.07e-09  DTM/ours   1.9x
+
+single-knob sensitivities from the nominal row:
+  separate a/b select lines    sel 2.28e-09  read 1.97e-11  readout 1.51e-10  total 2.45e-09  DTM/ours   6.4x
+  16 x 16 unit crossbar        sel 3.19e-09  read 7.89e-11  readout 1.51e-10  total 3.42e-09  DTM/ours   4.6x
+  readout 45 fJ                sel 1.82e-09  read 1.97e-11  readout 4.53e-10  total 2.30e-09  DTM/ours   6.8x
+  wire 0.3 fF/um, gate 0.5 fF  sel 2.97e-09  read 2.30e-11  readout 1.51e-10  total 3.14e-09  DTM/ours   5.0x
+  crossbar pitch 100 nm        sel 1.92e-09  read 2.10e-11  readout 1.51e-10  total 2.09e-09  DTM/ours   7.5x
+  transistor pitch 0.4 um      sel 2.19e-09  read 2.50e-11  readout 1.51e-10  total 2.37e-09  DTM/ours   6.6x
+
+their deepest DTM chain: 1.568e-08 J/sample
+
+saved: energy-model.pt
+energy model — geometry and constants in chill_zen/energy_geom.py
+nominal geometry: 4x4 unit crossbar, crossbar pitch 50 nm, transistor pitch 0.20 um, lane pitch 1.00 um, C_seg 0.80 fF, C_node 161 fF (K=134) / 278 fF (K=232), V_sel 0.8 V, readout 15 fJ
+
+per-bank census and nominal contributions:
+bank                  lanes  spaces        LK  reads      V     E_sel    E_read   E_rdout
+backbone draw (g)      2064     134    276576   2048   10mV  2.83e-10  1.65e-13  3.07e-11
+backbone sweep (r)     2048     134    274432   2048   50mV  2.81e-10  4.12e-12  3.07e-11
+patch draw             1568     134    210112   1568   10mV  2.15e-10  1.26e-13  2.35e-11
+joint sweep            3616     232    838912   3616   50mV  8.59e-10  1.26e-11  5.42e-11
+decode                  784     232    181888    784   50mV  1.86e-10  2.73e-12  1.18e-11
+total                                 1781920  10064         1.82e-09  1.97e-11  1.51e-10
+
+shares at the nominal point: sel 91.4%, readout 7.6%, read 1.0%
+
+operating points (Table V):
+  nominal                      sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+  low-swing 0.5 V              sel 7.13e-10  read 1.97e-11  readout 1.51e-10  total 8.83e-10  DTM/ours  17.7x
+  7 nm-class periphery         sel 6.57e-10  read 1.60e-11  readout 1.51e-10  total 8.24e-10  DTM/ours  19.0x
+  7 nm-class, 0.5 V            sel 2.57e-10  read 1.60e-11  readout 1.51e-10  total 4.24e-10  DTM/ours  37.0x
+  pessimistic corner           sel 7.84e-09  read 7.89e-11  readout 1.51e-10  total 8.07e-09  DTM/ours   1.9x
+
+single-knob sensitivities from the nominal row:
+  separate a/b select lines    sel 2.28e-09  read 1.97e-11  readout 1.51e-10  total 2.45e-09  DTM/ours   6.4x
+  16 x 16 unit crossbar        sel 3.19e-09  read 7.89e-11  readout 1.51e-10  total 3.42e-09  DTM/ours   4.6x
+  readout 45 fJ                sel 1.82e-09  read 1.97e-11  readout 4.53e-10  total 2.30e-09  DTM/ours   6.8x
+  wire 0.3 fF/um, gate 0.5 fF  sel 2.97e-09  read 2.30e-11  readout 1.51e-10  total 3.14e-09  DTM/ours   5.0x
+  crossbar pitch 100 nm        sel 1.92e-09  read 2.10e-11  readout 1.51e-10  total 2.09e-09  DTM/ours   7.5x
+  transistor pitch 0.4 um      sel 2.19e-09  read 2.50e-11  readout 1.51e-10  total 2.37e-09  DTM/ours   6.6x
+
+their deepest DTM chain: 1.568e-08 J/sample
+
+saved: energy-model.pt
+energy model — geometry and constants in chill_zen/energy_geom.py
+nominal geometry: 4x4 unit crossbar, crossbar pitch 50 nm, transistor pitch 0.20 um, lane pitch 1.00 um, C_seg 0.80 fF, C_node 161 fF (K=134) / 278 fF (K=232), V_sel 0.8 V, readout 15 fJ
+
+per-bank census and nominal contributions:
+bank                  lanes  spaces        LK  reads      V     E_sel    E_read   E_rdout
+backbone draw (g)      2064     134    276576   2048   10mV  2.83e-10  1.65e-13  3.07e-11
+backbone sweep (r)     2048     134    274432   2048   50mV  2.81e-10  4.12e-12  3.07e-11
+patch draw             1568     134    210112   1568   10mV  2.15e-10  1.26e-13  2.35e-11
+joint sweep            3616     232    838912   3616   50mV  8.59e-10  1.26e-11  5.42e-11
+decode                  784     232    181888    784   50mV  1.86e-10  2.73e-12  1.18e-11
+total                                 1781920  10064         1.82e-09  1.97e-11  1.51e-10
+
+shares at the nominal point: sel 91.4%, readout 7.6%, read 1.0%
+
+operating points (Table V):
+  nominal                      sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+  low-swing 0.5 V              sel 7.13e-10  read 1.97e-11  readout 1.51e-10  total 8.83e-10  DTM/ours  17.7x
+  7 nm-class periphery         sel 6.57e-10  read 1.60e-11  readout 1.51e-10  total 8.24e-10  DTM/ours  19.0x
+  7 nm-class, 0.5 V            sel 2.57e-10  read 1.60e-11  readout 1.51e-10  total 4.24e-10  DTM/ours  37.0x
+  pessimistic corner           sel 7.84e-09  read 7.89e-11  readout 1.51e-10  total 8.07e-09  DTM/ours   1.9x
+
+single-knob sensitivities from the nominal row:
+  separate a/b select lines    sel 2.28e-09  read 1.97e-11  readout 1.51e-10  total 2.45e-09  DTM/ours   6.4x
+  16 x 16 unit crossbar        sel 3.19e-09  read 7.89e-11  readout 1.51e-10  total 3.42e-09  DTM/ours   4.6x
+  readout 45 fJ                sel 1.82e-09  read 1.97e-11  readout 4.53e-10  total 2.30e-09  DTM/ours   6.8x
+  wire 0.3 fF/um, gate 0.5 fF  sel 2.97e-09  read 2.30e-11  readout 1.51e-10  total 3.14e-09  DTM/ours   5.0x
+  crossbar pitch 100 nm        sel 1.92e-09  read 2.10e-11  readout 1.51e-10  total 2.09e-09  DTM/ours   7.5x
+  transistor pitch 0.4 um      sel 2.19e-09  read 2.50e-11  readout 1.51e-10  total 2.37e-09  DTM/ours   6.6x
+
+their deepest DTM chain: 1.568e-08 J/sample
+
+bounds on the excluded terms (Appendix B 7), nominal:
+  rails: 1.43 nF over 10080 lanes; charged per read step plus four 40 mV swings: 1.5e-11 J (0.73% of the total)
+  leakage: 12 off gates per space on a DC path, 2.14e+07 gates; at 5 pA, 10 ns pulses per read step: 2.5e-13 J (0.01%); if the rails were held for 30 us at 50 mV: 1.6e-10 J (8.0%)
+  synapse pairs 2.851e+07, memristors 5.702e+07
+  g bank: 276576 assertions, 142336 do work; segmenting per group saves 48.5% of the g bank's E_sel, 7.5% of E_sel
+  crossbar pitch 100 nm moves the total by 4.6%
+
+saved: energy-model.pt
+energy model — geometry and constants in chill_zen/energy_geom.py
+nominal geometry: 4x4 unit crossbar, crossbar pitch 50 nm, transistor pitch 0.20 um, lane pitch 1.00 um, C_seg 0.80 fF, C_node 161 fF (K=134) / 278 fF (K=232), V_sel 0.8 V, readout 15 fJ
+
+per-bank census and nominal contributions:
+bank                  lanes  spaces        LK  reads      V     E_sel    E_read   E_rdout
+backbone draw (g)      2064     134    276576   2048   10mV  2.83e-10  1.65e-13  3.07e-11
+backbone sweep (r)     2048     134    274432   2048   50mV  2.81e-10  4.12e-12  3.07e-11
+patch draw             1568     134    210112   1568   10mV  2.15e-10  1.26e-13  2.35e-11
+joint sweep            3616     232    838912   3616   50mV  8.59e-10  1.26e-11  5.42e-11
+decode                  784     232    181888    784   50mV  1.86e-10  2.73e-12  1.18e-11
+total                                 1781920  10064         1.82e-09  1.97e-11  1.51e-10
+
+shares at the nominal point: sel 91.4%, readout 7.6%, read 1.0%
+
+operating points (Table V):
+  nominal                      sel 1.82e-09  read 1.97e-11  readout 1.51e-10  total 2.00e-09  DTM/ours   7.9x
+  low-swing 0.5 V              sel 7.13e-10  read 1.97e-11  readout 1.51e-10  total 8.83e-10  DTM/ours  17.7x
+  7 nm-class periphery         sel 6.57e-10  read 1.60e-11  readout 1.51e-10  total 8.24e-10  DTM/ours  19.0x
+  7 nm-class, 0.5 V            sel 2.57e-10  read 1.60e-11  readout 1.51e-10  total 4.24e-10  DTM/ours  37.0x
+  pessimistic corner           sel 7.84e-09  read 7.89e-11  readout 1.51e-10  total 8.07e-09  DTM/ours   1.9x
+
+single-knob sensitivities from the nominal row:
+  separate a/b select lines    sel 2.28e-09  read 1.97e-11  readout 1.51e-10  total 2.45e-09  DTM/ours   6.4x
+  16 x 16 unit crossbar        sel 3.19e-09  read 7.89e-11  readout 1.51e-10  total 3.42e-09  DTM/ours   4.6x
+  readout 45 fJ                sel 1.82e-09  read 1.97e-11  readout 4.53e-10  total 2.30e-09  DTM/ours   6.8x
+  wire 0.3 fF/um, gate 0.5 fF  sel 2.97e-09  read 2.30e-11  readout 1.51e-10  total 3.14e-09  DTM/ours   5.0x
+  crossbar pitch 100 nm        sel 1.92e-09  read 2.10e-11  readout 1.51e-10  total 2.09e-09  DTM/ours   7.5x
+  transistor pitch 0.4 um      sel 2.19e-09  read 2.50e-11  readout 1.51e-10  total 2.37e-09  DTM/ours   6.6x
+
+their deepest DTM chain: 1.568e-08 J/sample
+
+bounds on the excluded terms (Appendix B 7), nominal:
+  rails: 1.43 nF over 10080 lanes; charged per read step at the read voltage: 5.4e-12 J (0.27% of the total)
+  leakage: 12 off gates per space on a DC path, 2.14e+07 gates; at 5 pA, 10 ns pulses per read step: 2.5e-13 J (0.01%); if the rails were held for 30 us at 50 mV: 1.6e-10 J (8.0%)
+  synapse pairs 2.851e+07, memristors 5.702e+07
+  g bank: 276576 assertions, 142336 do work; segmenting per group saves 48.5% of the g bank's E_sel, 7.5% of E_sel
+  crossbar pitch 100 nm moves the total by 4.6%
+
+saved: energy-model.pt

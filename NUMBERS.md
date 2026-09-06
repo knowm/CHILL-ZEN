@@ -3,10 +3,11 @@
 One row per claim: the value to expect, the script that prints it, and
 what to run first. Values are from the runs the paper reports.
 
-Reruns on one machine reproduce these exactly. Across machines, expect
-codec-derived numbers (the `floor` and `combined` columns, and anything
-downstream of a refitted codebook) to agree to three or four decimals
-rather than exactly — see *Determinism* in the README.
+The seed ranges describe generation variation of selected banks, not
+confidence intervals or cross-machine tolerances. Historical controls
+below are marked separately from final comparator-setting results.
+Saved logs are preserved in `evidence/`; absent fill-sweep logs are not
+reconstructed from the summary.
 
 ---
 
@@ -21,7 +22,7 @@ rather than exactly — see *Determinism* in the README.
 
 ## Sec. IV B — the two-level result (Table II, Fig. 3)
 
-Table II carries the three-seed mean ± spread from `21_reporting.py`, both arms with their hot reads at the operating point (P4, 10 mV / 2 mV), seeds 960-962:
+Table II carries the three-seed mean (range) from `21_reporting.py`, both arms with their hot reads at the operating point (P4, 10 mV / 2 mV), seeds 960-962:
 
 | arm | critic (spread) | div (spread) | tone | std-ratio |
 |---|---|---|---|---|
@@ -41,8 +42,8 @@ patch read went through the fixed-gain emulator read until
 control of Sec. IV C. No fixed-gain number is presented as a result in
 the paper.
 
-The single-seed verdict, `07_verdict.py` after 01-05 (within the
-spreads above; the recorded run behind Fig. 3 and the draw analysis):
+The historical fixed-gain single-seed verdict, `07_verdict.py` after
+01-05 (used for the draw analysis; no longer the source of Fig. 3):
 
 | arm | critic | div | tone | seam | std-ratio |
 |---|---|---|---|---|---|
@@ -56,6 +57,8 @@ Memorization and the sweep's flip rate, `21_reporting.py`:
 |---|---|---|
 | no memorization signature | 5120/5120 distinct joint AND backbone codes; exact copies 0; NN-to-train L2 q01/q50 generated 1.859/3.704 vs held-out real 1.465/3.433 | `21_reporting.py` |
 | one dose is a reconciliation, not a fixed point | dose 2 flips 82.1/226 addresses per image (100% of images), dose 3 43.9, dose 4 25.6 (99.96%) | `21_reporting.py` |
+
+The reconstruction arm bypasses both the autoregressive draw and R1.
 
 **The sweep as a chain, `37_dose_chain.py`** (Sec. III B, "runs once by
 design"): the joint sweep chained to eight doses on Table II's hot draws
@@ -103,7 +106,7 @@ follows each noisy dose with one cold dose.
 | backbone decode, drawn codes / real codes | 1.209 to 1.237 / 1.039 | `10_draw_analysis.py`, probe 5 |
 | the patch level adds on top | about 0.01 | `10_draw_analysis.py`, probe 5 |
 
-## Sec. IV D — where the remaining error is (the draw's signature)
+## Sec. IV D — controls and the earlier draw diagnosis
 
 `10_draw_analysis.py` (deployed draw from 07, prefix-schedule draw from
 09) and `09_prefix_schedule.py`. The paper quotes the
@@ -177,7 +180,7 @@ after `01 --all` and `03 --all`.
 | plain additive quantization degrades with scale | 128x16@p1.0 floor 0.0902 with 56 dead atoms, against 0.0612 and none at p0.5 | `01` |
 | keep-p 0.5 concedes floor for coherence over the bar | 128 books: 0.0612 against 0.0500 (+22%), +0.057 against +0.016 (3.6x). 64 books: +17%, 2.9x. 32 books: +14%, 2.3x. 16 books: +12%, 2.2x. The paper's "roughly 20% for three to five times" is the 128-book row. | `01` |
 
-## Sec. III B — teaching (no figure; the numbers behind the banks)
+## Sec. IV A — teaching (no figure; the numbers behind the banks)
 
 The G fills that the R banks and the joint bank teach against are drawn
 through `chill_zen.physical` at the read the system deploys: `read_noise`
@@ -188,24 +191,11 @@ config records the fill read as `fill_read`, so banks taught at another
 level never match and are never silently reused. The G banks do not
 teach against fills and reproduce bit-identically across fill levels.
 
-**The fill level is a knob of its own, settled by a sweep** (the banks
-in `artifacts/` are the code-245 set; each row is a full 03-04-05
-reteach followed by `23_comparator_sweep.py`):
-
-| teaching fills | fill sigma | best physical end-to-end critic | at |
-|---|---|---|---|
-| old dial (`read_noise` 0.3, no comparator; superseded) | 0.274 -> 0.057 across the chain | 0.9043 | P3 |
-| code 45 (the deployed level) | 0.100 | 0.8567 | P5 |
-| code 95 | 0.200 | 0.8770 | P3 |
-| code 145 | 0.300 | 0.8783 | P4 |
-| **code 245 (chosen)** | **0.500** | **0.8900** | **P4** |
-
-Monotone and flattening at the top (+0.022, +0.006, +0.004); the
-register's ceiling at the sense floor is sigma 0.520, so there is
-nothing meaningful above code 245. The binary-trained banks
-(`18_teach_binary_banks.py`, `V_CMP_BIN = teach.V_CMP`) teach at the
-same level, carried over from this grayscale sweep and **not swept on
-the binary stack** -- an assumption, stated as one.
+Code 245 was chosen during development and carried to the binary stack.
+Intermediate fill-sweep logs were not retained; the compared runs also
+used different generation-noise settings. The former summary is not
+an auditable isolated sweep and its intermediate scores are omitted.
+The final recipe and final-bank probes are reproducible below.
 
 | claim | value | source |
 |---|---|---|
@@ -276,7 +266,11 @@ lane buffer = 5 fJ.
 | claim | value | source |
 |---|---|---|
 | continuous-time noise-energy bound, E = 4kT gamma (n V_T) V_dd (BT) / v_n^2 (gamma 1, n V_T 35 mV, 0.8 V, BT 3) | 0.35 fJ at 2 mV (code 95); 1.39 fJ at 1 mV (code 45); 15.5 fJ at 300 uV (code 10); 139 fJ at 100 uV (code 0) | `38` |
-| ramp condition for one noise sample per lane | slope >= 6 v_n 2 pi B = 38 mV/ns at 2 mV and 500 MHz; the 20 mV range in 0.53 ns | `38` |
+| illustrative ramp condition for one noise sample per lane | slope >= 6 v_n 2 pi B = 38 mV/ns at 2 mV and 500 MHz; the 20 mV range in 0.53 ns | `38` |
+
+The BT=3 noise-energy examples are not the same circuit point as
+500 MHz over 62.5 ns (BT=31.25, 10.4 times greater energy in that
+formula). They do not verify the priced comparator.
 
 **Sneak paths in the unit crossbar, `36_sneak_paths.py`** (Limitation 2
 and Appendix B). A nodal solve with every device at a common conductance
@@ -332,8 +326,8 @@ Sec. IV C of the paper and the read model is `chill_zen/physical.py`.
 Every level is a code on the emulator's 8-bit comparator register
 (`COMPARATOR_V_MIN` 100 uV, `COMPARATOR_V_STEP` 20 uV, codes 0-255,
 ceiling 5.20 mV): `chill_zen.physical.register_level` raises on any
-level the register does not reach, so a swept point is always one a part
-could be programmed to. `v_n/V = 0` is the modeling switch -- the
+level the register does not reach, so a swept point is representable by the modeled register. This does
+not demonstrate a physical part. `v_n/V = 0` is the modeling switch -- the
 comparator term is not applied -- and not code 0, which is the quietest
 comparator modeled.
 
@@ -366,8 +360,8 @@ P6 -> P7.
 | P3 = P5 (same v_n/V, 5x different V) | grayscale critic 0.8840 vs 0.8837; binary FID 10.99 vs 10.73 -- the comparator's share sets the temperature, not V | `23_comparator_sweep.py`, `24_binary_comparator_sweep.py` |
 | the binary turnover basin | P4-P6 differ by 0.35 FID, about the seed-block scatter on the deployed arm (10.63 vs 10.89) | `24_binary_comparator_sweep.py --extend` |
 | the comparator's share of the read variance at the optimum | P4: 97% at ctx0 rising to 99% from ctx16 on; P3 was 88-97% | `23_comparator_sweep.py` (composition table) |
-| comparator classes modeled against | raw dynamic latch 0.5-2mV rms / 5-20mV offset; auto-zeroed 50-200uV / 0.1-1mV; digitally trimmed tens of uV / tens of uV | Table III of the paper; sources Razavi 2015, Pelgrom 1989 |
-| T_max, lanes alone at the 10mV floor | ~0.025 empty context, ~0.05 full context | `23_comparator_sweep.py` (the `v_n = 0` point's composition) |
+| comparator classes modeled against | raw dynamic latch 0.5-2mV rms / 5-20mV offset; auto-zeroed 50-200uV / 0.1-1mV; trimmed: underlying class noise / tens of uV offset | Table III of the paper; sources Razavi 2015, Pelgrom 1989 |
+| T_max, lanes alone at the 10mV floor | ~0.037 empty context, ~0.017 full context | `23_comparator_sweep.py` (the `v_n = 0` point's composition) |
 | lanes-alone flicker share across the chain | 70% at ctx0, then 27 / 9 / 5 / 5% at ctx16 / ctx64 / ctx127 / patch -- flicker dominates the first read, thermal the rest | `23_comparator_sweep.py` (the `v_n = 0` point's composition) |
 | the median-convention note | grayscale backbone read noise 0.023 (median over steps) vs 0.030 in the energy log (mean of per-step medians) | `11_operating_point.py` against `23_comparator_sweep.py` |
 
@@ -414,7 +408,7 @@ emulator read (T = 0.1, 50 mV, 1 us, no comparator) and read 0.8837.
 | system | FID | div | J/image (nominal) |
 |---|---|---|---|
 | real train images (control) | 1.907 | 0.1806 | — |
-| 128-book codec ceiling | 14.205 | 0.1634 | — |
+| 128-book codec reconstruction reference | 14.205 | 0.1634 | — |
 | **two-level (deployed)** | **19.431** | 0.1643 | 2.00e-9 |
 | one-level, 128 books | 21.975 | 0.1640 | 7.51e-10 |
 | one-level, 64 books | 23.811 | 0.1597 | 2.49e-10 |
@@ -453,8 +447,8 @@ The rows Table VII carries:
 
 **Each arm has its own comparator optimum, and smaller codes want a
 quieter comparator.** At those levels the frontier is monotone in book
-count and the 128-, 64- and 32-book one-level systems clear the DTM bar
-(24.90); the 16-book system does not. Rendering every arm at the
+count and the 128- and 64-book one-level scores are below the published DTM
+reference; the 32-book difference is smaller than the observed scoring scatter; the 16-book system does not. Rendering every arm at the
 two-level stack's critic optimum (P4) instead gave 21.95 / 32.23 /
 29.01 / 36.05 / 44.64 -- a kink at 128 books, which is what prompted the
 grid. Energies are unchanged: the bounded figures do not depend on draw
@@ -473,7 +467,7 @@ superseded fixed-gain draw scores 19.43 on this protocol.
 | energy ratio, low-swing 0.5 V select | 17.7x less | `12_energy_model.py` |
 | energy ratio, 7 nm-class periphery | 19.0x less (37.0x with 0.5 V) | `12_energy_model.py` |
 | energy ratio, pessimistic corner | 1.9x less | `12_energy_model.py` |
-| the deployed draw sits above its own codec ceiling by | 5.2 FID (the physical two-level draw at P3 by 3.9) | `03_score.py`, `07_comparator_score.py` |
+| reconstruction reference scope | 14.205 is backbone-only; it is neither a full-stack reference nor a lower bound on generator FID | `02_generate.py`, `03_score.py` |
 | diversity against real | deployed point 0.164 against 0.181 (91%); physical two-level point (P3) 0.156 (86%); the codec's own render of real codes is 0.163 | `03_score.py`, `07_comparator_score.py` |
 | their GPU baselines | VAE best 17.9, GAN best 26.3, MEBM best 33.5; DDPM best decoded 12.2 (clipped by their y-axis; best visible 16.4) | `reference/dtm_figure1_data.py` |
 
@@ -486,8 +480,8 @@ physical-point rows below, not these.
 
 | system | FID | div | J/image bounded |
 |---|---|---|---|
-| binary codec ceiling, 128 books | 9.566 | 0.1675 | — |
-| binary stack ceiling (real codes, both levels) | 2.832 | 0.1757 | — |
+| binary codec reconstruction reference, 128 books | 9.566 | 0.1675 | — |
+| binary stack reconstruction (real codes, both levels) | 2.832 | 0.1757 | — |
 | binary real-train control | 1.907 | 0.1806 | — |
 | binary two-level, T = 0.3 (superseded) | 10.889 | 0.1891 | 2.00e-9 |
 | binary two-level, T = 0.5 / 0.2 / 0.1 (superseded) | 13.192 / 8.969 / 15.070 | 0.192 / 0.168 / 0.136 | — |
@@ -521,7 +515,7 @@ from it than the deployed numbers implied.
 | T = 0.1 collapses binary diversity at the screen | one-level div 0.1330 against the 0.75 x 0.1811 rule (real bar critic 0.8680, div 0.1811) | `19_binary_verdict.py` |
 | the window draw screens out | div 0.1025 against a 0.1358 bar, critic 0.7890; T_max median 0.014 (ctx 0) to 0.043 (ctx 127) | `19_binary_verdict.py` |
 | two-level beats one-level | 9.69 against 15.46 at the physical point, 5.8 FID (8.97 against 12.28 on the superseded best-T rows) | `07_comparator_score.py`, `06_binary_arm.py` |
-| the two-level arm sits above its own codec ceiling by | 0.12 FID (9.69 against 9.57) | `07_comparator_score.py` |
+| full binary two-level reconstruction reference | 2.832; 9.566 is backbone-only. These FIDs do not bound the generator or give an additive error decomposition | `19_binary_verdict.py`, `06_binary_arm.py` |
 | binary two-level energy equals grayscale | 2.00e-9 J; the model charges counts only and the census is identical | `22_binary_energy.py` |
 | binary one-level energies equal their grayscale twins | 7.51e-10 (128) / 2.49e-10 (64); the earlier 2.5x deviation was an artifact of the retired magnitude-based model | `22_binary_energy.py` |
 
@@ -543,7 +537,7 @@ Sec. V C.
 | free-label draw, binary two-level P6 | 10.10 (against 9.69 clamped; free is now slightly worse, where on the dial-taught banks it was slightly better) | `31_free_draw.py`, `32_audit_score.py` |
 | free-label draw, grayscale two-level at its grid best (P3) | 18.27 (against 18.09 clamped); at P4 it was 21.92 against 21.95 | `31_free_draw.py`, `32_audit_score.py` |
 | Bernoulli calibration, class-conditional / pooled | 180.51 / 258.10 | `30_bernoulli_baseline.py`, `32_audit_score.py` |
-| binary memorization, two-level P6 | 5120/5120 distinct, 0 exact train copies (held-out real: 13/10,000), NN-Hamming median 25 bits against held-out real 23 (q01 5, q99 well under the real tail) | `33_binary_memorization.py` |
+| binary memorization, two-level P6 | 5120/5120 distinct, 0 exact copies against actual 68k fitting split; excluded-from-fit real: 5/2,000; NN-Hamming median 25 versus 23, generated q01 4 | `33_binary_memorization.py` |
 | binary memorization, one-level 128 / 64 | 5120/5120 distinct, 0 exact copies each | `33_binary_memorization.py` |
 
 ## Figures
@@ -556,7 +550,7 @@ which the paper no longer includes.
 | figure | script | needs |
 |---|---|---|
 | Fig. 1 `fig-noise.png` (`fig:noise`) | `14_figures.py` | 11 |
-| Fig. 3 `fig-samples.png` (`fig:samples`) | `14_figures.py` | 07 |
+| Fig. 3 `fig-samples.png` (`fig:samples`) | `14_figures.py` replays `21_reporting.gen_states`, seed 960, first 6/class from n=1000 | final banks; no refit |
 | Fig. 4 `fig-comparator-sweep.png` (`fig:comparatorsweep`) | `29_comparator_figure.py` | 23, 24 (+ `--extend`) |
 | Fig. 5 `fig-backbone.png` (`fig:backbone`) | `14_figures.py` | 06 `--all` |
 | Fig. 6 `fig-codec.png` (`fig:codec`) | `14_figures.py` | 01 `--all`, 02 |

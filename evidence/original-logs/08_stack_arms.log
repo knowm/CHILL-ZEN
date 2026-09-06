@@ -1,0 +1,11 @@
+[arms] backbone drawn (5s)
+[arms] joint: the joint sweep changed 0.343 of backbone addresses and 0.483 of patch addresses
+[arms] joint-recon: the joint sweep changed 0.428 of backbone addresses and 0.472 of patch addresses
+
+n = 320
+arm             critic     div   tone   seam   stdr
+real            0.9031  0.4823  2.360  1.100   1.00
+backbone        0.8344  0.5223  2.585  1.068   1.21
+patch level     0.8250  0.5250  2.621  1.078   1.22
+joint           0.8250  0.4910  2.678  1.077   1.24
+joint-recon     0.9031  0.5045  2.080  1.066   1.12

@@ -6,14 +6,13 @@ paper that is scored by somebody else's code.
 The DTM paper reports quality as FID on binarized Fashion-MNIST and
 states nothing else about the measurement: no sample size, no feature
 extractor, no binarization threshold, no evaluation appendix. Its
-released library contains no FID code at all. The protocol is
-nevertheless fully determined by the DTM replication code base linked
+released library contains no FID code at all. The protocol used here comes from the DTM replication code base linked
 from that library, which ships both the evaluation code and precomputed
 reference statistics.
 
-So the comparison is made by driving *their* code, unmodified, against
-*their* shipped reference, at *their* threshold and *their* sample
-count. The vendored tree is read-only; the harness imports it as a
+Our feature extraction and distance functions come from the replication;
+the feature batching path is adapted for caching. The gate verifies
+agreement with its statistics, not the published DTM scoring path. The vendored tree is read-only; the harness imports it as a
 package and calls it.
 
 ## What their code does
@@ -172,3 +171,11 @@ data through the identical path; the second is the codec's render of
 real codes, the bound every arm through that codec sits under. Neither
 is eligible for the bar, and `03_score.py` will not name one as a
 winner.
+
+The fetched replication revision has no license file; it and its weights
+are not redistributed by this repository.
+
+`33_binary_memorization.py` reconstructs the actual permuted 68k/2k
+split from the canonical IDX files. Its 2k reference is excluded from
+weight fitting but was used for model selection. It needs NumPy and the
+saved renders, and does not run FID or regenerate samples.
