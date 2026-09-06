@@ -37,9 +37,9 @@ read's own noise down to the kT/C floor of the output node: at the
 10\,mV read the devices deliver under two-fifths of the noise the draw
 needs on the first read and under a tenth thereafter, so the draw's
 randomness has to come from the periphery. It comes from the
-comparator that resolves each read, one per lane, with its
-input-referred noise set per instruction; at the operating point that
-circuit supplies most of the draw's variance. Sweeping its noise
+comparator that resolves each read, one per lane, with settable
+input-referred noise; at the operating point that circuit supplies
+most of the draw's variance. Sweeping its noise
 locates the operating point
 and fixes a design requirement on the comparator. The energy case
 against a mixing chain is a count: an image needs about 3600 noisy
@@ -99,9 +99,8 @@ a generative draw needs on the first read and under a tenth
 thereafter, and no read voltage a comparator can resolve recovers the
 rest. The draw's temperature therefore has to be supplied by the
 periphery. It is supplied by the comparator that resolves each read,
-one per lane, with its input-referred noise set per instruction; at
-the operating point the comparator carries most of the draw's
-variance, over nine tenths after the first read, and the pooled
+one per lane, with settable input-referred noise; at the operating
+point the comparator carries most of the draw's variance, over nine tenths after the first read, and the pooled
 devices carry the remainder. In this respect CHILL ZEN and the DTCA are alike: each
 obtains its randomness from a noise circuit at every node. What
 separates them is count. One CHILL ZEN image needs about 3600 noisy
@@ -705,7 +704,7 @@ offset is static and the noise is not, so the two belong to different
 mechanisms. CHILL ZEN therefore requires a comparator whose offset is
 trimmed per lane, once, to below about a tenth of the read voltage
 (1\,mV at 10\,mV) at each bias it runs at, and whose input-referred
-noise is settable per instruction, from near zero for verdicts to
+noise is settable, from near zero for verdicts to
 about 0.2--0.3 of the read voltage for draws, by a starved
 preamplifier or an injected source. The offset budget can be relaxed
 by reading hot at a higher voltage: the 50\,mV twin above shows the
@@ -880,7 +879,7 @@ random draws per image & $T K L^2 \approx 8 \times 250 \times 4900
 \approx 10^{7}$ conditional updates & about 3600 hot lane reads \\
 randomness source & dedicated subthreshold-transistor RNG,
 free-running, $\tau_0 \approx 100$\,ns & one comparator per lane, its
-input-referred noise set per instruction; the pooled weights' own
+input-referred noise settable; the pooled weights' own
 read noise is the minor term \\
 temperature control & $\tau_0$ fixed by circuit design & the read
 voltage and the comparator's noise setting, over a range that reaches
