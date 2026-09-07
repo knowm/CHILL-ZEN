@@ -13,10 +13,20 @@ renders reproduce 25's bit for bit. Renders go to
 `07_comparator_score.py` scores them and prints each arm's best level,
 which `15_energy_figure.py` and `16_binarization_figure.py` read.
 
-Cost: about 45 minutes. Requires 01-05.
+`--fifty` renders the one-level arms at `V = 50 mV` instead, at register
+codes 0 and 10 (Q0 100 uV, Q1 300 uV; v_n/V 0.002 and 0.006). The
+temperature is v_n/V (Sec. IV C's 50 mV twin), and at 10 mV the register
+floor is already 0.01 of the read, so an arm whose FID is still falling
+at P1 has no physical point below it on the 10 mV grid. The 50 mV read
+puts one there. Renders go to `gen/comparator-gray-one-level-M-{Q0,Q1}.npy`
+and 07 scores them with the rest.
+
+Cost: about 45 minutes; `--fifty` about 6. Requires 01-05.
 
     python experiments/head_to_head/34_grayscale_grid.py
+    python experiments/head_to_head/34_grayscale_grid.py --fifty
 """
+import argparse
 import os
 import pathlib
 import sys
@@ -48,6 +58,8 @@ N_PER = 512
 V_READ = 0.010
 GRID = {"P0": 0.0, "P1": 160e-6, "P2": 500e-6, "P3": 1e-3, "P4": 2e-3,
         "P6": 3e-3}                                # v_n on the register
+V_FIFTY = 0.050
+GRID_FIFTY = {"Q0": 100e-6, "Q1": 300e-6}          # codes 0 and 10
 SEED_BLOCK = ev.SEED_BLOCK + 200                   # as in 25
 ONE_LEVEL = (16, 32, 64, 128)
 
@@ -61,12 +73,18 @@ def save(name, imgs, lab, log):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--fifty", action="store_true",
+                    help="one-level arms at 50 mV, codes 0 and 10")
+    args = ap.parse_args()
+    v_read = V_FIFTY if args.fifty else V_READ
+    grid = GRID_FIFTY if args.fifty else GRID
     torch.set_num_threads(5)
-    log, fh = ev.make_log("34_grayscale_grid")
+    log, fh = ev.make_log("34_grayscale_grid" + ("_fifty" if args.fifty else ""))
     log(f"\n=== grayscale register-grid render "
-        f"({time.strftime('%Y-%m-%d %H:%M')}) — V = {V_READ * 1e3:.0f} mV, "
-        f"points {', '.join(f'{p} {v * 1e6:.0f}uV' for p, v in GRID.items())} ===")
-    for v_n in GRID.values():
+        f"({time.strftime('%Y-%m-%d %H:%M')}) — V = {v_read * 1e3:.0f} mV, "
+        f"points {', '.join(f'{p} {v * 1e6:.0f}uV' for p, v in grid.items())} ===")
+    for v_n in grid.values():
         if v_n:
             register_level(v_n)
 
@@ -80,7 +98,7 @@ def main():
 
     # No cache, for the reason 25 gives: a render carries no record of
     # the banks that drew it.
-    for P, v_n in GRID.items():
+    for P, v_n in grid.items():
         for i, M in enumerate(ONE_LEVEL):
             name = f"comparator-gray-one-level-{M}-{P}"
             tag = f"{M}x16@p0.5"
@@ -95,13 +113,15 @@ def main():
             gen = torch.Generator().manual_seed(SEED_BLOCK + 1 + i)
             t0 = time.time()
             g_open, _ = draw_backbone_physical(level, g1, r1, lab, gen,
-                                               V_READ, v_n)
+                                               v_read, v_n)
             log(f"[gen] {name}: {len(lab)} codes drawn ({time.time() - t0:.0f}s)")
             bk = books[tag]
             dec = codec.decode_global(g_open, bk["bias"], bk["atoms"],
                                       bk["cfg"]["p"]).reshape(-1, 28, 28)
             save(name, dec, lab, log)
 
+        if args.fifty:
+            continue
         name = f"comparator-gray-two-level-{P}"
         pl, jl = S["pl"], S["jl"]
         gen = torch.Generator().manual_seed(SEED_BLOCK)

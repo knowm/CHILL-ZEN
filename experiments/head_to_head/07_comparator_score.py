@@ -120,14 +120,17 @@ GRAY_ARMS = ("one-level-16", "one-level-32", "one-level-64", "one-level-128",
 
 def grayscale_best(res):
     """{arm: (best point, best FID, [(point, FID), ...])} over the
-    `comparator-gray-{arm}-{P}` renders present in `res`; empty if none."""
+    `comparator-gray-{arm}-{P}` renders present in `res`; empty if none.
+    P0 is the lanes-only modeling switch, not a register setting, so it
+    is listed on the curve but never chosen as an arm's best level."""
     out = {}
     for arm in GRAY_ARMS:
         pre = f"comparator-gray-{arm}-"
         curve = sorted((k[len(pre):], v["fid"]) for k, v in res.items()
                        if k.startswith(pre))
-        if curve:
-            P, fid = min(curve, key=lambda t: t[1])
+        phys = [t for t in curve if t[0] != "P0"]
+        if phys:
+            P, fid = min(phys, key=lambda t: t[1])
             out[arm] = (P, fid, curve)
     return out
 

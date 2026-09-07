@@ -48,7 +48,8 @@ def best_render(arm):
     if spath.exists():
         scores = json.loads(spath.read_text())
         pre = f"comparator-gray-{arm[len('comparator-'):]}-"
-        grid = {k: v["fid"] for k, v in scores.items() if k.startswith(pre)}
+        grid = {k: v["fid"] for k, v in scores.items()
+                if k.startswith(pre) and not k.endswith("-P0")}
         if grid:
             return min(grid, key=grid.get)
     return arm

@@ -57,7 +57,7 @@ DTM_BEST = (1.568e-8, 24.9)
 # binary-trained at P6 (10 mV, 3 mV). Used when the scoring pass has not
 # been run here.
 RECORDED = {
-    "one-level-16": 44.15, "one-level-32": 24.81,
+    "one-level-16": 44.15, "one-level-32": 25.76,
     "one-level-64": 22.62, "one-level-128": 22.11,
     "two-level": 18.09, "codec-ceiling": 14.205, "real-train": 1.907,
 }
@@ -104,14 +104,16 @@ def main():
 
     def F(arm):
         # Physical-point rows from the comparator scoring pass: each
-        # grayscale arm at its best level on the register grid
-        # (34_grayscale_grid.py) when the grid has been scored, else the
-        # single-point render of 25. The codec ceiling and the real-train
-        # control are the same images either way and come from the
-        # deployed scoring pass.
+        # grayscale arm at its best register level on the grid
+        # (34_grayscale_grid.py, with --fifty) when the grid has been
+        # scored, else the single-point render of 25. P0 is the lanes-only
+        # modeling switch, not a register setting, and is never chosen.
+        # The codec ceiling and the real-train control are the same
+        # images either way and come from the deployed scoring pass.
         if arm in PHYSICAL and phys is not None:
             grid = [v["fid"] for k, v in phys.items()
-                    if k.startswith(f"comparator-gray-{arm}-")]
+                    if k.startswith(f"comparator-gray-{arm}-")
+                    and not k.endswith("-P0")]
             if grid:
                 return min(grid)
             return phys[PHYSICAL[arm]]["fid"]

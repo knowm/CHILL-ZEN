@@ -421,19 +421,27 @@ Table above is superseded (no T-drawn number stands as a
 result). Table VII carries each grayscale arm at its best level on the
 register grid: `head_to_head/34_grayscale_grid.py` renders the two-level
 stack and the one-level 16/32/64/128-book systems at P0, P1, P2, P3, P4
-and P6 (`V = 10 mV`), `07_comparator_score.py` scores them in the DTM
-environment and prints each arm's best, and `15_energy_figure.py`,
-`16_binarization_figure.py` and `31_free_draw.py` read that selection.
-The full grid (FID; the P3 and P4 columns reproduce the single-point
-renders of `25_comparator_headtohead.py` bit for bit):
+and P6 (`V = 10 mV`) and, with `--fifty`, the one-level systems at
+Q0 and Q1 (`V = 50 mV`, codes 0 and 10, v_n/V 0.002 and 0.006);
+`07_comparator_score.py` scores them in the DTM environment and prints
+each arm's best, and `15_energy_figure.py`, `16_binarization_figure.py`
+and `31_free_draw.py` read that selection. P0 is the lanes-only
+modeling switch, not a register setting, and is never selected as an
+arm's level. The full grid (FID; the P3 and P4 columns reproduce the
+single-point renders of `25_comparator_headtohead.py` bit for bit):
 
-| arm | P0 (0) | P1 (0.016) | P2 (0.05) | P3 (0.10) | P4 (0.20) | P6 (0.30) |
-|---|---|---|---|---|---|---|
-| two-level | 29.67 | 25.46 | 18.65 | 18.09 **best** | 21.95 | 23.48 |
-| one-level-128 | 34.94 | 28.51 | 22.11 **best** | 25.30 | 32.23 | 34.72 |
-| one-level-64 | 26.52 | 24.67 | 22.62 **best** | 25.91 | 29.01 | 30.61 |
-| one-level-32 | 24.81 **best** | 25.76 | 31.20 | 33.82 | 36.05 | 36.66 |
-| one-level-16 | 60.65 | 54.79 | 45.71 | 44.15 **best** | 44.64 | 44.56 |
+| arm | P0 (0) | P1 (0.016) | P2 (0.05) | P3 (0.10) | P4 (0.20) | P6 (0.30) | Q0 (0.002 @ 50 mV) | Q1 (0.006 @ 50 mV) |
+|---|---|---|---|---|---|---|---|---|
+| two-level | 29.67 | 25.46 | 18.65 | 18.09 **best** | 21.95 | 23.48 | — | — |
+| one-level-128 | 34.94 | 28.51 | 22.11 **best** | 25.30 | 32.23 | 34.72 | 41.32 | 39.63 |
+| one-level-64 | 26.52 | 24.67 | 22.62 **best** | 25.91 | 29.01 | 30.61 | 30.60 | 29.79 |
+| one-level-32 | 24.81 | 25.76 **best** | 31.20 | 33.82 | 36.05 | 36.66 | 27.67 | 26.00 |
+| one-level-16 | 60.65 | 54.79 | 45.71 | 44.15 **best** | 44.64 | 44.56 | 70.22 | 66.69 |
+
+The 50 mV points were run because the 32-book FID was still falling at
+P1 and the 10 mV register has no physical point below it; every arm
+scores worse at 50 mV than at its 10 mV optimum, so the 32-book system's
+best physical point is P1.
 
 The rows Table VII carries:
 
@@ -442,13 +450,13 @@ The rows Table VII carries:
 | **two-level (physical)** | P3, v_n/V 0.10 | **18.09** | 0.1558 | 2.00e-9 |
 | one-level, 128 books | P2, 0.05 | 22.11 | 0.1520 | 7.51e-10 |
 | one-level, 64 books | P2, 0.05 | 22.62 | 0.1426 | 2.49e-10 |
-| one-level, 32 books | P0, lanes only | 24.81 | 0.1190 | 9.88e-11 |
+| one-level, 32 books | P1, 0.016 | 25.76 | 0.1199 | 9.88e-11 |
 | one-level, 16 books | P3, 0.10 | 44.15 | 0.1162 | 4.93e-11 |
 
 **Each arm has its own comparator optimum, and smaller codes want a
 quieter comparator.** At those levels the frontier is monotone in book
 count and the 128- and 64-book one-level scores are below the published DTM
-reference; the 32-book difference is smaller than the observed scoring scatter; the 16-book system does not. Rendering every arm at the
+reference; the 32- and 16-book systems are not. Rendering every arm at the
 two-level stack's critic optimum (P4) instead gave 21.95 / 32.23 /
 29.01 / 36.05 / 44.64 -- a kink at 128 books, which is what prompted the
 grid. Energies are unchanged: the bounded figures do not depend on draw
