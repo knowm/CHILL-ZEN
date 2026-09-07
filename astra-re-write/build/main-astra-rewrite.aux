@@ -1,0 +1,150 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand*\HyPL@Entry[1]{}
+\citation{conte2019thermodynamic}
+\citation{sutton2017intrinsic,borders2019integer,niazi2024training}
+\citation{jelincic2025dtm,freitas2025taming}
+\citation{sohldickstein2015deep,ho2020ddpm}
+\citation{jelincic2025dtm}
+\citation{xiao2017fashion}
+\citation{gray1984vq,jegou2011product,babenko2014additive}
+\HyPL@Entry{0<</P(\376\377\0001)>>}
+\newlabel{FirstPage}{{}{1}{}{section*.1}{}}
+\@writefile{toc}{\contentsline {title}{CHILL ZEN: Image generation with noisy in-memory reads and local repair}{1}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {abstract}{Abstract}{1}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Representation and generation}{1}{section*.4}\protected@file@percent }
+\newlabel{sec:method}{{II}{1}{}{section*.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}An additive image code}{1}{section*.5}\protected@file@percent }
+\newlabel{eq:aq}{{1}{1}{}{equation.2.1}{}}
+\newlabel{eq:decode}{{2}{1}{}{equation.2.2}{}}
+\citation{vandenoord2017vqvae,chang2022maskgit}
+\citation{knowm2026blog,knowm2026emulator}
+\HyPL@Entry{1<</P(\376\377\0002)>>}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Lane scores and local learning}{2}{section*.6}\protected@file@percent }
+\newlabel{sec:lanes}{{II\,B}{2}{}{section*.6}{}}
+\newlabel{eq:pool}{{4}{2}{}{equation.2.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}A fixed sequence of draws and repairs}{2}{section*.7}\protected@file@percent }
+\newlabel{sec:sequence}{{II\,C}{2}{}{section*.7}{}}
+\newlabel{eq:draw}{{5}{2}{}{equation.2.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Training and image quality}{2}{section*.8}\protected@file@percent }
+\newlabel{sec:results}{{III}{2}{}{section*.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Setup and evaluation}{2}{section*.9}\protected@file@percent }
+\citation{dalgaty2021insitu,cai2020hopfield}
+\HyPL@Entry{2<</P(\376\377\0003)>>}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Grayscale results at $v_n/V=0.20$. Generated rows are means over three seeds, each with 1000 images. Parentheses give the seed range (maximum minus minimum), not a confidence interval. Real references are the first 100 validation images per class.}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:quality}{{I}{3}{Grayscale results at $v_n/V=0.20$. Generated rows are means over three seeds, each with 1000 images. Parentheses give the seed range (maximum minus minimum), not a confidence interval. Real references are the first 100 validation images per class}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}The two-level result}{3}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Representation controls}{3}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Comparator noise controls sampling}{3}{section*.12}\protected@file@percent }
+\newlabel{sec:noise}{{IV}{3}{}{section*.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Device noise and pooling}{3}{section*.13}\protected@file@percent }
+\newlabel{eq:noise}{{6}{3}{}{equation.4.6}{}}
+\newlabel{eq:ktc}{{8}{3}{}{equation.4.8}{}}
+\HyPL@Entry{3<</P(\376\377\0004)>>}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Real images (left), generation from labels (center), and the real-backbone reconstruction control (right). Each block shows the first six samples per class from reporting seed 960, without sample selection. Both generated blocks use $V=10$\,mV and $v_n=2$\,mV for hot reads.}}{4}{figure.1}\protected@file@percent }
+\newlabel{fig:samples}{{1}{4}{Real images (left), generation from labels (center), and the real-backbone reconstruction control (right). Each block shows the first six samples per class from reporting seed 960, without sample selection. Both generated blocks use $V=10$\,mV and $v_n=2$\,mV for hot reads}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Recorded codec study. (a) Backbone reconstruction, backbone plus residual patches, and the original image. (b) Reconstruction error versus code size. The deployed 904-bit two-level code reaches relative mean squared error 0.0382.}}{4}{figure.2}\protected@file@percent }
+\newlabel{fig:codec}{{2}{4}{Recorded codec study. (a) Backbone reconstruction, backbone plus residual patches, and the original image. (b) Reconstruction error versus code size. The deployed 904-bit two-level code reaches relative mean squared error 0.0382}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Noise settings in the emulator}{4}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Cold reads and circuit requirements}{4}{section*.15}\protected@file@percent }
+\citation{razavi2015strongarm,pelgrom1989matching}
+\citation{heusel2017fid}
+\citation{dtmreplication}
+\citation{extropic2025thrml}
+\citation{jelincic2025dtm}
+\citation{jelincic2025dtm}
+\HyPL@Entry{4<</P(\376\377\0005)>>}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Comparator-noise sweeps at $V=10$\,mV. (a) Grayscale critic score. (b) Binary-trained two-level FID under the replication protocol. The horizontal DTM line is its published score, not a rerun. The sweep and Table\nobreakspace  {}\ref  {tab:quality} use different generation seeds.}}{5}{figure.3}\protected@file@percent }
+\newlabel{fig:sweep}{{3}{5}{Comparator-noise sweeps at $V=10$\,mV. (a) Grayscale critic score. (b) Binary-trained two-level FID under the replication protocol. The horizontal DTM line is its published score, not a rerun. The sweep and Table~\ref {tab:quality} use different generation seeds}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Binarized Fashion-MNIST}{5}{section*.16}\protected@file@percent }
+\newlabel{sec:fid}{{V}{5}{}{section*.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Scoring protocol and comparison scope}{5}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Results and controls}{5}{section*.18}\protected@file@percent }
+\citation{jelincic2025dtm}
+\HyPL@Entry{5<</P(\376\377\0006)>>}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Binarized-image results. Diversity is within-class mean pairwise pixel disagreement, distinct from the grayscale diversity metric. Energies use the nominal geometry and include the proposed lane decoder. Grayscale settings are selected by FID among tested register settings; binary models use $\eta =0.30$, selected on the two-level sweep. DTM values are published results with unverified scoring details.}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:fid}{{II}{6}{Binarized-image results. Diversity is within-class mean pairwise pixel disagreement, distinct from the grayscale diversity metric. Energies use the nominal geometry and include the proposed lane decoder. Grayscale settings are selected by FID among tested register settings; binary models use $\noise =0.30$, selected on the two-level sweep. DTM values are published results with unverified scoring details}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Energy and implementation}{6}{section*.19}\protected@file@percent }
+\newlabel{sec:energy}{{VI}{6}{}{section*.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Operation counts and estimated energy}{6}{section*.20}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Two-level energy scenarios. The first five rows vary the nominal crossbar model. The selector column separately removes its sneak paths. All retain assumed readout and decoder costs; the scenarios are not uncertainty bounds.}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:energy}{{III}{6}{Two-level energy scenarios. The first five rows vary the nominal crossbar model. The selector column separately removes its sneak paths. All retain assumed readout and decoder costs; the scenarios are not uncertainty bounds}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}What the hardware estimate assumes}{6}{section*.21}\protected@file@percent }
+\citation{knowm2026emulator}
+\citation{knowm2026blog}
+\citation{weste2011cmos}
+\HyPL@Entry{6<</P(\376\377\0007)>>}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Conditional timing}{7}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Discussion and conclusion}{7}{section*.23}\protected@file@percent }
+\@writefile{toc}{\appendix }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Local instruction rules}{7}{section*.24}\protected@file@percent }
+\newlabel{app:instructions}{{A}{7}{}{section*.24}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Energy model}{7}{section*.25}\protected@file@percent }
+\newlabel{app:energy}{{B}{7}{}{section*.25}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1}Geometry and census}{7}{section*.26}\protected@file@percent }
+\HyPL@Entry{7<</P(\376\377\0008)>>}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Per-image census, including the proposed lane decoder. $L$ is bank size and $K$ its address-space count. Address assertions include selection across lanes that do not perform a useful read. The backbone generator contains an additional 16-lane group beyond the 128 groups read during conditioned generation.}}{8}{table.4}\protected@file@percent }
+\newlabel{tab:census}{{IV}{8}{Per-image census, including the proposed lane decoder. $L$ is bank size and $K$ its address-space count. Address assertions include selection across lanes that do not perform a useful read. The backbone generator contains an additional 16-lane group beyond the 128 groups read during conditioned generation}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2}Energy equations}{8}{section*.27}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Noise from the geometry model at settling-limited timing, including 5\,fF of comparator input capacitance. The first backbone read has six active label spaces; later pools are larger. Horizontal lines show flicker floors. The $v_n=2$\,mV comparator term exceeds device noise at the 10\,mV hot-read voltage.}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:noise}{{4}{8}{Noise from the geometry model at settling-limited timing, including 5\,fF of comparator input capacitance. The first backbone read has six active label spaces; later pools are larger. Horizontal lines show flicker floors. The $v_n=2$\,mV comparator term exceeds device noise at the 10\,mV hot-read voltage}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3}Readout assumptions}{8}{section*.28}\protected@file@percent }
+\newlabel{app:readout}{{B\,3}{8}{}{section*.28}{}}
+\citation{nugent2015ktbitpatent,nugent2017ktrampatent,nugent2019stackpatent}
+\bibdata{main-astra-rewriteNotes,refs}
+\bibcite{conte2019thermodynamic}{{1}{2019}{{Conte\ \emph  {et~al.}}}{{Conte, DeBenedictis, Ganesh, Hylton, Strachan, Williams, Alemi, Altenberg, Crooks, Crutchfield, del Rio, Deutsch, DeWeese, Douglas, Esposito, Frank, Fry, Harsha, Hill, Kello, Krichmar, Kumar, Liu, Lloyd, Marsili, Nemenman, Nugent, Packard, Randall, Sadowski, Santhanam, Shaw, Stieg, Stopnitzky, Teuscher, Watkins, Wolpert, Yang,\ and\ Yufik}}}
+\bibcite{sutton2017intrinsic}{{2}{2017}{{Sutton\ \emph  {et~al.}}}{{Sutton, Camsari, Behin-Aein,\ and\ Datta}}}
+\bibcite{borders2019integer}{{3}{2019}{{Borders\ \emph  {et~al.}}}{{Borders, Pervaiz, Fukami, Camsari, Ohno,\ and\ Datta}}}
+\bibcite{niazi2024training}{{4}{2024}{{Niazi\ \emph  {et~al.}}}{{Niazi, Chowdhury, Aadit, Mohseni, Qin,\ and\ Camsari}}}
+\bibcite{jelincic2025dtm}{{5}{2025}{{Jelin\v {c}i\v {c}\ \emph  {et~al.}}}{{Jelin\v {c}i\v {c}, Lockwood, Garlapati, Schillinger, Chuang, Verdon,\ and\ McCourt}}}
+\HyPL@Entry{8<</P(\376\377\0009)>>}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4}Selection alternatives and omitted terms}{9}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {}Declarations}{9}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Data and code availability}{9}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Acknowledgments and AI assistance}{9}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Competing interests}{9}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {}References}{9}{section*.34}\protected@file@percent }
+\bibcite{freitas2025taming}{{6}{2026}{{Freitas\ \emph  {et~al.}}}{{Freitas, Massarelli, Rothschild, Keane, Dawe, Hwang, Garlapati,\ and\ McCourt}}}
+\bibcite{sohldickstein2015deep}{{7}{2015}{{Sohl-Dickstein\ \emph  {et~al.}}}{{Sohl-Dickstein, Weiss, Maheswaranathan,\ and\ Ganguli}}}
+\bibcite{ho2020ddpm}{{8}{2020}{{Ho\ \emph  {et~al.}}}{{Ho, Jain,\ and\ Abbeel}}}
+\bibcite{xiao2017fashion}{{9}{2017}{{Xiao\ \emph  {et~al.}}}{{Xiao, Rasul,\ and\ Vollgraf}}}
+\bibcite{gray1984vq}{{10}{1984}{{Gray}}{{}}}
+\bibcite{jegou2011product}{{11}{2011}{{J{\'e}gou\ \emph  {et~al.}}}{{J{\'e}gou, Douze,\ and\ Schmid}}}
+\bibcite{babenko2014additive}{{12}{2014}{{Babenko\ and\ Lempitsky}}{{}}}
+\bibcite{vandenoord2017vqvae}{{13}{2017}{{van~den Oord\ \emph  {et~al.}}}{{van~den Oord, Vinyals,\ and\ Kavukcuoglu}}}
+\bibcite{chang2022maskgit}{{14}{2022}{{Chang\ \emph  {et~al.}}}{{Chang, Zhang, Jiang, Liu,\ and\ Freeman}}}
+\bibcite{knowm2026blog}{{15}{2026}{{Nugent}}{{}}}
+\bibcite{knowm2026emulator}{{16}{2026}{{{Knowm Inc.}}}{{}}}
+\bibcite{dalgaty2021insitu}{{17}{2021}{{Dalgaty\ \emph  {et~al.}}}{{Dalgaty, Castellani, Turck, Harabi, Querlioz,\ and\ Vianello}}}
+\bibcite{cai2020hopfield}{{18}{2020}{{Cai\ \emph  {et~al.}}}{{Cai, Kumar, Van~Vaerenbergh, Sheng, Liu, Li, Liu, Foltin, Yu, Xia, Yang, Beausoleil, Lu,\ and\ Strachan}}}
+\bibcite{razavi2015strongarm}{{19}{2015}{{Razavi}}{{}}}
+\bibcite{pelgrom1989matching}{{20}{1989}{{Pelgrom\ \emph  {et~al.}}}{{Pelgrom, Duinmaijer,\ and\ Welbers}}}
+\bibcite{heusel2017fid}{{21}{2017}{{Heusel\ \emph  {et~al.}}}{{Heusel, Ramsauer, Unterthiner, Nessler,\ and\ Hochreiter}}}
+\bibcite{dtmreplication}{{22}{2025}{{{\tt  pschilliOrange}\ and\ contributors}}{{}}}
+\bibcite{extropic2025thrml}{{23}{2025}{{{Extropic}}}{{}}}
+\bibcite{weste2011cmos}{{24}{2011}{{Weste\ and\ Harris}}{{}}}
+\bibcite{nugent2015ktbitpatent}{{25}{2015}{{Nugent}}{{}}}
+\bibcite{nugent2017ktrampatent}{{26}{2017}{{Nugent\ and\ Molter}}{{}}}
+\bibcite{nugent2019stackpatent}{{27}{2019}{{Nugent\ and\ Molter}}{{}}}
+\bibstyle{apsrev4-2}
+\citation{REVTEX42Control}
+\citation{apsrev42Control}
+\HyPL@Entry{9<</P(\376\377\0001\0000)>>}
+\newlabel{LastBibItem}{{27}{10}{}{section*.34}{}}
+\newlabel{LastPage}{{}{10}{}{}{}}
+\gdef \@abspage@last{10}
