@@ -235,6 +235,30 @@ estimate from a stated geometry, never a measurement.
 | their cell, for comparison | E_cell = 2 fJ per conditional update, E_comm about half; RNG 2e-15 J per Bernoulli sample | their Eq. 13 |
 | digital-decode alternative, carried in Appendix B's basis of comparison for a reader who does not grant the lane decode | 784 x 226 = 177,184 MACs at 10-50 fJ per 8-bit MAC = 1.8-8.9 nJ on the 2.0 nJ total | arithmetic; the lane decode is the design and is priced as 784 cold reads |
 
+**Timing scenarios (design-point table and end of Sec. V B).** These
+are conditional latency calculations, not measured image-generation
+times. DTM source locations refer to
+[arXiv:2510.23972v2](https://arxiv.org/html/2510.23972v2), specifically
+Sec. III (two sequential node-block updates, about 2 tau_0 per Gibbs
+iteration; Fig. 4(b), tau_0 about 100 ns) and Appendix E.4 (K = 250 for
+the Fig. 1 energy estimate).
+
+| claim | value / derivation | source |
+|---|---|---|
+| eight-step DTM sampling latency | 2 x 8 x 250 x 100 ns = 400 us | cited DTM timing model; same eight-step design point as the energy/FID comparison |
+| CHILL ZEN sequential path including proposed lane decode | 131 generation steps + 1 parallel decode read = 132 | Sec. III B; `chill_zen/generate.py`; lane-decoder proposal in Sec. V B |
+| CHILL ZEN latency if every complete step fits the priced readout window | 132 x 62.5 ns = 8.25 us, reported as about 8 us | `chill_zen/energy_geom.py`, `T_WINDOW = 62.5e-9`; complete-step timing is an additional assumption |
+| latency ratio at that window | 400 / 8.25 = 48.48, reported as roughly fifty | arithmetic from the two preceding latency scenarios |
+| assumed 30 us image scenario | 400 / 30 = 13.33, reported as about thirteen | Appendix B held-rail leakage example; `energy_geom.excluded_bounds`, `t_image = 30e-6`; an assumption, not a timing bound |
+| illustrative comparator noise correlation scale | 1 / (2 pi x 500 MHz) = 0.318 ns, reported as about 0.3 ns | Appendix B readout discussion and `38_readout_options.py` use 500 MHz in the ramp example; this does not verify comparator bandwidth or complete-cycle timing |
+| ideal DTM pipeline output interval | 2 x 250 x 100 ns = 50 us after filling; individual-image latency remains 400 us | scheduling inference with separate hardware for all eight EBMs; not a reported or measured throughput |
+
+These scenarios exclude initialization and external transfer, retain
+the comparator and lane-decoder limitations, and distinguish latency
+from the output interval of a pipeline. No 25-56 ns settling bound is
+claimed. The 30 us leakage example does not establish a pessimistic
+bound or independently validate a timing model.
+
 Per-image energy across the frontier, `13`; the model charges counts
 only, so the binary-trained arms (`22`) equal their grayscale twins:
 

@@ -717,8 +717,9 @@ Ref.~\cite{jelincic2025dtm} and its released software
 \cite{extropic2025thrml}.
 
 \begin{table*}
-\caption{Two thermodynamic design points. Claims in the left column
-are from Ref.~\cite{jelincic2025dtm}. \label{tab:designpoint}}
+\caption{Two thermodynamic design points. DTM entries follow
+Ref.~\cite{jelincic2025dtm}; latency is derived from its stated timings.
+\label{tab:designpoint}}
 \begin{ruledtabular}
 \begin{tabular}{p{2.9cm}p{6.9cm}p{6.6cm}}
  & DTM / DTCA \cite{jelincic2025dtm} & CHILL ZEN (this work) \\
@@ -729,6 +730,10 @@ reconciles \\
 sampling procedure & $K_{\mathrm{mix}} = 250$ Gibbs iterations per
 step, $T = 2$--$8$ steps & 128 autoregressive reads + 3 parallel
 sweeps $\approx$ 131 sequential steps \\
+single-image latency (conditional) &
+$2 T K_{\mathrm{mix}}\tau_0 \approx 400\,\mu$s at $T=8$ &
+131 sequential steps plus one parallel decode read;
+about $8\,\mu$s if each complete step takes 62.5\,ns \\
 random draws per image & $T K L^2 \approx 8 \times 250 \times 4900
 \approx 10^{7}$ conditional updates & about 3600 hot lane reads \\
 randomness source & dedicated subthreshold-transistor RNG,
@@ -878,6 +883,29 @@ sensitivities of Appendix~\ref{app:energy} move the ratio between 4.6
 and 7.9. Because the model depends on counts only, the binary-trained
 arms of Sec.~\ref{sec:headtohead}, whose banks and operation count are those of
 their grayscale twins, carry the same energies.
+
+% Timing scenarios: NUMBERS.md, Sec. V B. DTM inputs are from Sec. III
+% and Appendix E.4 of arXiv:2510.23972v2. The pipeline rate is an
+% ideal scheduling inference, not a measured throughput.
+\noindent\emph{Time per image.} A full Gibbs iteration in the DTCA
+takes about $2\tau_0$, with $\tau_0\approx100$\,ns
+\cite{jelincic2025dtm}; at $K_{\mathrm{mix}}=250$, the eight-step chain
+requires about $400\,\mu$s of sampling time. The DTCA waits on its
+RNG, whereas CHILL ZEN could be limited by settling and readout:
+Appendix~\ref{app:energy}'s illustrative 500\,MHz comparator bandwidth corresponds
+to a noise correlation scale of about 0.3\,ns. CHILL ZEN uses 131
+sequential generation steps plus one parallel read for the proposed
+lane decoder. If each complete step fits the 62.5\,ns window used to
+budget readout energy, an image takes about $8\,\mu$s, roughly fifty
+times faster than the chain. Adopting Appendix~\ref{app:energy}'s assumed
+$30\,\mu$s image time gives a ratio of about thirteen; that leakage
+example establishes no timing bound. The readout window does not
+establish a complete instruction cycle, including address delivery,
+settling, and commitment; the comparator and decoder limitations
+already stated apply. These estimates exclude initialization and
+external transfer. With separate hardware for all eight EBMs, an ideal
+DTM pipeline could deliver one image every $50\,\mu$s after filling,
+while retaining about $400\,\mu$s latency.
 
 \subsection{Binarized Fashion-MNIST and the published DTM reference}\label{sec:headtohead}
 
@@ -1640,8 +1668,9 @@ pulses of 10\,ns per step that is $2.5 \times 10^{-13}$\,J per image,
 below $10^{-4}$ of the total. Had the rails been held across an assumed
 30\,$\mu$s image at 50\,mV, the same gates would leak $1.6 \times
 10^{-10}$\,J, 8\% of the total, which is one reason the rails are
-pulsed. The image time itself depends on the device's conductance,
-which the model does not need and the paper does not claim.
+pulsed. The image time itself depends on the device's conductance and
+readout timing; the energy model does not determine it. The conditional
+timing scenarios are given in Sec.~\ref{sec:energy}.
 
 \emph{Comparator kickback.} An illustrative 0.5\,fC input charge
 would move a 131\,fF node by about 4\,mV, but the first backbone
