@@ -13,7 +13,8 @@
 \clubpenalty=10000
 \widowpenalty=10000
 \displaywidowpenalty=10000
-\title{CHILL ZEN: Image generation with noisy in-memory reads and local repair}
+\title{From one to zero: Comparator-Heated In-memory Lane Learning
+  with Zero-Ended Noise (CHILL ZEN)}
 \author{M. Alexander Nugent}
 \affiliation{Knowm Inc.}
 \date{\today}
@@ -28,7 +29,7 @@ Probabilistic hardware uses physical fluctuations to perform computation \cite{c
 
 The Denoising Thermodynamic Model (DTM) addresses a difficulty of energy-based generation: a model that represents distinct modes well can be slow to mix between them. It reverses a noising process through a sequence of relatively easy sampling problems, following the principle of diffusion models \cite{sohldickstein2015deep,ho2020ddpm}. Its proposed hardware, the Denoising Thermodynamic Computer Architecture (DTCA), implements each stage with a sparse bipartite Boltzmann machine. The eight-step configuration uses about $10^7$ random conditional updates per image \cite{jelincic2025dtm}.
 
-CHILL ZEN represents an image as an additive discrete code, draws that code in a fixed sequence, and applies local repair. It has no equilibrium distribution to reach and no mixing phase. The name expands to Comparator-Heated In-memory Lane Learning with Zero-Ended Noise: noisy reads generate symbols, and nominally noiseless reads repair them. Throughout this paper, \emph{sampling temperature} means read-noise amplitude, not physical device temperature.
+CHILL ZEN represents an image as an additive discrete code, draws that code in a fixed sequence, and applies local repair. It has no equilibrium distribution to reach and no mixing phase. Throughout this paper, \emph{sampling temperature} means read-noise amplitude, not physical device temperature.
 
 The hardware constraint is central to the method. A lane pools selected differential conductance pairs into one score. Pooling reduces device noise, leaving too little randomness for generation at the assumed read voltage. A comparator at each lane therefore serves both as readout and as the main source of sampling noise. The prospective energy benefit comes from reducing sampling work, rather than from making each random draw cheaper than a DTCA update.
 
