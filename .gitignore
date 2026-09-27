@@ -10,7 +10,6 @@ __pycache__/
 
 # Outputs.
 /logs/
-/main.pdf
 /main.blg
 
 # Figures are outputs of experiments/14-16 and 29, but the seven the paper
