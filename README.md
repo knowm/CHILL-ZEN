@@ -304,4 +304,6 @@ reference is Jelinčić et al. (arXiv:2510.23972v2); cite them for anything scor
 
 ## License
 
-MIT, matching `ktram-neural-core`. See [`LICENSE`](LICENSE).
+MIT (see [`LICENSE`](LICENSE)) grants copyright. A separate [`PATENTS`](PATENTS) file reserves
+Knowm's US hardware-patent rights: **software emulation is permitted with no patent license;
+hardware realization in the US requires a separate license.** This matches `ktram-neural-core`.
